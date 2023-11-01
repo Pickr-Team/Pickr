@@ -1,16 +1,24 @@
-# pickr
+<h1 align="center">
+  <img src="GitHub_Resource/Logo.png" alt="Rosetta" width="350">
+</h1>
 
-pickr source code
+<h3 align="center">
+  CDUT Sino-British Project Management System
+  <br>
+  Designed by Chengxin Zhao 2023 - OBU Granduate Project
+</h3>
 
-## Getting Started
+<div align="center">
+  <img src="https://img.shields.io/badge/Dart-0175C2.svg?logo=dart&logoColor=white">
+  <img src="https://img.shields.io/badge/Flutter-02569B.svg?logo=flutter&logoColor=white">
+  <img src="https://img.shields.io/badge/mysql-00000f.svg?logo=mysql&logoColor=white">
+  <img src="https://img.shields.io/badge/Github-100000.svg?logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/Git-black?logo=git&logoColor=organe">
+</div>
 
-This project is a starting point for a Flutter application.
+## Features
+- Students need to be able to view information of their supervisors and the topic, select topic within a specified period, and view the progress of their project selection or customize their own topic. 
+- Supervisors can add their own topic and description information, set quotas for their projects, view students who have selected them, and export their selection results as a table. 
+- Managers can add students, add teachers, and quotas. 
+- The project needs to set up an algorithm for students’ selections of topics and supervisors: each student can choose three topics and ranks by the order of priority. If their first choice is approved, the following two choices will be nullified, and so on. The submissions of students will be considered by the order of submission time, namely, selections submitted earlier will be considered before those submitted latter. If none of the three choices are available, the student needs to resubmit in the second phase. Project managers can also modify the topic and supervisor choose of students. 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
