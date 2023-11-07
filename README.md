@@ -9,11 +9,12 @@
 </h3>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Dart-0175C2.svg?logo=dart&logoColor=white">
-  <img src="https://img.shields.io/badge/Flutter-02569B.svg?logo=flutter&logoColor=white">
+  <img src="https://img.shields.io/badge/HTML5-E34F26.svg?logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS-239120.svg?logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-323330.svg?logo=javascript&logoColor=F7DF1E">
+  <img src="https://img.shields.io/badge/Flask-000.svg?logo=flask&logoColor=white">
+  <img src="https://img.shields.io/badge/Python-14354C.svg?logo=python&logoColor=white">
   <img src="https://img.shields.io/badge/mysql-00000f.svg?logo=mysql&logoColor=white">
-  <img src="https://img.shields.io/badge/Github-100000.svg?logo=github&logoColor=white">
-  <img src="https://img.shields.io/badge/Git-black?logo=git&logoColor=organe">
 </div>
 
 ## Features
