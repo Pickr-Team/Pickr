@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../static/image/icon.png" type="image/png">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star.css') }}">
+    <script src="../static/js/star.js"></script>
+    <title>Login</title>
+</head>
+<body class="body-2">
+<canvas id='c'></canvas>
+<div class="w-layout-blockcontainer container-4 w-container"><h1 class="second_title center accent">Welcome to
+    Pickr</h1>
+    <div class="_20px_height"></div>
+    <div class="text-block center">The user name &amp; password is as same as your student website</div>
+    <div class="form-block w-form">
+        <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form"
+              data-wf-page-id="6549e5ab43c26955e3fbed4f" data-wf-element-id="4ab325b2-5e6c-bf49-cbc0-c345548bac49">
+            <div class="_20px_height"></div>
+            <label for="name" class="text-block login_text">User name</label><input type="text"
+                                                                                    class="text-field w-input"
+                                                                                    maxlength="256" name="name"
+                                                                                    data-name="Name" placeholder=""
+                                                                                    id="name"/><label for="email"
+                                                                                                      class="text-block login_text">Password</label><input
+                type="email" class="text-field w-input" maxlength="256" name="email" data-name="Email" placeholder=""
+                id="email" required=""/>
+            <div class="_40px_height"></div>
+            <input type="submit" value="Login" data-wait="Please wait..." class="submit-button w-button"/></form>
+        <div class="w-form-done">
+            <div>Thank you! Your submission has been received!</div>
+        </div>
+        <div class="w-form-fail">
+            <div>Oops! Something went wrong while submitting the form.</div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../static/image/icon.png" type="image/png">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
+    <title>{% block title %}{% endblock %}</title>
+    <script>{% block script %}{% endblock %}</script>
+</head>
+<body>
+<section class="head">
+    <a href="/" aria-current="page" class="w-inline-block w--current">
+        <img
+                src="{{ url_for('static',filename='image/head_logo.svg') }}"
+                loading="lazy" width="155" alt="" class="image"/>
+    </a>
+    <a href="{{ url_for('login') }}" class="login">Login<em>↗</em></a>
+</section>
+
+{% block content %}{% endblock %}
+
+<section class="footer">
+    <div class="fourth_title">Pickr - CDUT &amp; OBU Collaborative Education Topic Management System</div>
+    <div class="text-block accent">Develop by Chengxin Zhao</div>
+    <div class="paragraph i _10_head">PROJECT STAR FROM - Nov,7 2023</div>
+</section>
+</body>
+</html>

@@ -1,44 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
-</head>
-<body>
-<section class="head">
-    <a href="/" aria-current="page" class="w-inline-block w--current">
-        <img
-        src="{{ url_for('static',filename='image/head_logo.png') }}"
-        loading="lazy" width="155" alt="" class="image"/>
-    </a>
-    <a href="/login" class="login">Login<em>↗</em></a>
-</section>
-<section class="section">
-    <div class="w-layout-blockcontainer container w-container"><h1 class="big_wite_heeding">Search And Find</h1>
-        <h1 class="big_wite_heeding accent">Your Supervisor &amp; Topic</h1>
-        <h1 class="big_wite_heeding">On Pickr!</h1>
-        <div class="w-layout-hflex flex-block"><a href="/topic-list" class="link link_accent"><em>Topic List↗</em></a>
-            <div class="_60px_width"></div>
-            <a href="/tutorial" class="link">Tutorial<em class="italic-text">↗</em></a></div>
-    </div>
-    <div class="w-layout-blockcontainer container-2 w-container">
-        <div class="w-layout-vflex system-info_block"><h1 class="se">System<i>.info()</i>></h1>
-            <div class="w-layout-hflex">
-                <div class="w-layout-vflex flex-block-3"><h1 class="big_title accent">12</h1>
-                    <p>Supervisor</p></div>
+{% extends 'base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="w-layout-blockcontainer container w-container"><h1 class="big_wite_heeding">Search And Find</h1>
+            <h1 class="big_wite_heeding accent">Your Supervisor &amp; Topic</h1>
+            <h1 class="big_wite_heeding">On Pickr!</h1>
+            <div class="w-layout-hflex flex-block"><a href="{{ url_for('topic_list') }}" class="link link_accent"><em>Topic
+                List↗</em></a>
                 <div class="_60px_width"></div>
-                <div class="w-layout-vflex flex-block-3"><h1 class="big_title accent">43</h1>
-                    <p>Topic</p></div>
+                <a href="/tutorial" class="link">Tutorial<em class="italic-text">↗</em></a></div>
+        </div>
+        <div class="w-layout-blockcontainer container-2 w-container">
+            <div class="w-layout-vflex system-info_block"><h1 class="se">System<i>.info()</i></h1>
+                <div class="w-layout-hflex">
+                    <div class="w-layout-vflex flex-block-3"><h1 class="big_title accent">12</h1>
+                        <p>Supervisor</p></div>
+                    <div class="_60px_width"></div>
+                    <div class="w-layout-vflex flex-block-3"><h1 class="big_title accent">43</h1>
+                        <p>Topic</p></div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-<section class="footer">
-    <div class="fourth_title">Pickr - CDUT &amp; OBU Collaborative Education Topic Management System</div>
-    <div class="text-block accent">Develop by Chengxin Zhao</div>
-    <div class="paragraph i _10_head">PROJECT STAR FROM - Nov,7 2023</div>
-</section>
-</body>
-</html>
+    </section>
+{% endblock %}
+
+
