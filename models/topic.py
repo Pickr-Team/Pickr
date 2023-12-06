@@ -1,5 +1,6 @@
 from .db_instance import db
 
+
 class Topic(db.Model):
     __tablename__ = 'topics'
 
@@ -42,8 +43,13 @@ class Topic(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def query_all(cls):
+    @classmethod
+    def get_all(cls):
         return cls.query.all()
+
+    @classmethod
+    def get_num(cls):
+        return cls.query.count()
 
     def __repr__(self):
         return f'<Topic {self.id}>'

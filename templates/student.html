@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}Student{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder">
+        <h1 class="first_title">Hi,{{ name }}!</h1>
+        <div class="_20px_height"></div>
+        <a href="{{ url_for('logout') }}" class="small_link accent"><em>Logout↗</em></a>
+        <div class="_20px_height"></div>
+        <p class="paragraph">
+            In this page,you can full the application form and check your topic
+            apply result.
+        </p>
+    </section>
+    <section>
+        <div class="_40px_height"></div>
+        <div class="text-block back_space">
+            Topic selection needs to be filled in the box and verified to be saved.
+            Please upload the form at the designated submission time. The order of
+            topic selection is determined by the time of submission.
+        </div>
+        <div class="_40px_height"></div>
+
+        <h2 class="third_title accent">Topic Application Form</h2>
+
+        <div class="_20px_height"></div>
+
+        <div class="w-form">
+            <form id="email-form-2" name="email-form-2" data-name="Email Form 2" method="get">
+                <label class="w-checkbox checkbox-field">
+                    <input type="checkbox" id="customTopicCheckbox" name="checkbox"
+                           class="w-checkbox-input checkbox"/>
+                    <span class="text-block w-form-label" for="customTopicCheckbox">custom topic</span>
+                    <span class="checkbox-custom"></span>
+                </label>
+            </form>
+        </div>
+
+
+        <div class="_20px_height"></div>
+
+        <div id="customTopicDiv" class="w-form custom_topic">
+            <form id="email-form" name="email-form" data-name="Email Form" method="get" class="student_submit_form">
+                <div class="w-layout-vflex custom-topic_fild">
+                    <div class="paragraph accent">
+                        Please note that the custom topic needs to be reviewed by the manager, and your supervisor may
+                        be modified.
+                    </div>
+                    <label for="field-6" class="text-block _10button_spac">Supervisor</label>
+                    <select id="field-5" name="field-5" data-name="Field 5" required=""
+                            class="text-field creatnew w-select">
+                        <option value="">Select one...</option>
+                        <option value="First">First choice</option>
+                        <option value="Second">Second choice</option>
+                        <option value="Third">Third choice</option>
+                    </select>
+                    <label for="field-5" class="text-block _10button_spac">Type</label>
+                    <select id="field-5" name="field-5" data-name="Field 5" required=""
+                            class="text-field creatnew w-select">
+                        <option value="">Select one...</option>
+                        <option value="First">First choice</option>
+                        <option value="Second">Second choice</option>
+                        <option value="Third">Third choice</option>
+                    </select>
+                    <label for="field-5" class="text-block _10button_spac">Description</label>
+                    <textarea placeholder="" maxlength="5000" id="field-2" name="field-2" data-name="Field 2"
+                              class="text-field text-area w-input"></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div id="inlimiteContainerDiv" class="w-layout-blockcontainer inlimite_container w-container">
+            <div class="w-form">
+                <div class="text-block _10button_spac">Choose 1</div>
+                <form
+                        id="email-form"
+                        name="email-form"
+                        data-name="Email Form"
+                        method="get"
+                        class="student_submit_form"
+                        data-wf-page-id="654a454ff531ec936e227e00"
+                        data-wf-element-id="b2afc0c9-155e-196d-aa7c-a2b481cda2b8"
+                >
+                    <div class="w-layout-vflex">
+                        <div class="w-layout-hflex">
+                            <input
+                                    type="text"
+                                    class="text-field_topic w-input"
+                                    maxlength="256"
+                                    name="field-4"
+                                    data-name="Field 4"
+                                    placeholder="Topic ID"
+                                    id="field-4"
+                                    required=""
+                            /><input
+                                type="submit"
+                                value="Save"
+                                data-wait="Please wait..."
+                                class="submit-button w-button"
+                        />
+                        </div>
+                    </div>
+                </form>
+                <div class="w-form-done">
+                    <div>Thank you! Your submission has been received!</div>
+                </div>
+                <div class="w-form-fail">
+                    <div>Oops! Something went wrong while submitting the form.</div>
+                </div>
+            </div>
+            <div class="w-form">
+                <div class="text-block _10button_spac">Choose 2</div>
+                <form
+                        id="email-form"
+                        name="email-form"
+                        data-name="Email Form"
+                        method="get"
+                        class="student_submit_form"
+                        data-wf-page-id="654a454ff531ec936e227e00"
+                        data-wf-element-id="878530ec-fa74-8357-c279-333cf321cefd"
+                >
+                    <input
+                            type="text"
+                            class="text-field_topic w-input"
+                            maxlength="256"
+                            name="field-3"
+                            data-name="Field 3"
+                            placeholder="Topic ID"
+                            id="field-3"
+                            required=""
+                    /><input
+                        type="submit"
+                        value="Save"
+                        data-wait="Please wait..."
+                        class="submit-button w-button"
+                />
+                </form>
+                <div class="w-form-done">
+                    <div>Thank you! Your submission has been received!</div>
+                </div>
+                <div class="w-form-fail">
+                    <div>Oops! Something went wrong while submitting the form.</div>
+                </div>
+            </div>
+            <div class="w-form">
+                <div class="text-block _10button_spac">Choose 3</div>
+                <form
+                        id="email-form"
+                        name="email-form"
+                        data-name="Email Form"
+                        method="get"
+                        class="student_submit_form"
+                        data-wf-page-id="654a454ff531ec936e227e00"
+                        data-wf-element-id="89fef2cb-a2d6-d6b0-89ab-ba879d4ec705"
+                >
+                    <input
+                            type="text"
+                            class="text-field_topic w-input"
+                            maxlength="256"
+                            name="field-2"
+                            data-name="Field 2"
+                            placeholder="Topic ID"
+                            id="field-2"
+                            required=""
+                    /><input
+                        type="submit"
+                        value="Save"
+                        data-wait="Please wait..."
+                        class="submit-button w-button"
+                />
+                </form>
+                <div class="w-form-done">
+                    <div>Thank you! Your submission has been received!</div>
+                </div>
+                <div class="w-form-fail">
+                    <div>Oops! Something went wrong while submitting the form.</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="#" class="submit-button _20head_spacing w-button">Submit Application</a>
+
+        <div class="_40px_height"></div>
+        <h2 class="third_title accent">Result</h2>
+        <div
+                id="w-node-c01e4d8c-185e-4dae-307e-7a9c36719697-6e227e00"
+                class="w-layout-layout tutorial_timeline_item wf-layout-layout"
+        >
+            <div class="w-layout-cell">
+                <div class="text-block">
+                    <em class="italic-text-3">◇ Choose 1</em>
+                </div>
+            </div>
+            <div class="w-layout-cell">
+                <div class="text-block italic-text">
+                    <em class="accent">Successful</em>
+                </div>
+            </div>
+        </div>
+        <div
+                id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+                class="w-layout-layout tutorial_timeline_item wf-layout-layout"
+        >
+            <div class="w-layout-cell">
+                <div class="text-block">
+                    <em class="italic-text-3">◇ Choose 2</em>
+                </div>
+            </div>
+            <div class="w-layout-cell">
+                <div class="text-block italic-text">
+                    <em class="italic-text">/</em>
+                </div>
+            </div>
+        </div>
+        <div
+                id="w-node-a0356be8-a343-2772-d9df-42385edb7f34-6e227e00"
+                class="w-layout-layout tutorial_timeline_item wf-layout-layout"
+        >
+            <div class="w-layout-cell">
+                <div class="text-block">
+                    <em class="italic-text-3">◇ Choose 3</em>
+                </div>
+            </div>
+            <div class="w-layout-cell">
+                <div class="text-block italic-text">
+                    <em class="italic-text">/</em>
+                </div>
+            </div>
+        </div>
+        <div class="_40px_height"></div>
+    </section>
+    <script>
+        function toggleDivs() {
+            var checkbox = document.getElementById('customTopicCheckbox');
+            var customDiv = document.getElementById('customTopicDiv');
+            var inlimiteDiv = document.getElementById('inlimiteContainerDiv');
+
+            if (checkbox.checked) {
+                customDiv.style.display = 'block';
+                inlimiteDiv.style.display = 'none';
+            } else {
+                customDiv.style.display = 'none';
+                inlimiteDiv.style.display = 'block';
+            }
+        }
+
+        document.getElementById('customTopicCheckbox').addEventListener('change', toggleDivs);
+        document.addEventListener('DOMContentLoaded', toggleDivs);
+    </script>
+    </body>
+{% endblock %}
+
+

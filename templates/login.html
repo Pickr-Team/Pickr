@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <link rel="icon" href="../static/image/icon.png" type="image/png">
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
+    <link href="https://assets-global.website-files.com/6548e0e272296b4160532c3b/css/pickr-fb94fc.webflow.12a7e7bec.css" rel="stylesheet" type="text/css"/>
+    {#    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">#}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star.css') }}">
     <script src="../static/js/star.js"></script>
     <title>Login</title>
@@ -15,26 +16,23 @@
     Pickr</h1>
     <div class="_20px_height"></div>
     <div class="text-block center">The user name &amp; password is as same as your student website</div>
+
     <div class="form-block w-form">
-        <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form"
-              data-wf-page-id="6549e5ab43c26955e3fbed4f" data-wf-element-id="4ab325b2-5e6c-bf49-cbc0-c345548bac49">
+        <form action="{{ url_for('login') }}" method="POST" id="login_form" class="form">
             <div class="_20px_height"></div>
-            <label for="name" class="text-block login_text">User name</label><input type="text"
-                                                                                    class="text-field w-input"
-                                                                                    maxlength="256" name="name"
-                                                                                    data-name="Name" placeholder=""
-                                                                                    id="name"/><label for="email"
-                                                                                                      class="text-block login_text">Password</label><input
-                type="email" class="text-field w-input" maxlength="256" name="email" data-name="Email" placeholder=""
-                id="email" required=""/>
+
+            {% if message %}
+                <p><strong>{{ message }}</strong></p>
+            {% endif %}
+
+            <label for="user_name" class="text-block login_text">User name</label>
+            <input type="text" class="text-field w-input" name="user_name" required="required"/>
+
+            <label for="password" class="text-block login_text">Password</label>
+            <input type="password" class="text-field w-input" name="password" data-name="password" required="required"/>
             <div class="_40px_height"></div>
-            <input type="submit" value="Login" data-wait="Please wait..." class="submit-button w-button"/></form>
-        <div class="w-form-done">
-            <div>Thank you! Your submission has been received!</div>
-        </div>
-        <div class="w-form-fail">
-            <div>Oops! Something went wrong while submitting the form.</div>
-        </div>
+            <input type="submit" value="Login" data-wait="Please wait..." class="submit-button w-button"/>
+        </form>
     </div>
 </div>
 </body>

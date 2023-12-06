@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder"><h1 class="first_title">Topic Apply for {{ year }}</h1>
+        <p class="paragraph">Please carefully read the tutorial page and follow the appropriate steps to complete your
+            application when applying for access.</p></section>
+    <section>
+        <div class="_40px_height"></div>
+        <div class="text-block">This year, we have {{ num }} round to apply the topic, please follow the timeline
+            below:
+        </div>
+        <div class="_40px_height"></div>
+
+        {% for deadline in deadlines %}
+            <h2 class="third_title accent">Round {{ deadline.round_num }}</h2>
+            <div id="w-node-c7c75e64-fdc4-6588-8594-5cb2b4e48d3f-81e348b7"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block"><em class="italic-text-3">◇ Submit application</em></div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block italic-text"><em class="italic-text">{{ deadline.submit_time }}</em></div>
+                </div>
+            </div>
+            <div id="w-node-cc3a90ba-95d1-38e0-0aa7-e8eab74f8467-81e348b7"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block"><em class="italic-text-2">◇ Result announce</em></div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block italic-text"><em class="italic-text">{{ deadline.result_time }}</em></div>
+                </div>
+            </div>
+            <div class="_40px_height"></div>
+        {% endfor %}
+
+        {% for note in notes %}
+            <h2 class="third_title accent">{{ note.title }}</h2>
+            <div class="text-block back_space">{{ note.content }}</div>
+            <div class="_40px_height"></div>
+        {% endfor %}
+
+    </section>
+    </body>
+{% endblock %}

@@ -31,7 +31,12 @@ class Deadline(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def query_all(cls):
+    @classmethod
+    def get_num(cls):
+        return cls.query.count()
+
+    @classmethod
+    def get_all(cls):
         return cls.query.all()
 
     def __repr__(self):

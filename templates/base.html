@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <link rel="icon" href="../static/image/icon.png" type="image/png">
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
+    <link href="https://assets-global.website-files.com/6548e0e272296b4160532c3b/css/pickr-fb94fc.webflow.12a7e7bec.css"
+          rel="stylesheet" type="text/css"/>
+    {#    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">#}
     <title>{% block title %}{% endblock %}</title>
     <script>{% block script %}{% endblock %}</script>
+    <style>{% block style %}{% endblock %}</style>
 </head>
 
 <body>
@@ -17,7 +20,7 @@
                 src="{{ url_for('static',filename='image/head_logo.svg') }}"
                 loading="lazy" width="155" alt="" class="image"/>
     </a>
-    <a href="{{ url_for('login') }}" class="login">Login<em>↗</em></a>
+    <a href="{{ url_for('my_pickr') }}" class="login">My Pickr<em>↗</em></a>
 </section>
 
 {% block content %}{% endblock %}

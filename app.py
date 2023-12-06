@@ -1,12 +1,20 @@
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from models.deadline import Deadline
-from models.student import Student
+import secrets
+
+from flask import Flask, render_template, session, request, redirect, url_for
+from models.db_instance import db
+from datetime import datetime
+
+'''Import models '''
+from models.type import Type
+from models.note import Note
+from models.supervisor import Supervisor
 from models.topic import Topic
 from models.selection import Selection
-from models.db_instance import db
+from models.deadline import Deadline
+from models.student import Student
 
 app = Flask(__name__)
+app.secret_key = secrets.token_hex(16)
 
 '''Set up database'''
 HOST = '127.0.0.1'
@@ -22,14 +30,77 @@ def create_tables():
     db.create_all()
 
 
+'''Set up datetime'''
+now = datetime.now()
+
+
 @app.route('/')
-def hello_world():
-    return render_template('home.html')
+def homepage():
+    num_of_topics = Topic.get_num()
+    num_of_supervisors = Supervisor.get_num()
+    return render_template('home.html', num_of_topics=num_of_topics, num_of_supervisors=num_of_supervisors)
 
 
-@app.route('/login')
+# Click 'My Pickr' button
+@app.route('/my_pickr')
+def my_pickr():
+    if 'user_name' and 'user_type' in session:
+        if session['user_type'] == 'student':
+            return render_template('student.html', name=session['user_name'])
+    else:
+        return render_template('login.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'POST':
+        user_name = request.form.get('user_name')
+        password = request.form.get('password')
+
+        student = Student.query.filter_by(user_name=user_name).first()
+        supervisor = Supervisor.query.filter_by(user_name=user_name).first()
+
+        if student:
+            if student.password == password:
+                session['user_name'] = student.english_name
+                session['user_type'] = 'student'
+                return render_template('student.html', name=student.english_name)
+            else:
+                return render_template('login.html', message='Wrong password')
+
+        elif supervisor:
+            if supervisor.password == password:
+                if supervisor.if_admin:
+                    session['user_name'] = supervisor.user_name
+                    session['user_type'] = 'admin'
+                    return render_template('admin.html')
+                else:
+                    session['user_name'] = supervisor.user_name
+                    session['user_type'] = 'supervisor'
+                    return render_template('supervisor.html')
+            else:
+                return render_template('login.html', message='Wrong password')
+
+        else:
+            return render_template('login.html', message='User does not exist')
+
+    else:
+        return render_template('login.html', message='Please login')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_name', None)
+    session.pop('user_type', None)
+    return redirect(url_for('homepage'))
+
+
+@app.route('/tutorial')
+def tutorial():
+    deadlines = Deadline.get_all()
+    num = Deadline.get_num()
+    notes = Note.get_all()
+    return render_template('tutorial.html', deadlines=deadlines, notes=notes, num=num, year=now.year)
 
 
 @app.route('/topic_list')
@@ -55,6 +126,7 @@ def get_student():
     student = Student.query.filter_by(id=1).first()
     return student.chinese_name
 
+
 @app.route('/add_deadline')
 def add_deadline():
     new_deadline = Deadline(
@@ -69,4 +141,4 @@ def add_deadline():
 
 if __name__ == '__main__':
     create_tables()
-    app.run()
+    app.run(debug=True)
