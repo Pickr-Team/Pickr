@@ -17,5 +17,13 @@ class Type(db.Model):
         self.name = name
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
+
     def __repr__(self):
         return f'<Type {self.id}>'

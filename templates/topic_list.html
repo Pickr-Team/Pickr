@@ -17,13 +17,9 @@
         </div>
         <div class="w-layout-cell cell-3">
             <div class="w-layout-hflex flex-block-7">
-                <a href="#" class="small_link span_40px_back">Application Design</a>
-                <a href="#" class="small_link span_40px_back">Deep Learning</a>
-                <a href="#" class="small_link span_40px_back">Database Design</a>
-                <a href="#" class="small_link span_40px_back">Cloud Computing</a
-                ><a href="#" class="small_link span_40px_back">Internet of things</a>
-                <a href="#" class="small_link span_40px_back">Game Development</a>
-                <a href="#" class="small_link span_40px_back">Big Data Processing</a>
+                {% for type in types %}
+                    <a href="#" class="small_link span_40px_back">{{ type.name }}</a>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -35,15 +31,10 @@
         </div>
         <div class="w-layout-cell cell-4">
             <div class="w-layout-hflex flex-block-7">
-                <a href="#" class="small_link span_40px_back">Clivia Li</a>
-                <a href="#" class="small_link span_40px_back">Albert Xu</a>
-                <a href="#" class="small_link span_40px_back">Happy Monday</a>
-                <a href="#" class="small_link span_40px_back">Joojo Walker</a>
-                <a href="#" class="small_link span_40px_back">Grace Nneji</a>
-                <a href="#" class="small_link span_40px_back">Jons Slemmer</a>
-                <a href="#" class="small_link span_40px_back">Jons Slemmer</a>
-                <a href="#" class="small_link span_40px_back">Jons Slemmer</a>
-                <a href="#" class="small_link span_40px_back">Jons Slemmer</a>
+                {% for supervisor in supervisors %}
+                    <a href="#"
+                       class="small_link span_40px_back">{{ supervisor.first_name }} {{ supervisor.last_name }}</a>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -59,135 +50,35 @@
                       data-wf-page-id="65498ce5843a555ecef70243"
                       data-wf-element-id="3a626929-daeb-5c21-659b-ac833b7617b9">
                     <input type="text" class="text-field topic_list w-input" maxlength="256" name="name"
-                           data-name="Name"
-                           placeholder="Topic ID or Topic Name" id="name"/><input type="submit" value="Submit"
-                                                                                  data-wait="Please wait..."
-                                                                                  class="submit-button w-button"/>
+                           data-name="Name" placeholder="Topic ID or Topic Name" id="name"/>
+                    <input type="submit" value="Submit" data-wait="Please wait..." class="submit-button w-button"/>
                 </form>
-                <div class="w-form-done">
-                    <div>Thank you! Your submission has been received!</div>
-                </div>
-                <div class="w-form-fail">
-                    <div>Oops! Something went wrong while submitting the form.</div>
-                </div>
             </div>
         </div>
     </div>
 
     <section class="_20header_section">
-
-        <a href="/topic-detial" class="link-block w-inline-block">
-        <div class="w-layout-hflex flex-block-5">
-            <div class="topic_image"></div>
-            <div class="_40px_width"></div>
-            <div class="w-layout-vflex flex-block-8">
-                <h1 class="third_title no_head_spacing accent no_button_spacing">Web-Based Online Student Center</h1>
-                <div class="text-block">By Clivia Li</div>
-                <div class="text-block _10head_spacing">Application Development</div>
-                <div class="w-layout-hflex">
-                    <div class="text-block _10head_spacing _10button_spacing">2 Positions</div>
-                    <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">(3 other candidates)</div>
-                </div>
-            </div>
-        </div>
-        <p class="topic_list_item_para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
-            in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam
-            libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus
-            tristique posuere.
-        </p>
-        </a>
-
-
-        <a href="/topic-detial" class="link-block w-inline-block">
-        <div class="w-layout-hflex flex-block-5">
-            <div class="topic_image"></div>
-            <div class="_40px_width"></div>
-            <div class="w-layout-vflex flex-block-8">
-                <h1 class="third_title no_head_spacing accent no_button_spacing">
-                Web-Based Online Student Center</h1>
-                <div class="text-block">By Clivia Li</div>
-                <div class="text-block _10head_spacing">Application Development</div>
-                <div class="w-layout-hflex">
-                    <div class="text-block _10head_spacing _10button_spacing">2 Positions</div>
-                    <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">(3 other
-                        candidates)
+        {% for topic in topics %}
+            {% if topic.is_custom == 0 %}
+                <a href="/topic-detial" class="link-block w-inline-block">
+                    <div class="w-layout-hflex flex-block-5">
+                        <div class="topic_image"></div>
+                        <div class="_40px_width"></div>
+                        <div class="w-layout-vflex flex-block-8">
+                            <h1 class="third_title no_head_spacing accent no_button_spacing">{{ topic.name }}</h1>
+                            <div class="text-block">By {{ topic.supervisor_name }}</div>
+                            <div class="text-block _10head_spacing">{{ topic.type_name }}</div>
+                            <div class="w-layout-hflex">
+                                <div class="text-block _10head_spacing _10button_spacing">{{ topic.quota }} Positions</div>
+                                <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">({{ topic.selected_num }} other candidates)
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <p class="topic_list_item_para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
-            in
-            eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam
-            libero
-            vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus
-            tristique
-            posuere.</p></a><a href="/topic-detial" class="link-block w-inline-block">
-        <div class="w-layout-hflex flex-block-5">
-            <div class="topic_image"></div>
-            <div class="_40px_width"></div>
-            <div class="w-layout-vflex flex-block-8"><h1 class="third_title no_head_spacing accent no_button_spacing">
-                Web-Based Online Student Center</h1>
-                <div class="text-block">By Clivia Li</div>
-                <div class="text-block _10head_spacing">Application Development</div>
-                <div class="w-layout-hflex">
-                    <div class="text-block _10head_spacing _10button_spacing">2 Positions</div>
-                    <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">(3 other
-                        candidates)
-                    </div>
-                </div>
-            </div>
-        </div>
-        <p class="topic_list_item_para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
-            in
-            eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam
-            libero
-            vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus
-            tristique
-            posuere.</p></a><a href="/topic-detial" class="link-block w-inline-block">
-        <div class="w-layout-hflex flex-block-5">
-            <div class="topic_image"></div>
-            <div class="_40px_width"></div>
-            <div class="w-layout-vflex flex-block-8"><h1 class="third_title no_head_spacing accent no_button_spacing">
-                Web-Based Online Student Center</h1>
-                <div class="text-block">By Clivia Li</div>
-                <div class="text-block _10head_spacing">Application Development</div>
-                <div class="w-layout-hflex">
-                    <div class="text-block _10head_spacing _10button_spacing">2 Positions</div>
-                    <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">(3 other
-                        candidates)
-                    </div>
-                </div>
-            </div>
-        </div>
-        <p class="topic_list_item_para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
-            in
-            eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam
-            libero
-            vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus
-            tristique
-            posuere.</p></a><a href="/topic-detial" class="link-block w-inline-block">
-        <div class="w-layout-hflex flex-block-5">
-            <div class="topic_image"></div>
-            <div class="_40px_width"></div>
-            <div class="w-layout-vflex flex-block-8"><h1 class="third_title no_head_spacing accent no_button_spacing">
-                Web-Based Online Student Center</h1>
-                <div class="text-block">By Clivia Li</div>
-                <div class="text-block _10head_spacing">Application Development</div>
-                <div class="w-layout-hflex">
-                    <div class="text-block _10head_spacing _10button_spacing">2 Positions</div>
-                    <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">(3 other
-                        candidates)
-                    </div>
-                </div>
-            </div>
-        </div>
-        <p class="topic_list_item_para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim
-            in
-            eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam
-            libero
-            vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus
-            tristique
-            posuere.</p></a>
+                    <p class="topic_list_item_para">{{ topic.description }}</p>
+                </a>
+            {% endif %}
+        {% endfor %}
     </section>
     </body>
 {% endblock %}

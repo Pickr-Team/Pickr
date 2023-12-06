@@ -5,7 +5,7 @@ class Supervisor(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(20))
-    last_name = db.Column(db.String(20), default='0')
+    last_name = db.Column(db.String(20))
     is_admin = db.Column(db.Boolean)
     position = db.Column(db.Integer)
     user_name = db.Column(db.String(20))

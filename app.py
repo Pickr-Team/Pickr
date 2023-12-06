@@ -105,7 +105,10 @@ def tutorial():
 
 @app.route('/topic_list')
 def topic_list():
-    return render_template('topic_list.html')
+    topics = Topic.get_all()
+    types = Type.get_all()
+    supervisors = Supervisor.get_all()
+    return render_template('topic_list.html', topics=topics, types=types, supervisors=supervisors)
 
 
 @app.route('/add_student')
