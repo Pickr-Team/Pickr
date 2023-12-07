@@ -111,6 +111,33 @@ def topic_list():
     return render_template('topic_list.html', topics=topics, types=types, supervisors=supervisors)
 
 
+@app.route('/topic_filter')
+def topic_filter():
+    type_id = request.args.get('type_id')
+    supervisor_id = request.args.get('supervisor_id')
+    search_query = request.args.get('search_query')
+    print(type_id, supervisor_id, search_query)
+
+    topics = Topic
+
+    if type_id:
+        topics = topics.get_by_type_id(type_id=type_id)
+
+    if supervisor_id:
+        topics = topics.get_by_supervisor_id(supervisor_id=supervisor_id)
+
+    if search_query:
+        topics = topics.search(search_query=search_query)
+
+    types = Type.get_all()
+    supervisors = Supervisor.get_all()
+
+    import json
+    return json.dumps({'topic_ids': [topic.id for topic in topics]})
+
+    # return render_template('topic_list.html', topics=topics, types=types, supervisors=supervisors)
+
+
 @app.route('/add_student')
 def add_student():
     new_student = Student(

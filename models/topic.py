@@ -52,6 +52,7 @@ class Topic(db.Model):
 
     @classmethod
     def get_by_id(cls, id):
+        # return one topic object
         subquery1 = db.session.query(
             Selection.first_topic_id,
             func.count(Selection.first_topic_id).label('count1')
@@ -89,6 +90,97 @@ class Topic(db.Model):
             topic_instance.type_name = type_name
             topic_instance.selected_num = selected_num
             return topic_instance
+
+        return None
+
+    def selection_info(self):
+        pass
+
+    @classmethod
+    def get_by_supervisor_id(cls, supervisor_id):
+        subquery1 = db.session.query(
+            Selection.first_topic_id,
+            func.count(Selection.first_topic_id).label('count1')
+        ).group_by(Selection.first_topic_id).subquery()
+
+        subquery2 = db.session.query(
+            Selection.second_topic_id,
+            func.count(Selection.second_topic_id).label('count2')
+        ).group_by(Selection.second_topic_id).subquery()
+
+        subquery3 = db.session.query(
+            Selection.third_topic_id,
+            func.count(Selection.third_topic_id).label('count3')
+        ).group_by(Selection.third_topic_id).subquery()
+
+        topic = db.session.query(
+            cls,
+            Supervisor.first_name,
+            Supervisor.last_name,
+            Type.name.label('type_name'),
+            func.coalesce(subquery1.c.count1, 0) +
+            func.coalesce(subquery2.c.count2, 0) +
+            func.coalesce(subquery3.c.count3, 0).label('selected_num')
+        ).join(Supervisor, cls.supervisor_id == Supervisor.id) \
+            .join(Type, cls.type_id == Type.id) \
+            .outerjoin(subquery1, cls.id == subquery1.c.first_topic_id) \
+            .outerjoin(subquery2, cls.id == subquery2.c.second_topic_id) \
+            .outerjoin(subquery3, cls.id == subquery3.c.third_topic_id) \
+            .filter(cls.supervisor_id == supervisor_id) \
+            .all()
+
+        if topic:
+            results = []
+            for topic_instance, first_name, last_name, type_name, selected_num in topic:
+                topic_instance.supervisor_name = f"{first_name} {last_name}"
+                topic_instance.type_name = type_name
+                topic_instance.selected_num = selected_num
+                results.append(topic_instance)
+            return results
+
+        return None
+
+    @classmethod
+    def get_by_type_id(cls, type_id):
+        subquery1 = db.session.query(
+            Selection.first_topic_id,
+            func.count(Selection.first_topic_id).label('count1')
+        ).group_by(Selection.first_topic_id).subquery()
+
+        subquery2 = db.session.query(
+            Selection.second_topic_id,
+            func.count(Selection.second_topic_id).label('count2')
+        ).group_by(Selection.second_topic_id).subquery()
+
+        subquery3 = db.session.query(
+            Selection.third_topic_id,
+            func.count(Selection.third_topic_id).label('count3')
+        ).group_by(Selection.third_topic_id).subquery()
+
+        topic = db.session.query(
+            cls,
+            Supervisor.first_name,
+            Supervisor.last_name,
+            Type.name.label('type_name'),
+            func.coalesce(subquery1.c.count1, 0) +
+            func.coalesce(subquery2.c.count2, 0) +
+            func.coalesce(subquery3.c.count3, 0).label('selected_num')
+        ).join(Supervisor, cls.supervisor_id == Supervisor.id) \
+            .join(Type, cls.type_id == Type.id) \
+            .outerjoin(subquery1, cls.id == subquery1.c.first_topic_id) \
+            .outerjoin(subquery2, cls.id == subquery2.c.second_topic_id) \
+            .outerjoin(subquery3, cls.id == subquery3.c.third_topic_id) \
+            .filter(cls.type_id == type_id) \
+            .all()
+
+        if topic:
+            results = []
+            for topic_instance, first_name, last_name, type_name, selected_num in topic:
+                topic_instance.supervisor_name = f"{first_name} {last_name}"
+                topic_instance.type_name = type_name
+                topic_instance.selected_num = selected_num
+                results.append(topic_instance)
+            return results
 
         return None
 
