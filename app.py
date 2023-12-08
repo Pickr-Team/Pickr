@@ -1,10 +1,8 @@
 import secrets
-
 from flask import Flask, render_template, session, request, redirect, url_for
 from models.db_instance import db
 from datetime import datetime
-
-'''Import models '''
+import json
 from models.type import Type
 from models.note import Note
 from models.supervisor import Supervisor
@@ -116,26 +114,26 @@ def topic_filter():
     type_id = request.args.get('type_id')
     supervisor_id = request.args.get('supervisor_id')
     search_query = request.args.get('search_query')
-    print(type_id, supervisor_id, search_query)
 
     topics = Topic
 
-    if type_id:
+    if search_query:
+        topics = topics.get_by_name_or_id(search_query=search_query)
+    elif supervisor_id:
+        topics = topics.get_by_supervisor_id(supervisor_id=supervisor_id)
+    elif type_id:
         topics = topics.get_by_type_id(type_id=type_id)
 
-    if supervisor_id:
-        topics = topics.get_by_supervisor_id(supervisor_id=supervisor_id)
+    if topics:
+        return json.dumps({'topic_ids': [topic.id for topic in topics]})
+    else:
+        return json.dumps({'topic_ids': []})
 
-    if search_query:
-        topics = topics.search(search_query=search_query)
 
-    types = Type.get_all()
-    supervisors = Supervisor.get_all()
-
-    import json
-    return json.dumps({'topic_ids': [topic.id for topic in topics]})
-
-    # return render_template('topic_list.html', topics=topics, types=types, supervisors=supervisors)
+@app.route('/topic_detail/<int:topic_id>')
+def topic_detail(topic_id):
+    topic = Topic.get_by_id(id=topic_id)
+    return render_template('topic_detail.html', topic=topic)
 
 
 @app.route('/add_student')

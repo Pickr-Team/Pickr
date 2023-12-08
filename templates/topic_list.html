@@ -7,6 +7,11 @@
         .hidden {
             display: none;
         }
+
+        .not_found {
+            margin-bottom: 40px;
+            margin-top: 40px;
+        }
     </style>
     <body class="body">
     <!-- Page header-->
@@ -47,7 +52,8 @@
     </div>
 
     <!--Search-->
-    <div id="w-node-_6d4d9fb8-d384-6491-34c1-e695e63ceb13-cef70243" class="w-layout-layout topic_filter_item wf-layout-layout">
+    <div id="w-node-_6d4d9fb8-d384-6491-34c1-e695e63ceb13-cef70243"
+         class="w-layout-layout topic_filter_item wf-layout-layout">
         <div class="w-layout-cell cell">
             <div class="text-block accent _10button">|&gt; Search Topic</div>
         </div>
@@ -58,28 +64,32 @@
                       data-wf-element-id="3a626929-daeb-5c21-659b-ac833b7617b9">
                     <input type="text" class="text-field topic_list w-input" maxlength="256" name="name"
                            data-name="Name" placeholder="Topic ID or Topic Name" id="name"/>
-                    <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
+                    <input id="reset" type="submit" value="Reset" data-wait="Please wait..."
+                           class="submit-button w-button"/>
                 </form>
             </div>
         </div>
     </div>
 
+    <div id="no-results-message" class="hidden third_title accent not_found">No topic found, try again.</div>
+
     <section class="_20header_section" id="topic-section">
         {% for topic in topics %}
             {% if topic.is_custom == 0 %}
-                <a href="/topic-detial" class="link-block w-inline-block" data-topic-id="{{ topic.id }}">
+                <a href="{{ url_for('topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
+                   data-topic-id="{{ topic.id }}">
                     <div class="w-layout-hflex flex-block-5">
                         {#                        <div class="topic_image"></div>#}
                         {#                        <div class="_40px_width"></div>#}
                         <div class="w-layout-vflex flex-block-8">
                             <h1 class="third_title no_head_spacing accent no_button_spacing">{{ topic.name }}</h1>
-                            <div class="text-block">By {{ topic.supervisor_name }}</div>
-                            <div class="text-block _10head_spacing">{{ topic.type_name }}</div>
+                            <div class="text-block">By {{ topic.get_supervisor_name() }}</div>
+                            <div class="text-block _10head_spacing">{{ topic.get_type_name() }}</div>
                             <div class="w-layout-hflex">
                                 <div class="text-block _10head_spacing _10button_spacing">{{ topic.quota }} Positions
                                 </div>
                                 <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">
-                                    ({{ topic.selected_num }} other candidates)
+                                    ({{ topic.get_selected_num() }} other candidates)
                                 </div>
                             </div>
                         </div>
@@ -89,80 +99,103 @@
             {% endif %}
         {% endfor %}
         <script>
-            // By type
             $(document).ready(function () {
+                // Clear other filters besides the current one
+                function clearOtherFilters(currentFilter) {
+                    if (currentFilter !== 'type') {
+                        $('.type_link').removeClass('accent');
+                    }
+                    if (currentFilter !== 'supervisor') {
+                        $('.supervisor_link').removeClass('accent');
+                    }
+                    if (currentFilter !== 'search') {
+                        $('.topic_list').val('');
+                    }
+                }
+
+                // Function to handle the display of topics or no results message
+                function handleTopicDisplay(response) {
+                    let topic_ids = JSON.parse(response).topic_ids;
+                    let topicElements = $('#topic-section').children('a');
+                    if (topic_ids.length === 0) {
+                        // Hide all topic elements and show the 'no results' message
+                        topicElements.addClass('hidden');
+                        $('#no-results-message').removeClass('hidden');
+                    } else {
+                        // Hide the 'no results' message
+                        $('#no-results-message').addClass('hidden');
+                        topicElements.each(function () {
+                            let topicId = $(this).data('topicId');
+                            if (!topic_ids.includes(topicId)) {
+                                $(this).addClass('hidden');
+                            } else {
+                                $(this).removeClass('hidden');
+                            }
+                        });
+                    }
+                }
+
+                // Filter by type
                 $('.type_link').click(function () {
                     var type_id = $(this).attr('id');
+                    clearOtherFilters('type');
                     $(this).toggleClass('accent');
-                    let topicElements = $('#topic-section').children('a');
-
-                    if ($(this).hasClass('accent')) { // selecting this topic
+                    if ($(this).hasClass('accent')) {
                         $(this).siblings().removeClass('accent');
                         $.ajax({
                             url: '/topic_filter',
                             data: {'type_id': type_id},
                             type: 'GET',
-                            success: function (response) {
-
-                                let topic_ids = JSON.parse((response)).topic_ids;
-                                console.log(topic_ids);
-
-                                topicElements.each(function () {
-                                    let topic = this;
-                                    let topicId = $(topic).data('topicId');
-                                    if (!topic_ids.includes(topicId)) {
-                                        $(this).addClass('hidden');
-                                    } else {
-                                        $(this).removeClass('hidden');
-                                    }
-                                })
-                            }
+                            success: handleTopicDisplay
                         });
-                    } else { // de-select this topic
-                        topicElements.removeClass('hidden');
+                    } else {
+                        $('#topic-section').children('a').removeClass('hidden');
+                        $('#no-results-message').addClass('hidden'); // 隐藏无结果消息
                     }
-
-
                 });
 
-                // By Supervisor
+                // Filter by supervisor
                 $('.supervisor_link').click(function () {
                     var supervisor_id = $(this).attr('id');
+                    clearOtherFilters('supervisor');
                     $(this).toggleClass('accent');
-                    $.ajax({
-                        url: '/topic_filter',
-                        data: {'supervisor_id': supervisor_id},
-                        type: 'GET',
-                        success: function (response) {
-
-                        }
-                    });
-                });
-
-                // Search
-                $('#search_form').submit(function (e) {
-                    e.preventDefault();
-
-                    var search_query = $('#name').val();
-
-                    $.ajax({
-                        url: '/topic_filter',
-                        data: {'search_query': search_query},
-                        type: 'GET',
-                        success: function (response) {
-                            $('#topics').html(response);
-                            $('#submit_button').val('Reset');
-                        }
-                    });
-                });
-
-                // reset button
-                $('#submit_button').click(function () {
-                    if ($(this).val() == 'Reset') {
-                        $('#name').val('');
-                        $(this).val('Submit');
-                        $('#topics').html('');
+                    if ($(this).hasClass('accent')) {
+                        $(this).siblings().removeClass('accent');
+                        $.ajax({
+                            url: '/topic_filter',
+                            data: {'supervisor_id': supervisor_id},
+                            type: 'GET',
+                            success: handleTopicDisplay
+                        });
+                    } else {
+                        $('#topic-section').children('a').removeClass('hidden');
+                        $('#no-results-message').addClass('hidden'); // 隐藏无结果消息
                     }
+                });
+
+                // Search function
+                $('.topic_list').keyup(function () {
+                    var search_query = $(this).val();
+                    clearOtherFilters('search');
+                    if ($.trim(search_query).length > 0) {
+                        $.ajax({
+                            url: '/topic_filter',
+                            data: {'search_query': search_query},
+                            type: 'GET',
+                            success: handleTopicDisplay
+                        });
+                    } else {
+                        $('#topic-section').children('a').removeClass('hidden');
+                        $('#no-results-message').addClass('hidden'); // 隐藏无结果消息
+                    }
+                });
+
+                // Reset function
+                $('#reset').click(function (e) {
+                    e.preventDefault();
+                    clearOtherFilters('');
+                    $('#topic-section').children('a').removeClass('hidden');
+                    $('#no-results-message').addClass('hidden'); // 隐藏无结果消息
                 });
             });
         </script>
