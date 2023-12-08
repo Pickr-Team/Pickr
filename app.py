@@ -62,7 +62,7 @@ def login():
             if student.password == password:
                 session['user_name'] = student.english_name
                 session['user_type'] = 'student'
-                return render_template('student.html', name=student.english_name)
+                return redirect(url_for('student'))
             else:
                 return render_template('login.html', message='Wrong password')
 
@@ -91,6 +91,37 @@ def logout():
     session.pop('user_name', None)
     session.pop('user_type', None)
     return redirect(url_for('homepage'))
+
+
+@app.route('/student')
+def student():
+    if 'user_name' and 'user_type' in session:
+        student_id = Student.get_id(english_name=session['user_name'])
+        selection = Selection.get_by_student_id(student_id=student_id)
+        supervisors = Supervisor.get_all()
+        types = Type.get_all()
+        return render_template('student.html', name=session['user_name'], selection=selection, supervisors=supervisors,
+                               types=types)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/supervisor')
+def supervisor():
+    if 'user_name' and 'user_type' in session:
+        if session['user_type'] == 'supervisor':
+            return render_template('supervisor.html', name=session['user_name'])
+    else:
+        return render_template('login.html')
+
+
+@app.route('/admin')
+def admin():
+    if 'user_name' and 'user_type' in session:
+        if session['user_type'] == 'admin':
+            return render_template('admin.html', name=session['user_name'])
+    else:
+        return render_template('login.html')
 
 
 @app.route('/tutorial')

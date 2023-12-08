@@ -1,5 +1,6 @@
 from .db_instance import db
 
+
 class Student(db.Model):
     __tablename__ = 'students'
 
@@ -40,6 +41,10 @@ class Student(db.Model):
     @classmethod
     def get_num(cls):
         return cls.query.count()
+
+    @classmethod
+    def get_id(cls, english_name):
+        return cls.query.filter_by(english_name=english_name).first().id
 
     def __repr__(self):
         return f'<Student {self.id}>'

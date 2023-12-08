@@ -4,16 +4,15 @@
 
 {% block content %}
     <body>
+
     <section class="page_hearder">
         <h1 class="first_title">Hi,{{ name }}!</h1>
         <div class="_20px_height"></div>
         <a href="{{ url_for('logout') }}" class="small_link accent"><em>Logout↗</em></a>
         <div class="_20px_height"></div>
-        <p class="paragraph">
-            In this page,you can full the application form and check your topic
-            apply result.
-        </p>
+        <p class="paragraph">In this page,you can full the application form and check your topic apply result.</p>
     </section>
+
     <section>
         <div class="_40px_height"></div>
         <div class="text-block back_space">
@@ -38,7 +37,6 @@
             </form>
         </div>
 
-
         <div class="_20px_height"></div>
 
         <div id="customTopicDiv" class="w-form custom_topic">
@@ -52,17 +50,17 @@
                     <select id="field-5" name="field-5" data-name="Field 5" required=""
                             class="text-field creatnew w-select">
                         <option value="">Select one...</option>
-                        <option value="First">First choice</option>
-                        <option value="Second">Second choice</option>
-                        <option value="Third">Third choice</option>
+                        {% for supervisor in supervisors %}
+                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }} {{ supervisor.last_name }}</option>
+                        {% endfor %}
                     </select>
                     <label for="field-5" class="text-block _10button_spac">Type</label>
                     <select id="field-5" name="field-5" data-name="Field 5" required=""
                             class="text-field creatnew w-select">
                         <option value="">Select one...</option>
-                        <option value="First">First choice</option>
-                        <option value="Second">Second choice</option>
-                        <option value="Third">Third choice</option>
+                        {% for type in types %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                        {% endfor %}
                     </select>
                     <label for="field-5" class="text-block _10button_spac">Description</label>
                     <textarea placeholder="" maxlength="5000" id="field-2" name="field-2" data-name="Field 2"
@@ -182,55 +180,52 @@
 
         <a href="#" class="submit-button _20head_spacing w-button">Submit Application</a>
 
-        <div class="_40px_height"></div>
-        <h2 class="third_title accent">Result</h2>
-        <div
-                id="w-node-c01e4d8c-185e-4dae-307e-7a9c36719697-6e227e00"
-                class="w-layout-layout tutorial_timeline_item wf-layout-layout"
-        >
-            <div class="w-layout-cell">
-                <div class="text-block">
-                    <em class="italic-text-3">◇ Choose 1</em>
+        {% if selection.status != 0 %}
+            <div class="_40px_height"></div>
+            <h2 class="third_title accent">Result</h2>
+            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c36719697-6e227e00"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em class="italic-text-3">◇ Choose 1</em>
+                    </div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block italic-text">
+                        <em class="accent">Successful</em>
+                    </div>
                 </div>
             </div>
-            <div class="w-layout-cell">
-                <div class="text-block italic-text">
-                    <em class="accent">Successful</em>
+            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em class="italic-text-3">◇ Choose 2</em>
+                    </div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block italic-text">
+                        <em class="italic-text">/</em>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div
-                id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
-                class="w-layout-layout tutorial_timeline_item wf-layout-layout"
-        >
-            <div class="w-layout-cell">
-                <div class="text-block">
-                    <em class="italic-text-3">◇ Choose 2</em>
+            <div id="w-node-a0356be8-a343-2772-d9df-42385edb7f34-6e227e00"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em class="italic-text-3">◇ Choose 3</em>
+                    </div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block italic-text">
+                        <em class="italic-text">/</em>
+                    </div>
                 </div>
             </div>
-            <div class="w-layout-cell">
-                <div class="text-block italic-text">
-                    <em class="italic-text">/</em>
-                </div>
-            </div>
-        </div>
-        <div
-                id="w-node-a0356be8-a343-2772-d9df-42385edb7f34-6e227e00"
-                class="w-layout-layout tutorial_timeline_item wf-layout-layout"
-        >
-            <div class="w-layout-cell">
-                <div class="text-block">
-                    <em class="italic-text-3">◇ Choose 3</em>
-                </div>
-            </div>
-            <div class="w-layout-cell">
-                <div class="text-block italic-text">
-                    <em class="italic-text">/</em>
-                </div>
-            </div>
-        </div>
+        {% endif %}
         <div class="_40px_height"></div>
     </section>
+
     <script>
         function toggleDivs() {
             var checkbox = document.getElementById('customTopicCheckbox');
@@ -245,6 +240,7 @@
                 inlimiteDiv.style.display = 'block';
             }
         }
+
         document.getElementById('customTopicCheckbox').addEventListener('change', toggleDivs);
         document.addEventListener('DOMContentLoaded', toggleDivs);
     </script>
