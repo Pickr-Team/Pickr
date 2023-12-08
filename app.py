@@ -1,3 +1,4 @@
+import re
 import secrets
 from flask import Flask, render_template, session, request, redirect, url_for
 from models.db_instance import db
@@ -44,7 +45,7 @@ def homepage():
 def my_pickr():
     if 'user_name' and 'user_type' in session:
         if session['user_type'] == 'student':
-            return render_template('student.html', name=session['user_name'])
+            return redirect(url_for('student'))
     else:
         return render_template('login.html')
 
@@ -104,6 +105,52 @@ def student():
                                types=types)
     else:
         return render_template('login.html')
+
+
+@app.route('/update_selection', methods=['POST'])
+def update_selection():
+    student_id = Student.get_id(english_name=session['user_name'])
+    topic_id = request.form.get('topic_id')
+    choice_number = int(request.form.get('choice_number'))
+    reset = request.form.get('reset') == 'true'
+
+    selection = Selection.get_by_student_id(student_id=student_id)
+    if not selection:
+        selection = Selection(student_id=student_id)
+        selection.add()
+
+    if reset:
+        if choice_number == 1:
+            selection.first_topic_id = None
+        elif choice_number == 2:
+            selection.second_topic_id = None
+        elif choice_number == 3:
+            selection.third_topic_id = None
+
+        db.session.commit()
+        return json.dumps({'success': True, 'reset': True})
+
+    match = re.search(r'\d+', topic_id)
+    formatted_topic_id = int(match.group())
+
+    if formatted_topic_id in [selection.first_topic_id, selection.second_topic_id, selection.third_topic_id]:
+        return json.dumps({'success': False, 'error': 'You have already selected this topic'})
+
+    topic = Topic.get_by_id(id=formatted_topic_id)
+
+    if topic:
+        if match:
+            if choice_number == 1:
+                selection.first_topic_id = formatted_topic_id
+            elif choice_number == 2:
+                selection.second_topic_id = formatted_topic_id
+            elif choice_number == 3:
+                selection.third_topic_id = formatted_topic_id
+
+        db.session.commit()
+        return json.dumps({'success': True, 'topic_name': topic.name})
+    else:
+        return json.dumps({'success': False, 'error': 'Topic does not exist'})
 
 
 @app.route('/supervisor')

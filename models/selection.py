@@ -15,6 +15,25 @@ class Selection(db.Model):
     first_topic = db.relationship('Topic', foreign_keys=[first_topic_id])
     second_topic = db.relationship('Topic', foreign_keys=[second_topic_id])
     third_topic = db.relationship('Topic', foreign_keys=[third_topic_id])
+    final_topic = db.relationship('Topic', foreign_keys=[final_topic_id])
+
+    def __init__(self, student_id):
+        self.student_id = student_id
+        self.status = 0
+
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self, student_id, submit_time, status, first_topic_id, second_topic_id, third_topic_id, final_topic_id):
+        self.student_id = student_id
+        self.submit_time = submit_time
+        self.status = status
+        self.first_topic_id = first_topic_id
+        self.second_topic_id = second_topic_id
+        self.third_topic_id = third_topic_id
+        self.final_topic_id = final_topic_id
+        db.session.commit()
 
     @property
     def first_topic_name(self):
@@ -27,6 +46,10 @@ class Selection(db.Model):
     @property
     def third_topic_name(self):
         return self.third_topic.name
+
+    @property
+    def final_topic_name(self):
+        return self.final_topic.name
 
     @classmethod
     def get_by_student_id(cls, student_id):

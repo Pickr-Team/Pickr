@@ -79,6 +79,22 @@ class Topic(db.Model):
         return []
 
     @classmethod
+    def get_by_id_or_name(cls, search_query):
+        if search_query.lower().startswith('pk'):
+            match = re.search(r'\d+', search_query)
+            if match:
+                number_part = int(match.group())
+                return cls.query.filter(cls.id == number_part).first()
+        else:
+            return cls.query.filter(
+                or_(
+                    cls.id == search_query,
+                    cls.name.like(f'%{search_query}%')
+                )
+            ).first()
+        return None
+
+    @classmethod
     def search_by_id(cls, id):
         if id.lower().startswith('pk'):
             match = re.search(r'\d+', id)
