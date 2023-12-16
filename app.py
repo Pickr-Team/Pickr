@@ -153,6 +153,40 @@ def update_selection():
         return json.dumps({'success': False, 'error': 'Topic does not exist'})
 
 
+@app.route('/update_custom_topic', methods=['POST'])
+def update_custom_topic():
+    student_id = Student.get_id(english_name=session['user_name'])
+    topic_name = request.form.get('topic_name')
+    supervisor_id = request.form.get('supervisor_id')
+    description = request.form.get('description')
+    type_id = request.form.get('type_id')
+    reset = request.form.get('reset') == 'true'
+
+    selection = Selection.get_by_student_id(student_id=student_id)
+    if not selection:
+        selection = Selection(student_id=student_id)
+        selection.add()
+
+    if reset:
+        _id = selection.first_topic_id
+        selection.first_topic_id = None
+        Topic.get_by_id(id=_id).delete()
+        db.session.commit()
+        return json.dumps({'success': True, 'reset': True})
+
+    new_topic = Topic(quota=1, is_custom=True, required_skills='Null', reference='Null', name=topic_name,
+                      supervisor_id=supervisor_id,
+                      description=description, type_id=type_id)
+    new_topic_id = new_topic.add()
+
+    selection.first_topic_id = new_topic_id
+    selection.second_topic_id = None
+    selection.third_topic_id = None
+
+    db.session.commit()
+    return json.dumps({'success': True, 'topic_name': topic_name})
+
+
 @app.route('/supervisor')
 def supervisor():
     if 'user_name' and 'user_type' in session:

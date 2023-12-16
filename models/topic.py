@@ -21,9 +21,9 @@ class Topic(db.Model):
     required_skills = db.Column(db.Text)
     reference = db.Column(db.Text)
 
-    def __init__(self, name, teacher, quota, is_custom, type_id, description, required_skills, reference):
+    def __init__(self, name, supervisor_id, quota, is_custom, type_id, description, required_skills, reference):
         self.name = name
-        self.teacher = teacher
+        self.supervisor_id = supervisor_id
         self.quota = quota
         self.is_custom = is_custom
         self.type_id = type_id
@@ -34,10 +34,11 @@ class Topic(db.Model):
     def add(self):
         db.session.add(self)
         db.session.commit()
+        return self.id
 
-    def update(self, name, teacher, quota, is_custom, type_id, description, required_skills, reference):
+    def update(self, name, supervisor_id, quota, is_custom, type_id, description, required_skills, reference):
         self.name = name
-        self.teacher = teacher
+        self.supervisor_id = supervisor_id
         self.quota = quota
         self.is_custom = is_custom
         self.type_id = type_id
@@ -123,7 +124,7 @@ class Topic(db.Model):
 
     @classmethod
     def get_num(cls):
-        return cls.query.count()
+        return cls.query.filter(cls.is_custom == False).count()
 
     def __repr__(self):
         return f'<Topic {self.id}>'

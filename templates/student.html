@@ -3,6 +3,12 @@
 {% block title %}Student{% endblock %}
 
 {% block content %}
+    <style>
+        .disabled-color {
+            background-color: #000000;
+            color: #000000;
+        }
+    </style>
     <body>
 
     <section class="page_hearder">
@@ -26,45 +32,56 @@
 
         <div class="_20px_height"></div>
 
-        <div class="w-form">
+        <div class="w-form" id="check_form">
             <form id="email-form-2" name="email-form-2" data-name="Email Form 2" method="get">
                 <label class="w-checkbox checkbox-field">
                     <input type="checkbox" id="customTopicCheckbox" name="checkbox"
                            class="w-checkbox-input checkbox"/>
-                    <span class="text-block w-form-label" for="customTopicCheckbox">custom topic</span>
+                    <span class="text-block w-form-label" for="customTopicCheckbox"
+                          id="check_box_note">custom topic</span>
                     <span class="checkbox-custom"></span>
                 </label>
             </form>
+            <div class="_20px_height"></div>
+            <div class="paragraph accent">
+                Please note that the custom topic needs to be reviewed by the manager, and your supervisor may
+                be modified.
+            </div>
         </div>
 
-        <div class="_20px_height"></div>
-
         <div id="customTopicDiv" class="w-form custom_topic">
-            <form id="email-form" name="email-form" data-name="Email Form" method="get" class="student_submit_form">
+            <form id="custom_form" method="get" class="student_submit_form">
                 <div class="w-layout-vflex custom-topic_fild">
-                    <div class="paragraph accent">
-                        Please note that the custom topic needs to be reviewed by the manager, and your supervisor may
-                        be modified.
-                    </div>
-                    <label for="field-6" class="text-block _10button_spac">Supervisor</label>
-                    <select id="field-5" name="field-5" data-name="Field 5" required=""
-                            class="text-field creatnew w-select">
+
+
+                    <label for="field-5" class="text-block _10button_spac">Topic Name</label>
+                    <input type="text" class="text-field_topic w-input" placeholder=""
+                           id="custom_topic_name" required=""/>
+                    <div class="_20px_height"></div>
+
+                    <label for="supervisor_id" class="text-block _10button_spac">Supervisor</label>
+                    <select id="supervisor_id" required="required" class="text-field creatnew w-select">
                         <option value="">Select one...</option>
                         {% for supervisor in supervisors %}
                             <option value="{{ supervisor.id }}">{{ supervisor.first_name }} {{ supervisor.last_name }}</option>
                         {% endfor %}
                     </select>
-                    <label for="field-5" class="text-block _10button_spac">Type</label>
-                    <select id="field-5" name="field-5" data-name="Field 5" required=""
-                            class="text-field creatnew w-select">
+
+                    <label for="type_id" class="text-block _10button_spac">Type</label>
+                    <select id="type_id" required="required" class="text-field creatnew w-select">
                         <option value="">Select one...</option>
                         {% for type in types %}
                             <option value="{{ type.id }}">{{ type.name }}</option>
                         {% endfor %}
                     </select>
+
                     <label for="field-5" class="text-block _10button_spac">Description</label>
                     <textarea placeholder="" maxlength="5000" id="field-2" name="field-2" data-name="Field 2"
                               class="text-field text-area w-input"></textarea>
+
+                    <div class="_20px_height"></div>
+                    <input id="customFormSubmit" type="submit" value="Save" data-wait="Please wait..." class="submit-button w-button"/>
+
                 </div>
             </form>
         </div>
@@ -104,8 +121,10 @@
 
         </div>
 
+        {#Submit button#}
         <a href="#" class="submit-button _20head_spacing w-button">Submit Application</a>
 
+        {#Result#}
         {% if selection.status != 0 %}
             <div class="_40px_height"></div>
             <h2 class="third_title accent">Result</h2>
@@ -156,10 +175,18 @@
             var checkbox = document.getElementById('customTopicCheckbox');
             var customDiv = document.getElementById('customTopicDiv');
             var inlimiteDiv = document.getElementById('inlimiteContainerDiv');
+            var check_form = document.getElementById('check_form');
 
-            if (checkbox.checked) {
+            if ('{{ selection.if_custom }}' === 'True') {
+                check_form.style.display = 'none';
                 customDiv.style.display = 'block';
                 inlimiteDiv.style.display = 'none';
+            } else if (checkbox.checked) {
+                customDiv.style.display = 'block';
+                inlimiteDiv.style.display = 'none';
+            } else if ('{{ selection.if_custom }}' === 'False') {
+                customDiv.style.display = 'none';
+                inlimiteDiv.style.display = 'block';
             } else {
                 customDiv.style.display = 'none';
                 inlimiteDiv.style.display = 'block';
@@ -173,32 +200,63 @@
             $('#inlimiteContainerDiv').load('/student #inlimiteContainerDiv');
         }
 
+        // Display existing selection
         $(document).ready(function () {
-            if ('{{ selection.first_topic_name }}') {
-                $('#choose1_form .text-field_topic').val('{{ selection.first_topic_name }}');
-                $('#choose1_form .submit-button').val('Reset');
+            if ('{{ selection.if_custom }}' === 'False') {
+                if ('{{ selection.first_topic_name }}') {
+                    $('#choose1_form .text-field_topic').val('{{ selection.first_topic_name }}').prop('disabled', true).addClass('disabled-color');
+                    $('#choose1_form .submit-button').val('Reset');
+                }
+                if ('{{ selection.second_topic_name }}') {
+                    $('#choose2_form .text-field_topic').val('{{ selection.second_topic_name }}').prop('disabled', true).addClass('disabled-color');
+                    $('#choose2_form .submit-button').val('Reset');
+                }
+                if ('{{ selection.third_topic_name }}') {
+                    $('#choose3_form .text-field_topic').val('{{ selection.third_topic_name }}').prop('disabled', true).addClass('disabled-color');
+                    $('#choose3_form .submit-button').val('Reset');
+                }
+            } else {
+                if ('{{ selection.if_custom }}' === 'True') {
+                    $('#customTopicDiv #custom_topic_name').val('{{ selection.first_topic_name }}').prop('disabled', true).addClass('disabled-color');
+                    $('#supervisor_id').val('{{ selection.custom_supervisor_id }}').prop('disabled', true).addClass('disabled-color');
+                    $('#type_id').val('{{ selection.custom_type_id }}').prop('disabled', true).addClass('disabled-color');
+                    $('#customTopicDiv #field-2').val('{{ selection.custom_description }}').prop('disabled', true).addClass('disabled-color');
+                    $('#customFormSubmit').val('Reset');
+                }
             }
-            if ('{{ selection.second_topic_name }}') {
-                $('#choose2_form .text-field_topic').val('{{ selection.second_topic_name }}');
-                $('#choose2_form .submit-button').val('Reset');
-            }
-            if ('{{ selection.third_topic_name }}') {
-                $('#choose3_form .text-field_topic').val('{{ selection.third_topic_name }}');
-                $('#choose3_form .submit-button').val('Reset');
-            }
+
 
             // submit application
             $('.student_submit_form').submit(function (e) {
+                console.log('exist submit')
                 e.preventDefault();
                 var formId = $(this).attr('id');
                 var choiceNumber = formId.replace('choose', '').replace('_form', '');
                 var topicId = $(this).find('.text-field_topic').val();
                 var isReset = $(this).find('.submit-button').val() === 'Reset';
+                console.log(isReset)
 
                 // if reset
                 if (isReset) {
                     resetSelection(formId, choiceNumber);
                     return;
+                }
+
+                // reset selection
+                function resetSelection(formId, choiceNumber) {
+                    $.ajax({
+                        url: '/update_selection',
+                        method: 'POST',
+                        data: {choice_number: choiceNumber, reset: 'true'},
+                        success: function (response) {
+                            var data = JSON.parse(response);
+                            if (data.success) {
+                                $('#' + formId + ' .text-field_topic').val('');
+                                $('#' + formId + ' .submit-button').val('Save');
+                            }
+                            location.reload();
+                        }
+                    });
                 }
 
                 // submit
@@ -220,30 +278,85 @@
                                 $('#' + formId + ' .submit-button').val('Reset');
                                 location.reload();
                             }
-                        }
-                        else {
-                           alert(data.error)
+                        } else {
+                            alert(data.error)
                         }
                     }
                 });
             });
 
-            // reset selection
-            function resetSelection(formId, choiceNumber) {
+            // submit custom topic
+            $('#customFormSubmit').click(function (e) {
+                e.preventDefault();
+                var supervisorId = $(this).parent().find('#supervisor_id').val();
+                var typeId = $(this).parent().find('#type_id').val();
+                var description = $(this).parent().find('#field-2').val();
+                var topicName = $(this).parent().find('#custom_topic_name').val();
+                var isReset = $('#customFormSubmit').val() === 'Reset';
+
+                // if reset
+                if (isReset) {
+                    console.log('reset')
+                    resetCustomTopic();
+                    return;
+                }
+
+                function resetCustomTopic() {
+                    console.log('reset')
+                    $.ajax({
+                        url: '/update_custom_topic',
+                        method: 'POST',
+                        data: {reset: 'true'},
+                        success: function (response) {
+                            var data = JSON.parse(response);
+                            if (data.success) {
+                                $('#custom_form #custom_topic_name').val('');
+                                $('#supervisor_id').val('');
+                                $('#type_id').val('');
+                                $('#custom_form #field-2').val('');
+                                $('#customFormSubmit').val('Save');
+                            }
+                            location.reload();
+                        }
+                    });
+                }
+
+                // submit
                 $.ajax({
-                    url: '/update_selection',
+                    url: '/update_custom_topic',
                     method: 'POST',
-                    data: {choice_number: choiceNumber, reset: 'true'},
+                    data: {
+                        supervisor_id: supervisorId,
+                        type_id: typeId,
+                        description: description,
+                        topic_name: topicName
+                    },
                     success: function (response) {
+                        console.log(response)
                         var data = JSON.parse(response);
                         if (data.success) {
-                            $('#' + formId + ' .text-field_topic').val('');
-                            $('#' + formId + ' .submit-button').val('Save');
+                            console.log('success')
+                            if (data.reset) {
+                                $('#custom_form #custom_topic_name').val('');
+                                $('#supervisor_id').val('');
+                                $('#type_id').val('');
+                                $('#custom_form #field-2').val('');
+                                $('#customFormSubmit').val('Save');
+                                location.reload();
+                            } else {
+                                $('#customTopicDiv #custom_topic_name').val('{{ selection.first_topic_name }}');
+                                $('#supervisor_id').val('{{ selection.custom_supervisor_id }}');
+                                $('#type_id').val('{{ selection.custom_type_id }}');
+                                $('#customTopicDiv #field-2').val('{{ selection.custom_description }}');
+                                $('#customFormSubmit').val('Reset');
+                                location.reload();
+                            }
+                        } else {
+                            alert(data.error)
                         }
-                        location.reload();
                     }
                 });
-            }
+            });
         });
 
     </script>

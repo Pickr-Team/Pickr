@@ -40,6 +40,25 @@ class Selection(db.Model):
         return self.first_topic.name
 
     @property
+    def if_custom(self):
+        if not self.first_topic:
+            return False
+        return self.first_topic.is_custom
+
+
+    @property
+    def custom_supervisor_id(self):
+        return self.first_topic.supervisor_id
+
+    @property
+    def custom_type_id(self):
+        return self.first_topic.type_id
+
+    @property
+    def custom_description(self):
+        return self.first_topic.description
+
+    @property
     def second_topic_name(self):
         return self.second_topic.name
 
