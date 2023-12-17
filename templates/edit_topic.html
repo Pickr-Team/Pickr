@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Topic{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder"><h1 class="first_title">Edit your topic</h1>
+        <p class="paragraph">In this page,you can modify your topic.</p></section>
+    <section>
+        <div class="_20px_height"></div>
+        <div class="w-form">
+            {% if message %}
+                <p class="accent"><strong>{{ message }}</strong></p>
+            {% endif %}
+            <form action="{{ url_for('update_topic', topic_id = topic.id) }}" id="new_topic_form" method="POST">
+
+                <label for="topic_name" class="text-block _10button_spac">Topic name</label>
+                <input id="topic_name" name="topic_name" value="{{ topic.name }}" type="text"
+                       class="text-field creatnew w-input" maxlength="256" required="required"/>
+
+                <label for="topic_type" class="text-block _10button_spac">Topic type</label>
+                <select id="topic_type" name="type" required="required" class="text-field creatnew w-select">
+                    <option value="">Select one...</option>
+                    {% for type in types %}
+                        {% if type.id == topic.type_id %}
+                            <option value="{{ type.id }}" selected>{{ type.name }}</option>
+                        {% else %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <label for="position" class="text-block _10button_spac">Position</label>
+                <input id="position" name="position" value="{{ topic.quota }}" class="text-field creatnew w-input"
+                       maxlength="256"
+                       required="required"/>
+
+                <label for="description" class="text-block _10button_spac">Topic description</label>
+                <textarea id="description" name="description" maxlength="5000" class="text-field text-area w-input"
+                          required="required">{{ topic.description }}</textarea>
+
+                <label for="skills" class="text-block _10button_spac">Required skills</label>
+                <textarea id="skills" name="required_skills" maxlength="5000"
+                          class="text-field text-area w-input">{{ topic.required_skills }}</textarea>
+
+                <label for="reference" class="text-block _10button_spac">Reference</label>
+                <textarea id="reference" name="reference" maxlength="5000"
+                          class="text-field text-area w-input">{{ topic.reference }}</textarea>
+
+                <input type="submit" value="Save Edit" data-wait="Please wait..."
+                       class="submit-button _20head_spacing w-button"/>
+            </form>
+        </div>
+        <div class="_80px_height"></div>
+    </section>
+    </body>
+{% endblock %}
+
+

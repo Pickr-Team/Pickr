@@ -76,8 +76,7 @@
     <section class="_20header_section" id="topic-section">
         {% for topic in topics %}
             {% if topic.is_custom == 0 %}
-                <a href="{{ url_for('topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
-                   data-topic-id="{{ topic.id }}">
+                <a href="{{ url_for('topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block" data-topic-id="{{ topic.id }}">
                     <div class="w-layout-hflex flex-block-5">
                         {#                        <div class="topic_image"></div>#}
                         {#                        <div class="_40px_width"></div>#}

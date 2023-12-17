@@ -1,6 +1,6 @@
 import re
 import secrets
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from models.db_instance import db
 from datetime import datetime
 import json
@@ -46,6 +46,8 @@ def my_pickr():
     if 'user_name' and 'user_type' in session:
         if session['user_type'] == 'student':
             return redirect(url_for('student'))
+        elif session['user_type'] == 'supervisor':
+            return redirect(url_for('supervisor'))
     else:
         return render_template('login.html')
 
@@ -69,14 +71,14 @@ def login():
 
         elif supervisor:
             if supervisor.password == password:
-                if supervisor.if_admin:
+                if supervisor.if_admin == 1:
                     session['user_name'] = supervisor.user_name
                     session['user_type'] = 'admin'
                     return render_template('admin.html')
                 else:
                     session['user_name'] = supervisor.user_name
                     session['user_type'] = 'supervisor'
-                    return render_template('supervisor.html')
+                    return redirect(url_for('supervisor'))
             else:
                 return render_template('login.html', message='Wrong password')
 
@@ -105,6 +107,109 @@ def student():
                                types=types)
     else:
         return render_template('login.html')
+
+
+@app.route('/supervisor')
+def supervisor():
+    if 'user_name' and 'user_type' in session:
+        supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+        supervisor = Supervisor.get_by_id(id=supervisor_id)
+        topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+
+        total_quta = 0
+        for topic in topics:
+            total_quta += topic.quota
+
+        return render_template('supervisor.html', topics=topics, supervisor=supervisor, total_quta=total_quta)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/delete_topic/<int:topic_id>')
+def delete_topic(topic_id):
+    topic = Topic.get_by_id(id=topic_id)
+    if topic:
+        topic.delete()
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False), 404
+
+
+@app.route('/new_topic')
+def new_topic():
+    types = Type.get_all()
+    return render_template('new_topic.html', types=types)
+
+
+@app.route('/add_topic', methods=['POST'])
+def add_topic():
+    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    topic_name = request.form.get('topic_name')
+    type_id = request.form.get('type')
+    position = request.form.get('position')
+    description = request.form.get('description')
+    required_skills = request.form.get('required_skills')
+    reference = request.form.get('reference')
+
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+    types = Type.get_all()
+
+    total_quta = 0
+    for topic_in in topics:
+        total_quta += topic_in.quota
+
+    if total_quta + int(position) > supervisor.position:
+        return render_template('new_topic.html',
+                               message='Excess quota, you only have ' + str(supervisor.position) + ' positions.',
+                               types=types, topic_name=topic_name, type_id=type_id, position=position,
+                               description=description,
+                               required_skills=required_skills, reference=reference)
+
+    new_topic = Topic(quota=position, is_custom=False, required_skills=required_skills, reference=reference,
+                      name=topic_name,
+                      supervisor_id=supervisor_id,
+                      description=description, type_id=type_id)
+    new_topic.add()
+    return redirect(url_for('supervisor'))
+
+
+@app.route('/edit_topic/<int:topic_id>')
+def edit_topic(topic_id):
+    topic = Topic.get_by_id(id=topic_id)
+    types = Type.get_all()
+    return render_template('edit_topic.html', topic=topic, types=types)
+
+
+@app.route('/update_topic/<int:topic_id>', methods=['POST'])
+def update_topic(topic_id):
+    topic = Topic.get_by_id(id=topic_id)
+    print(topic_id)
+    topic_name = request.form.get('topic_name')
+    type_id = request.form.get('type')
+    position = request.form.get('position')
+    description = request.form.get('description')
+    required_skills = request.form.get('required_skills')
+    reference = request.form.get('reference')
+
+    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+    types = Type.get_all()
+
+    total_quta = 0
+    for topic_in in topics:
+        total_quta += topic_in.quota
+
+    if total_quta + int(position) - topic.quota > supervisor.position:
+        return render_template('edit_topic.html',
+                               message='Can not save your modify, excess quota, you only have ' + str(supervisor.position) + ' positions.',
+                               topic=topic, types=types)
+
+    topic.update(name=topic_name, supervisor_id=topic.supervisor_id, quota=position, is_custom=False, type_id=type_id,
+                 description=description, required_skills=required_skills, reference=reference)
+    print('find')
+    return redirect(url_for('supervisor'))
 
 
 @app.route('/update_selection', methods=['POST'])
@@ -185,24 +290,6 @@ def update_custom_topic():
 
     db.session.commit()
     return json.dumps({'success': True, 'topic_name': topic_name})
-
-
-@app.route('/supervisor')
-def supervisor():
-    if 'user_name' and 'user_type' in session:
-        if session['user_type'] == 'supervisor':
-            return render_template('supervisor.html', name=session['user_name'])
-    else:
-        return render_template('login.html')
-
-
-@app.route('/admin')
-def admin():
-    if 'user_name' and 'user_type' in session:
-        if session['user_type'] == 'admin':
-            return render_template('admin.html', name=session['user_name'])
-    else:
-        return render_template('login.html')
 
 
 @app.route('/tutorial')

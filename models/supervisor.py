@@ -1,5 +1,6 @@
 from .db_instance import db
 
+
 class Supervisor(db.Model):
     __tablename__ = 'supervisors'
 
@@ -46,6 +47,17 @@ class Supervisor(db.Model):
     @classmethod
     def get_num(cls):
         return cls.query.count()
+
+    def if_admin(self):
+        return self.is_admin
+
+    @classmethod
+    def get_id(cls, user_name):
+        return cls.query.filter_by(user_name=user_name).first().id
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
     def __repr__(self):
         return f'<Supervisor {self.id}>'

@@ -45,7 +45,6 @@ class Selection(db.Model):
             return False
         return self.first_topic.is_custom
 
-
     @property
     def custom_supervisor_id(self):
         return self.first_topic.supervisor_id
