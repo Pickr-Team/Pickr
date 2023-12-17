@@ -227,10 +227,9 @@ def topic_poster():
     supervisor_id = Supervisor.get_id(user_name=session['user_name'])
     topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
     supervisor = Supervisor.get_by_id(id=supervisor_id)
-    print('find')
     pdf_buffer = BytesIO()
     c = canvas.Canvas(pdf_buffer, pagesize=A4, bottomup=0)
-    c.setFillColor(black)
+    c.setFillColorRGB(51 / 255, 51 / 255, 51 / 255)
     c.rect(0, 0, 595, 842, fill=1)
 
     max_lines = 4
@@ -304,67 +303,69 @@ def topic_poster():
                 c.line(50, 370 + i * seed, 545, 370 + i * seed)
 
         else:
-            if (i-3) % 4 == 0:
-                page_index = (i-3) // 4
+            if (i-3) % 3 == 0:
                 c.showPage()
-                c.setFillColor(black)
+                c.setFillColorRGB(51 / 255, 51 / 255, 51 / 255)
                 c.rect(0, 0, 595, 842, fill=1)
+                # 放图片
+                c.drawImage('static/image/logo_footer.png', 440, 780, 104, 30)
 
-                c.setFont("DankMono", 20)
-                c.setFillColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
-                c.drawString(50, 190 + page_index * seed, topics[i].name)
+            page_index = (i - 3) % 3
+            c.setFont("DankMono", 20)
+            c.setFillColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
+            c.drawString(50, 100 + page_index * seed, topics[i].name)
 
-                c.setFont("DankMono", 15)
-                c.setFillColor(white)
-                c.drawString(50, 220 + page_index * seed, topics[i].get_type_name())
-                c.drawString(50, 250 + page_index * seed, str(topics[i].quota) + ' Positions')
+            c.setFont("DankMono", 15)
+            c.setFillColor(white)
+            c.drawString(50, 130 + page_index * seed, topics[i].get_type_name())
+            c.drawString(50, 160 + page_index * seed, str(topics[i].quota) + ' Positions')
 
-                c.setFont("DankMono_Italic", 15)
-                c.setFillColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
-                c.drawString(200, 250 + page_index * seed, 'PK' + str(format(topics[i].id, '04d')))
+            c.setFont("DankMono_Italic", 15)
+            c.setFillColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
+            c.drawString(200, 160 + page_index * seed, 'PK' + str(format(topics[i].id, '04d')))
 
-                c.setFillColor(white)
-                c.setFont("DankMono", 12)
-                for i in range(len(topics)):
-                    description = topics[i].description
-                    words = description.split()
-                    current_line = ""
-                    line_count = 0
+            c.setFillColor(white)
+            c.setFont("DankMono", 12)
 
-                    for word in words:
-                        # 测试加入下一个单词后的行长度
-                        test_line = (current_line + " " + word if current_line else word)
-                        if line_count == max_lines - 1:  # 检查是否为最后一行
-                            test_line += "..."  # 假设这一行是最后一行，加上省略号
+            description = topics[i].description
+            words = description.split()
+            current_line = ""
+            line_count = 0
 
-                        if c.stringWidth(test_line, "DankMono", 12) <= line_length:
-                            current_line = test_line
-                            if line_count == max_lines - 1:  # 如果是最后一行，直接跳出循环
-                                break
-                        else:
-                            if line_count < max_lines:
-                                c.drawString(50, start_y + page_index * seed + line_count * line_spacing, current_line)
-                                line_count += 1
-                                current_line = word
-                            else:
-                                # 如果已经是最后一行，添加省略号并跳出循环
-                                current_line += "..."
-                                c.drawString(50, start_y + page_index * seed + line_count * line_spacing, current_line)
-                                break
+            for word in words:
+                # 测试加入下一个单词后的行长度
+                test_line = (current_line + " " + word if current_line else word)
+                if line_count == max_lines - 1:  # 检查是否为最后一行
+                    test_line += "..."  # 假设这一行是最后一行，加上省略号
 
-                    # 绘制最后一行（如果还有剩余空间且未达到最大行数）
+                if c.stringWidth(test_line, "DankMono", 12) <= line_length:
+                    current_line = test_line
+                    if line_count == max_lines - 1:  # 如果是最后一行，直接跳出循环
+                        break
+                else:
                     if line_count < max_lines:
-                        c.drawString(50, start_y + page_index * seed + line_count * line_spacing, current_line)
+                        c.drawString(50, 190 + page_index * seed + line_count * line_spacing, current_line)
+                        line_count += 1
+                        current_line = word
+                    else:
+                        # 如果已经是最后一行，添加省略号并跳出循环
+                        current_line += "..."
+                        c.drawString(50, 190 + page_index * seed + line_count * line_spacing, current_line)
+                        break
 
-                    c.setLineWidth(1)
-                    c.setStrokeColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
-                    c.line(50, 370 + page_index * seed, 545, 370 + page_index * seed)
+                # 绘制最后一行（如果还有剩余空间且未达到最大行数）
+                if line_count < max_lines:
+                    c.drawString(50, 190 + page_index * seed + line_count * line_spacing, current_line)
+
+                c.setLineWidth(1)
+                c.setStrokeColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
+                c.line(50, 280 + page_index * seed, 545, 280 + page_index * seed)
 
     c.save()
 
     pdf_buffer.seek(0)
     return Response(pdf_buffer, headers={
-        'Content-Disposition': 'attachment;filename=topic_poster.pdf',
+        'Content-Disposition': 'attachment;filename=topic poster.pdf',
         'Content-Type': 'application/pdf'
     })
 
