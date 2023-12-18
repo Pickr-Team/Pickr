@@ -5,13 +5,11 @@ class Deadline(db.Model):
     __tablename__ = 'deadlines'
 
     id = db.Column(db.Integer, primary_key=True)
-    round_num = db.Column(db.Integer)
     submit_time = db.Column(db.String(20))
     result_time = db.Column(db.String(20))
     note = db.Column(db.Text)
 
-    def __init__(self, round_num, submit_time, result_time, note):
-        self.round_num = round_num
+    def __init__(self, submit_time, result_time, note):
         self.submit_time = submit_time
         self.result_time = result_time
         self.note = note
@@ -20,8 +18,7 @@ class Deadline(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, round_num, submit_time, result_time, note):
-        self.round_num = round_num
+    def update(self, submit_time, result_time, note):
         self.submit_time = submit_time
         self.result_time = result_time
         self.note = note
@@ -38,6 +35,20 @@ class Deadline(db.Model):
     @classmethod
     def get_all(cls):
         return cls.query.all()
+
+    @classmethod
+    def get_first(cls):
+        return cls.query.first()
+
+    @classmethod
+    def get_second(cls):
+        return cls.query.filter_by(id=2).first()
+
+    def reset(self):
+        self.submit_time = None
+        self.result_time = None
+        self.note = None
+        db.session.commit()
 
     def __repr__(self):
         return f'<Deadline {self.id}>'

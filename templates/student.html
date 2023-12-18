@@ -5,7 +5,7 @@
 {% block content %}
     <style>
         .disabled-color {
-            background-color: #000000;
+            background-color: #a8a8a8 !important;
             color: #000000;
         }
     </style>
@@ -228,7 +228,6 @@
 
             // submit application
             $('.student_submit_form').submit(function (e) {
-                console.log('exist submit')
                 e.preventDefault();
                 var formId = $(this).attr('id');
                 var choiceNumber = formId.replace('choose', '').replace('_form', '');

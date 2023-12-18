@@ -4,7 +4,11 @@
 
 {% block content %}
     <body>
-    <section class="page_hearder"><h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
+    <section class="page_hearder">
+        <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
+        <div class="_20px_height"></div>
+        <a href="{{ url_for('logout') }}" class="small_link accent"><em>Logout↗</em></a>
+        <div class="_20px_height"></div>
         <p class="paragraph-3">In this page,you can create your topic and check your applications.</p></section>
     <section>
         <div data-current="Applications" class="w-tabs">
@@ -44,7 +48,8 @@
                                 </div>
                                 <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c34-06e36864"
                                      class="w-layout-cell cell-12">
-                                    <a href="{{ url_for('edit_topic', topic_id = topic.id) }}" class="submit-button-2 w-button">Edit</a>
+                                    <a href="{{ url_for('edit_topic', topic_id = topic.id) }}"
+                                       class="submit-button-2 w-button">Edit</a>
                                     <div class="div-block-4"></div>
                                     <a href="#" class="submit-button-2 delete_button w-button delete-topic"
                                        data-topic-id="{{ topic.id }}">Delete</a>
@@ -54,7 +59,8 @@
                     {% endfor %}
                     <div class="_40px_height"></div>
                     <a href="{{ url_for('new_topic') }}" class="submit-button-2 phone w-button"><em>+</em> New Topic</a>
-                    <a href="{{ url_for('topic_poster') }}" class="submit-button-2 phone w-button"><em>→</em> Generate Poster</a>
+                    <a href="{{ url_for('topic_poster') }}" class="submit-button-2 phone w-button"><em>→</em> Generate
+                        Poster</a>
                 </div>
 
                 {#Applications Section#}

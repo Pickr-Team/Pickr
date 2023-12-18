@@ -29,5 +29,9 @@ class Note(db.Model):
     def get_all(cls):
         return cls.query.all()
 
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
+
     def __repr__(self):
         return f'<Note {self.id}>'

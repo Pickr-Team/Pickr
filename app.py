@@ -50,6 +50,8 @@ def my_pickr():
             return redirect(url_for('student'))
         elif session['user_type'] == 'supervisor':
             return redirect(url_for('supervisor'))
+        elif session['user_type'] == 'manager':
+            return redirect(url_for('manager'))
     else:
         return render_template('login.html')
 
@@ -73,10 +75,10 @@ def login():
 
         elif supervisor:
             if supervisor.password == password:
-                if supervisor.if_admin == 1:
+                if supervisor.if_admin():
                     session['user_name'] = supervisor.user_name
-                    session['user_type'] = 'admin'
-                    return render_template('admin.html')
+                    session['user_type'] = 'manager'
+                    return redirect(url_for('manager'))
                 else:
                     session['user_name'] = supervisor.user_name
                     session['user_type'] = 'supervisor'
@@ -127,6 +129,49 @@ def supervisor():
         return render_template('login.html')
 
 
+@app.route('/manager')
+def manager():
+    if 'user_name' and 'user_type' in session:
+        supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+        supervisor = Supervisor.get_by_id(id=supervisor_id)
+
+        deadline_1 = Deadline.get_first()
+        deadline_2 = Deadline.get_second()
+
+        students = Student.get_all()
+        supervisors = Supervisor.get_all()
+
+        notes = Note.get_all()
+        return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
+                               notes=notes, students=students, supervisors=supervisors)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/update_deadline', methods=['POST'])
+def update_deadline():
+    round_num = request.form.get('round_num')
+    round_num = int(round_num)
+    submit_time = request.form.get('submit_time')
+    result_time = request.form.get('result_time')
+    note = request.form.get('note')
+    reset = request.form.get('reset') == 'true'
+    deadline = None
+
+    if round_num == 1:
+        deadline = Deadline.get_first()
+        print(deadline)
+    elif round_num == 2:
+        deadline = Deadline.get_second()
+
+    if reset:
+        deadline.reset()
+        return json.dumps({'success': True, 'reset': True})
+
+    deadline.update(submit_time=submit_time, result_time=result_time, note=note)
+    return json.dumps({'success': True})
+
+
 @app.route('/delete_topic/<int:topic_id>')
 def delete_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
@@ -137,10 +182,25 @@ def delete_topic(topic_id):
         return jsonify(success=False), 404
 
 
+@app.route('/delete_note/<int:note_id>')
+def delete_note(note_id):
+    note = Note.get_by_id(id=note_id)
+    if note:
+        note.delete()
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False), 404
+
+
 @app.route('/new_topic')
 def new_topic():
     types = Type.get_all()
     return render_template('new_topic.html', types=types)
+
+
+@app.route('/new_note')
+def new_note():
+    return render_template('new_note.html')
 
 
 @app.route('/add_topic', methods=['POST'])
@@ -176,11 +236,27 @@ def add_topic():
     return redirect(url_for('supervisor'))
 
 
+@app.route('/add_note', methods=['POST'])
+def add_note():
+    title = request.form.get('title')
+    content = request.form.get('content')
+
+    new_note = Note(title=title, content=content)
+    new_note.add()
+    return redirect(url_for('manager'))
+
+
 @app.route('/edit_topic/<int:topic_id>')
 def edit_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     types = Type.get_all()
     return render_template('edit_topic.html', topic=topic, types=types)
+
+
+@app.route('/edit_note/<int:note_id>')
+def edit_note(note_id):
+    note = Note.get_by_id(id=note_id)
+    return render_template('edit_note.html', note=note)
 
 
 @app.route('/update_topic/<int:topic_id>', methods=['POST'])
@@ -213,6 +289,16 @@ def update_topic(topic_id):
                  description=description, required_skills=required_skills, reference=reference)
     print('find')
     return redirect(url_for('supervisor'))
+
+
+@app.route('/update_note/<int:note_id>', methods=['POST'])
+def update_note(note_id):
+    note = Note.get_by_id(id=note_id)
+    title = request.form.get('title')
+    content = request.form.get('content')
+
+    note.update(title=title, content=content)
+    return redirect(url_for('manager'))
 
 
 @app.route('/topic_poster')
