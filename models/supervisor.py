@@ -1,9 +1,11 @@
+from sqlalchemy import func
+
 from .db_instance import db
+from .topic import Topic
 
 
 class Supervisor(db.Model):
     __tablename__ = 'supervisors'
-
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(20))
     last_name = db.Column(db.String(20))
@@ -58,6 +60,13 @@ class Supervisor(db.Model):
     @classmethod
     def get_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
+
+    # Get the number of topic's position supervised by this supervisor
+    def get_topic_num(self):
+        total_quota = db.session.query(func.sum(Topic.quota)) \
+            .filter(Topic.supervisor_id == self.id) \
+            .scalar()
+        return total_quota if total_quota is not None else 0
 
     def __repr__(self):
         return f'<Supervisor {self.id}>'

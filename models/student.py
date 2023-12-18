@@ -7,27 +7,30 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     chinese_name = db.Column(db.String(20))
     english_name = db.Column(db.String(20))
+    class_number = db.Column(db.String(30))
     email = db.Column(db.String(30))
     password = db.Column(db.String(40))
     user_name = db.Column(db.String(20))
 
-    def __init__(self, chinese_name, english_name, email, password, user_name):
+    def __init__(self, chinese_name, english_name, email, password, user_name, class_number):
         self.chinese_name = chinese_name
         self.english_name = english_name
         self.email = email
         self.password = password
         self.user_name = user_name
+        self.class_number = class_number
 
     def add(self):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, chinese_name, english_name, email, password, user_name):
+    def update(self, chinese_name, english_name, email, password, user_name, class_number):
         self.chinese_name = chinese_name
         self.english_name = english_name
         self.email = email
         self.password = password
         self.user_name = user_name
+        self.class_number = class_number
         db.session.commit()
 
     def delete(self):
@@ -45,6 +48,10 @@ class Student(db.Model):
     @classmethod
     def get_id(cls, english_name):
         return cls.query.filter_by(english_name=english_name).first().id
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
     def __repr__(self):
         return f'<Student {self.id}>'

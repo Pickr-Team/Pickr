@@ -1,6 +1,10 @@
 import re
 import secrets
+import pandas as pd
+
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response
+from sqlalchemy.orm import joinedload
+
 from models.db_instance import db
 from datetime import datetime
 import json
@@ -129,6 +133,21 @@ def supervisor():
         return render_template('login.html')
 
 
+def get_custom_topics_with_details():
+    custom_topics = (
+        db.session.query(Topic, Student, Supervisor)
+        .join(Selection, Selection.first_topic_id == Topic.id)
+        .join(Student, Selection.student_id == Student.id)
+        .join(Supervisor, Topic.supervisor_id == Supervisor.id)
+        .filter(Selection.status.in_([3, 4]))
+        .filter(Topic.is_custom.is_(True))
+        .options(joinedload(Topic.supervisor), joinedload(Selection.student))
+        .all()
+    )
+
+    return custom_topics
+
+
 @app.route('/manager')
 def manager():
     if 'user_name' and 'user_type' in session:
@@ -141,9 +160,13 @@ def manager():
         students = Student.get_all()
         supervisors = Supervisor.get_all()
 
+        custom_selections = Selection.get_all_custom_selections()
+        print(custom_selections)
+
         notes = Note.get_all()
         return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
-                               notes=notes, students=students, supervisors=supervisors)
+                               notes=notes, students=students, supervisors=supervisors,
+                               custom_selections=custom_selections)
     else:
         return render_template('login.html')
 
@@ -182,6 +205,16 @@ def delete_topic(topic_id):
         return jsonify(success=False), 404
 
 
+@app.route('/delete_student/<int:student_id>')
+def delete_student(student_id):
+    student = Student.get_by_id(id=student_id)
+    if student:
+        student.delete()
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False), 404
+
+
 @app.route('/delete_note/<int:note_id>')
 def delete_note(note_id):
     note = Note.get_by_id(id=note_id)
@@ -201,6 +234,11 @@ def new_topic():
 @app.route('/new_note')
 def new_note():
     return render_template('new_note.html')
+
+
+@app.route('/new_student')
+def new_student():
+    return render_template('new_student.html')
 
 
 @app.route('/add_topic', methods=['POST'])
@@ -246,6 +284,41 @@ def add_note():
     return redirect(url_for('manager'))
 
 
+@app.route('/add_student', methods=['POST'])
+def add_student():
+    chinese_name = request.form.get('chinese_name')
+    english_name = request.form.get('english_name')
+    class_number = request.form.get('class_number')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    user_name = request.form.get('username')
+
+    new_student = Student(chinese_name=chinese_name, english_name=english_name, class_number=class_number,
+                          email=email, password=password, user_name=user_name)
+    new_student.add()
+    return redirect(url_for('manager'))
+
+
+@app.route('/import_students', methods=['POST'])
+def import_students():
+    file = request.files['file']
+    if file:
+        df = pd.read_excel(file)
+        for index, row in df.iterrows():
+            new_student = Student(
+                chinese_name=row['chinese_name'],
+                english_name=row['english_name'],
+                class_number=row['class_number'],
+                email=row['email'],
+                password=row['password'],
+                user_name=row['user_name']
+            )
+            db.session.add(new_student)
+        db.session.commit()
+        return redirect(url_for('manager'))
+    return 'No file uploaded', 400
+
+
 @app.route('/edit_topic/<int:topic_id>')
 def edit_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
@@ -257,6 +330,12 @@ def edit_topic(topic_id):
 def edit_note(note_id):
     note = Note.get_by_id(id=note_id)
     return render_template('edit_note.html', note=note)
+
+
+@app.route('/edit_student/<int:student_id>')
+def edit_student(student_id):
+    student = Student.get_by_id(id=student_id)
+    return render_template('edit_student.html', student=student)
 
 
 @app.route('/update_topic/<int:topic_id>', methods=['POST'])
@@ -299,6 +378,27 @@ def update_note(note_id):
 
     note.update(title=title, content=content)
     return redirect(url_for('manager'))
+
+
+@app.route('/update_student/<int:student_id>', methods=['POST'])
+def update_student(student_id):
+    student = Student.get_by_id(id=student_id)
+    chinese_name = request.form.get('chinese_name')
+    english_name = request.form.get('english_name')
+    class_number = request.form.get('class_number')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    user_name = request.form.get('username')
+
+    student.update(chinese_name=chinese_name, english_name=english_name, class_number=class_number, email=email,
+                   password=password, user_name=user_name)
+    return redirect(url_for('manager'))
+
+
+@app.route('/student_status/<int:student_id>')
+def student_status(student_id):
+    selection = Selection.get_by_student_id(student_id=student_id)
+    return render_template('student_status.html', selection=selection)
 
 
 @app.route('/topic_poster')
@@ -437,19 +537,6 @@ def topic_filter():
 def topic_detail(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     return render_template('topic_detail.html', topic=topic)
-
-
-@app.route('/add_student')
-def add_student():
-    new_student = Student(
-        chinese_name='王小明',
-        english_name='Wang Xiaoming',
-        email="202018020317@qq.com",
-        password="123456"
-    )
-    db.session.add(new_student)
-    db.session.commit()
-    return "Add student successfully!"
 
 
 @app.route('/get_student')

@@ -126,5 +126,10 @@ class Topic(db.Model):
     def get_num(cls):
         return cls.query.filter(cls.is_custom == False).count()
 
+    # Get all topics that are custom
+    @classmethod
+    def get_all_custom(cls):
+        return cls.query.filter(cls.is_custom == True).all()
+
     def __repr__(self):
         return f'<Topic {self.id}>'

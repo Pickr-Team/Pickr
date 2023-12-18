@@ -6,6 +6,7 @@ class Selection(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
+    student = db.relationship('Student', foreign_keys=[student_id])
     submit_time = db.Column(db.DateTime)
     status = db.Column(db.Integer)
     first_topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
@@ -40,6 +41,14 @@ class Selection(db.Model):
         return self.first_topic.name
 
     @property
+    def first_topic_supervisor_name(self):
+        return self.first_topic.supervisor.first_name + ' ' + self.first_topic.supervisor.last_name
+
+    @property
+    def first_topic_student_name(self):
+        return self.student.english_name
+
+    @property
     def if_custom(self):
         if not self.first_topic:
             return False
@@ -72,6 +81,15 @@ class Selection(db.Model):
     @classmethod
     def get_by_student_id(cls, student_id):
         return cls.query.filter_by(student_id=student_id).first()
+
+    @classmethod
+    def get_all_custom_selections(cls):
+        return cls.query.filter(cls.status.in_([3, 4])).all()
+
+    # get student name
+    @classmethod
+    def get_student_name(cls, student_id):
+        return cls.query.filter_by(student_id=student_id).first().student.english_name
 
     def __repr__(self):
         return f'<Selection {self.id}>'

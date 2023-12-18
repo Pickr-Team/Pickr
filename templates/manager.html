@@ -108,141 +108,152 @@
                     <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5623-53bceb80"
                          class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout">
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5624-53bceb80" class="w-layout-cell cell-11">
-                            <div class="text-block-2"><em class="italic-text-3">{{ student.english_name }} ({{ student.chinese_name }})</em></div>
+                            <div class="text-block-2"><em class="italic-text-3">{{ student.english_name }}
+                                ({{ student.chinese_name }})</em></div>
                         </div>
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5628-53bceb80" class="w-layout-cell cell-13">
-                            <div class="text-block-2 italic-text _20_leading"><em>L6S3</em></div>
+                            <div class="text-block-2 italic-text _20_leading"><em>{{ student.class_number }}</em></div>
                         </div>
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562c-53bceb80" class="w-layout-cell cell-14">
                             <div class="text-block-2 phone_button phone_leading">{{ student.user_name }}</div>
                         </div>
-                        <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562f-53bceb80" class="w-layout-cell cell-12"><a
-                                href="#" class="submit-button-2 w-button">Edit</a>
+                        <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562f-53bceb80" class="w-layout-cell cell-12">
+                            <a href="{{ url_for('student_status', student_id = student.id) }}" class="submit-button-2 w-button">Status</a>
                             <div class="div-block-4"></div>
-                            <a href="#" class="submit-button-2 delete_button w-button">Delete</a></div>
+                            <a href="{{ url_for('edit_student', student_id = student.id) }}"
+                               class="submit-button-2 w-button">Edit</a>
+                            <div class="div-block-4"></div>
+                            <a href="#" data-student-id="{{ student.id }}"
+                               class="submit-button-2 delete_button w-button delete-student">Delete</a>
+                        </div>
                     </div>
                 {% endfor %}
-            </div>
-            <div class="_20px_height"></div>
-            <div class="_20px_height"></div>
-            <a href="#" class="submit-button-2 w-button">+ Add Student</a></div>
+                <div class="_20px_height"></div>
+                <div class="_20px_height"></div>
+                <a href="{{ url_for('new_student') }}" class="submit-button-2 w-button">+ Add Student</a>
 
-        <div data-w-tab="Supervisor" class="w-tab-pane">
-            <div class="_40px_height"></div>
-            <h2 class="third_title-2 accent">Supervisors</h2>
-            <div class="_20px_height"></div>
-            <div class="form-block-2 w-form">
-                <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form-2"
-                      data-wf-page-id="657da25ce4daac8653bceb80"
-                      data-wf-element-id="48dded6f-4355-636c-db0f-fae327081788"><input type="text"
-                                                                                       class="text-field topic_list manage w-input"
-                                                                                       maxlength="256" name="name-3"
-                                                                                       data-name="Name 3"
-                                                                                       placeholder="Supervisor name"
-                                                                                       id="name-3"/><input
-                        type="submit"
-                        value="Search"
-                        data-wait="Please wait..."
-                        class="submit-button w-button"/>
+                <form action="{{ url_for('import_students') }}" method="POST" enctype="multipart/form-data"
+                      style="display: inline;">
+                    <label for="file-upload" class="submit-button-2 w-button">
+                        ↓ Import Form Excel
+                        <input id="file-upload" type="file" name="file" accept=".xlsx, .xls"
+                               onchange="this.form.submit()" style="display: none;">
+                    </label>
+                </form>
+                <a href="{{ url_for('new_student') }}" class="submit-button-2 w-button delete_button" style="margin-left: 80px">! Delete All Students</a>
+
+
+            </div>
+            <div data-w-tab="Supervisor" class="w-tab-pane">
+                <div class="_40px_height"></div>
+                <h2 class="third_title-2 accent">Supervisors</h2>
+                <div class="_20px_height"></div>
+                <div class="form-block-2 w-form">
+                    <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form-2"
+                          data-wf-page-id="657da25ce4daac8653bceb80"
+                          data-wf-element-id="48dded6f-4355-636c-db0f-fae327081788">
+                        <input type="text" class="text-field topic_list manage w-input" name="name-3"
+                               placeholder="Supervisor name" id="name-3"/>
+                        <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
+                    </form>
                     <div class="_20px_height"></div>
                     <div class="_20px_height"></div>
-                </form>
-                <div class="w-form-done">
-                    <div>Thank you! Your submission has been received!</div>
                 </div>
-                <div class="w-form-fail">
-                    <div>Oops! Something went wrong while submitting the form.</div>
-                </div>
+
+                {% for supervisor in supervisors %}
+                    {% if supervisor.is_admin == 0 %}
+                        <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752842-53bceb80"
+                             class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout">
+                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752843-53bceb80"
+                                 class="w-layout-cell cell-11">
+                                <div class="text-block-2"><em
+                                        class="italic-text-3">{{ supervisor.first_name }} {{ supervisor.last_name }}</em>
+                                </div>
+                            </div>
+                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752847-53bceb80"
+                                 class="w-layout-cell cell-13">
+                                <div class="text-block-2 italic-text _20_leading">
+                                    <em>{{ supervisor.get_topic_num() }}/{{ supervisor.position }}</em>
+                                </div>
+                            </div>
+                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284b-53bceb80"
+                                 class="w-layout-cell cell-14">
+                                <div class="text-block-2 phone_button phone_leading">{{ supervisor.email }}</div>
+                            </div>
+                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284e-53bceb80"
+                                 class="w-layout-cell cell-12"><a
+                                    href="#" class="submit-button-2 w-button">Detail</a>
+                                <div class="div-block-4"></div>
+                                <a href="#" class="submit-button-2 w-button">Edit</a>
+                                <div class="div-block-4"></div>
+                                <a href="#" class="submit-button-2 delete_button w-button">Delete</a></div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="_20px_height"></div>
+                <div class="_20px_height"></div>
+                <a href="#" class="submit-button-2 w-button">+ Add Supervisor</a>
             </div>
-            <div class="_20px_height">
-                <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752842-53bceb80"
-                     class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout">
-                    <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752843-53bceb80" class="w-layout-cell cell-11">
-                        <div class="text-block-2"><em class="italic-text-3">Clivia Li</em></div>
-                    </div>
-                    <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752847-53bceb80" class="w-layout-cell cell-13">
-                        <div class="text-block-2 italic-text _20_leading"><em>8/10</em></div>
-                    </div>
-                    <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284b-53bceb80" class="w-layout-cell cell-14">
-                        <div class="text-block-2 phone_button phone_leading">clivia@cdut.edu</div>
-                    </div>
-                    <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284e-53bceb80" class="w-layout-cell cell-12"><a
-                            href="#" class="submit-button-2 w-button">Detail</a>
-                        <div class="div-block-4"></div>
-                        <a href="#" class="submit-button-2 w-button">Edit</a>
-                        <div class="div-block-4"></div>
-                        <a href="#" class="submit-button-2 delete_button w-button">Delete</a></div>
+            <div data-w-tab="Topics" class="w-tab-pane">
+                <div class="_40px_height"></div>
+                <h2 class="third_title-2 accent">Custom Topics</h2>
+                <div class="_20px_height"></div>
+                <div class="form-block-2 w-form">
+                    <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form-2">
+                        <input type="text" class="text-field topic_list manage w-input" name="name"
+                               placeholder="Supervisor name" id="name"/>
+                        <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
+                    </form>
                 </div>
-            </div>
-            <div class="_20px_height"></div>
-            <div class="w-form">
-                <form id="email-form" name="email-form" data-name="Email Form" method="get"
-                      class="student_submit_form"
-                      data-wf-page-id="657da25ce4daac8653bceb80"
-                      data-wf-element-id="8f14ad2c-2552-32ac-208c-1b3aabb29652"><input type="submit"
-                                                                                       value="+ Add Supervisor"
-                                                                                       data-wait="Please wait..."
-                                                                                       class="submit-button-2 _20head_spacing phone w-button"/>
-                </form>
-                <div class="w-form-done">
-                    <div>Thank you! Your submission has been received!</div>
-                </div>
-                <div class="w-form-fail">
-                    <div>Oops! Something went wrong while submitting the form.</div>
+
+                <div class="_20px_height">
+                    {% if custom_selections %}
+                        {% for custom_selection in custom_selections %}
+                            <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21021-53bceb80"
+                                 class="w-layout-layout supervisor_result_item-2 _5row wf-layout-layout">
+                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21022-53bceb80"
+                                     class="w-layout-cell cell-11">
+                                    <div class="text-block-2"><em
+                                            class="italic-text-3">{{ custom_selection.first_topic_name }}</em>
+                                    </div>
+                                </div>
+                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21026-53bceb80"
+                                     class="w-layout-cell cell-8">
+                                    <div class="text-block-2 phone_button phone_leading">{{ custom_selection.first_topic_student_name }}</div>
+                                </div>
+                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102a-53bceb80"
+                                     class="w-layout-cell cell-16">
+                                    <div class="text-block-2 phone_button phone_leading">{{ custom_selection.first_topic_supervisor_name }}</div>
+                                </div>
+                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102d-53bceb80"
+                                     class="w-layout-cell cell-12">
+                                    <div class="div-block-4"></div>
+                                    <div class="text-block-2 phone_button phone_leading">
+                                        {% if custom_selection.status == 3 %}
+                                            <div style="color: red">Waiting for Verify</div>
+                                        {% else %}
+                                            <div style="color: green">Verified</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div id="w-node-_14f71255-086f-cc72-20b2-b7d625be6b97-53bceb80"
+                                     class="w-layout-cell cell-15"><a
+                                        href="#" class="submit-button-2 w-button">Check</a>
+                                    <div class="div-block-4"></div>
+                                    <div class="div-block-4"></div>
+                                    <a href="#" class="submit-button-2 delete_button w-button">Delete</a></div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="third_title accent ">No topic found, try again.</div>
+                        <div class="_20px_height"></div>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
-        <div data-w-tab="Topics" class="w-tab-pane">
-            <div class="_40px_height"></div>
-            <h2 class="third_title-2 accent">Custom Topics</h2>
-            <div class="_20px_height"></div>
-            <div class="form-block-2 w-form">
-                <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form-2"
-                      data-wf-page-id="657da25ce4daac8653bceb80"
-                      data-wf-element-id="27883ea2-c151-41f1-7771-4f51682bfb84"><input type="text"
-                                                                                       class="text-field topic_list manage w-input"
-                                                                                       maxlength="256" name="name"
-                                                                                       data-name="Name"
-                                                                                       placeholder="Supervisor name"
-                                                                                       id="name"/><input
-                        type="submit"
-                        value="Search"
-                        data-wait="Please wait..."
-                        class="submit-button w-button"/>
-                </form>
-                <div class="w-form-done">
-                    <div>Thank you! Your submission has been received!</div>
-                </div>
-                <div class="w-form-fail">
-                    <div>Oops! Something went wrong while submitting the form.</div>
-                </div>
-            </div>
-            <div class="_20px_height">
-                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21021-53bceb80"
-                     class="w-layout-layout supervisor_result_item-2 _5row wf-layout-layout">
-                    <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21022-53bceb80" class="w-layout-cell cell-11">
-                        <div class="text-block-2"><em class="italic-text-3">Collaborative Code Editor</em></div>
-                    </div>
-                    <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21026-53bceb80" class="w-layout-cell cell-8">
-                        <div class="text-block-2 phone_button phone_leading">Chester</div>
-                    </div>
-                    <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102a-53bceb80" class="w-layout-cell cell-16">
-                        <div class="text-block-2 phone_button phone_leading">Clivia</div>
-                    </div>
-                    <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102d-53bceb80" class="w-layout-cell cell-12">
-                        <div class="div-block-4"></div>
-                        <div class="text-block-2 phone_button phone_leading">Waiting for check</div>
-                    </div>
-                    <div id="w-node-_14f71255-086f-cc72-20b2-b7d625be6b97-53bceb80" class="w-layout-cell cell-15"><a
-                            href="#" class="submit-button-2 w-button">Check</a>
-                        <div class="div-block-4"></div>
-                        <div class="div-block-4"></div>
-                        <a href="#" class="submit-button-2 delete_button w-button">Delete</a></div>
-                </div>
-            </div>
-        </div>
 
+    </div>
 
     </div>
     <div class="_80px_height"></div>
@@ -377,6 +388,25 @@
             if (confirmed) {
                 $.ajax({
                     url: '/delete_note/' + noteID,
+                    method: 'GET',
+                    success: function (result) {
+                        element.remove()
+                    }
+                })
+            }
+        })
+
+        // Delete student
+        $('.delete-student').click(function (e) {
+            e.preventDefault()
+            var studentID = $(this).data('student-id');
+            var element = $(this).closest('.supervisor_result_item-2')
+
+            var confirmed = confirm("Are you sure you want to delete this student?");
+
+            if (confirmed) {
+                $.ajax({
+                    url: '/delete_student/' + studentID,
                     method: 'GET',
                     success: function (result) {
                         element.remove()
