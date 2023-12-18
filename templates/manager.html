@@ -118,7 +118,8 @@
                             <div class="text-block-2 phone_button phone_leading">{{ student.user_name }}</div>
                         </div>
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562f-53bceb80" class="w-layout-cell cell-12">
-                            <a href="{{ url_for('student_status', student_id = student.id) }}" class="submit-button-2 w-button">Status</a>
+                            <a href="{{ url_for('student_status', student_id = student.id) }}"
+                               class="submit-button-2 w-button">Status</a>
                             <div class="div-block-4"></div>
                             <a href="{{ url_for('edit_student', student_id = student.id) }}"
                                class="submit-button-2 w-button">Edit</a>
@@ -131,18 +132,16 @@
                 <div class="_20px_height"></div>
                 <div class="_20px_height"></div>
                 <a href="{{ url_for('new_student') }}" class="submit-button-2 w-button">+ Add Student</a>
+                <a href="{{ url_for('get_template') }}" class="submit-button-2 w-button">↓ Get Excel Template</a>
 
                 <form action="{{ url_for('import_students') }}" method="POST" enctype="multipart/form-data"
                       style="display: inline;">
                     <label for="file-upload" class="submit-button-2 w-button">
-                        ↓ Import Form Excel
+                        ↑ Import From Excel
                         <input id="file-upload" type="file" name="file" accept=".xlsx, .xls"
                                onchange="this.form.submit()" style="display: none;">
                     </label>
                 </form>
-                <a href="{{ url_for('new_student') }}" class="submit-button-2 w-button delete_button" style="margin-left: 80px">! Delete All Students</a>
-
-
             </div>
             <div data-w-tab="Supervisor" class="w-tab-pane">
                 <div class="_40px_height"></div>
@@ -219,7 +218,7 @@
                                 </div>
                                 <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21026-53bceb80"
                                      class="w-layout-cell cell-8">
-                                    <div class="text-block-2 phone_button phone_leading">{{ custom_selection.first_topic_student_name }}</div>
+                                    <div class="text-block-2 phone_button phone_leading">{{ custom_selection.english_name }}</div>
                                 </div>
                                 <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102a-53bceb80"
                                      class="w-layout-cell cell-16">
@@ -229,7 +228,7 @@
                                      class="w-layout-cell cell-12">
                                     <div class="div-block-4"></div>
                                     <div class="text-block-2 phone_button phone_leading">
-                                        {% if custom_selection.status == 3 %}
+                                        {% if custom_selection.status == 2 %}
                                             <div style="color: red">Waiting for Verify</div>
                                         {% else %}
                                             <div style="color: green">Verified</div>

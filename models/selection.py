@@ -45,9 +45,18 @@ class Selection(db.Model):
         return self.first_topic.supervisor.first_name + ' ' + self.first_topic.supervisor.last_name
 
     @property
-    def first_topic_student_name(self):
+    def english_name(self):
         return self.student.english_name
 
+    @property
+    def chinese_name(self):
+        return self.student.chinese_name
+
+    @property
+    def class_number(self):
+        return self.student.class_number
+
+    # if is custom selection, return true
     @property
     def if_custom(self):
         if not self.first_topic:
@@ -59,8 +68,16 @@ class Selection(db.Model):
         return self.first_topic.supervisor_id
 
     @property
+    def custom_supervisor_name(self):
+        return self.first_topic.supervisor.first_name + ' ' + self.first_topic.supervisor.last_name
+
+    @property
     def custom_type_id(self):
         return self.first_topic.type_id
+
+    @property
+    def custom_type_name(self):
+        return self.first_topic.type.name
 
     @property
     def custom_description(self):
@@ -84,7 +101,7 @@ class Selection(db.Model):
 
     @classmethod
     def get_all_custom_selections(cls):
-        return cls.query.filter(cls.status.in_([3, 4])).all()
+        return cls.query.filter(cls.status.in_([2, 3])).all()
 
     # get student name
     @classmethod

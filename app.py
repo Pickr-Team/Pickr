@@ -1,8 +1,9 @@
+import os
 import re
 import secrets
 import pandas as pd
 
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
 from sqlalchemy.orm import joinedload
 
 from models.db_instance import db
@@ -319,6 +320,13 @@ def import_students():
     return 'No file uploaded', 400
 
 
+@app.route('/get_template')
+def get_template():
+    directory = os.path.join(app.root_path, 'static', 'file')
+    filename = 'students_example.xlsx'
+    return send_from_directory(directory, filename, as_attachment=True)
+
+
 @app.route('/edit_topic/<int:topic_id>')
 def edit_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
@@ -398,7 +406,8 @@ def update_student(student_id):
 @app.route('/student_status/<int:student_id>')
 def student_status(student_id):
     selection = Selection.get_by_student_id(student_id=student_id)
-    return render_template('student_status.html', selection=selection)
+    student = Student.get_by_id(id=student_id)
+    return render_template('student_status.html', selection=selection, student=student)
 
 
 @app.route('/topic_poster')

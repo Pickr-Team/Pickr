@@ -198,27 +198,27 @@ td, th {
 }
 
 .w-icon-slider-right:before {
-  content: "";
+  content: "î˜€";
 }
 
 .w-icon-slider-left:before {
-  content: "";
+  content: "î˜";
 }
 
 .w-icon-nav-menu:before {
-  content: "";
+  content: "î˜‚";
 }
 
 .w-icon-arrow-down:before, .w-icon-dropdown-toggle:before {
-  content: "";
+  content: "î˜ƒ";
 }
 
 .w-icon-file-upload-remove:before {
-  content: "";
+  content: "î¤€";
 }
 
 .w-icon-file-upload-icon:before {
-  content: "";
+  content: "î¤ƒ";
 }
 
 * {
@@ -3166,6 +3166,10 @@ a {
 
 .deadline_field[data-wf-focus-visible] {
   border: 1px solid var(--accent);
+}
+
+._30px_height {
+  padding-top: 40px;
 }
 
 @media screen and (max-width: 991px) {
