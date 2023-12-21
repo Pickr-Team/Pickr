@@ -146,36 +146,17 @@ def manager():
         supervisor_id = Supervisor.get_id(user_name=session['user_name'])
         supervisor = Supervisor.get_by_id(id=supervisor_id)
         pre = request.args.get('pre')
-
-        page_size = 5
-        page = request.args.get('page', 1, type=int)
-
-        search_query = request.args.get('search-student') if request.method == 'GET' else None
-        if search_query:
-            students = Student.get_by_name_username_class_number(search_query=search_query).paginate(page=page,
-                                                                                                     per_page=page_size,
-                                                                                                     error_out=False)
-            pre = 'student'
-        else:
-            students = Student.get_query().paginate(page=page, per_page=page_size, error_out=False)
-
-        next_url = url_for('manager', page=students.next_num, pre='student') if students.has_next else None
-        prev_url = url_for('manager', page=students.prev_num, pre='student') if students.has_prev else None
+        students = Student.get_all()
 
         deadline_1 = Deadline.get_first()
         deadline_2 = Deadline.get_second()
-
         supervisors = Supervisor.get_all()
-
         custom_selections = Selection.get_all_custom_selections()
-        print(custom_selections)
-
         notes = Note.get_all()
 
         return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
-                               notes=notes, students=students.items, supervisors=supervisors,
-                               custom_selections=custom_selections, pre=pre, next_url=next_url, prev_url=prev_url,
-                               search_query=search_query)
+                               notes=notes, students=students, supervisors=supervisors,
+                               custom_selections=custom_selections, pre=pre)
     else:
         return render_template('login.html')
 
@@ -529,20 +510,14 @@ def topic_list():
     return render_template('topic_list.html', topics=topics, types=types, supervisors=supervisors)
 
 
-@app.route('/topic_filter')
-def topic_filter():
-    type_id = request.args.get('type_id')
-    supervisor_id = request.args.get('supervisor_id')
+@app.route('/topic_search')
+def topic_search():
     search_query = request.args.get('search_query')
 
     topics = Topic
 
     if search_query:
         topics = topics.get_by_name_or_id(search_query=search_query)
-    elif supervisor_id:
-        topics = topics.get_by_supervisor_id(supervisor_id=supervisor_id)
-    elif type_id:
-        topics = topics.get_by_type_id(type_id=type_id)
 
     if topics:
         return json.dumps({'topic_ids': [topic.id for topic in topics]})

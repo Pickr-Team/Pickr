@@ -13,6 +13,22 @@
             background-color: #a8a8a8 !important;
             color: #000000 !important;
         }
+
+        .hidden {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .visible {
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
     </style>
     <section class="page_hearder">
         <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
@@ -97,32 +113,36 @@
                     <div class="_20px_height"></div>
                     <form id="search-student" method="GET" class="form-2">
                         <input type="text" class="text-field topic_list manage w-input" name="search-student"
-                               placeholder="Student ID, Class number or name" id="search-student"
-                               value="{{ search_query if search_query else '' }}"/>
+                               placeholder="Student ID, Class number or name" id="search-student"/>
                         <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
                         <div class="div-block-4"></div>
-                        {% if prev_url %}
-                            <a href="{{ prev_url }}" class="submit-button-2 w-button"><</a>
-                        {% endif %}
-                        {% if next_url %}
-                            <a href="{{ next_url }}" class="submit-button-2 w-button">></a>
-                        {% endif %}
+                        <a class="submit-button-2 w-button" id="pre-page"><</a>
+                        <div class="div-block-4"></div>
+                        <div id="page-number" class="page-info accent"> 1 / X</div>
+                        <div class="div-block-4"></div>
+                        <a class="submit-button-2 w-button" id="last-page">></a>
                         <div class="_80px_height"></div>
                     </form>
                 </div>
                 <div class="_20px_height"></div>
+                <div id="no-results-message" class="hidden third_title accent not_found">No topic found, try again.
+                </div>
                 {% for student in students %}
                     <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5623-53bceb80"
-                         class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout">
+                         class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout student-item">
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5624-53bceb80" class="w-layout-cell cell-11">
-                            <div class="text-block-2"><em class="italic-text-3">{{ student.english_name }}
-                                ({{ student.chinese_name }})</em></div>
+                            <div class="text-block-2">
+                                <em class="italic-text-3"
+                                    id="student-name">{{ student.english_name }}({{ student.chinese_name }})</em>
+                            </div>
                         </div>
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5628-53bceb80" class="w-layout-cell cell-13">
-                            <div class="text-block-2 italic-text _20_leading"><em>{{ student.class_number }}</em></div>
+                            <div class="text-block-2 italic-text _20_leading" id="student-class-number">
+                                <em>{{ student.class_number }}</em></div>
                         </div>
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562c-53bceb80" class="w-layout-cell cell-14">
-                            <div class="text-block-2 phone_button phone_leading">{{ student.user_name }}</div>
+                            <div class="text-block-2 phone_button phone_leading"
+                                 id="student-username">{{ student.user_name }}</div>
                         </div>
                         <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562f-53bceb80" class="w-layout-cell cell-12">
                             <a href="{{ url_for('student_status', student_id = student.id) }}"
@@ -259,62 +279,8 @@
 
     </div>
     <div class="_80px_height"></div>
+    <script src="../static/js/manager.js"></script>
     <script>
-        // Tab switch
-        $(document).ready(function () {
-            var pre = '{{ pre }}'
-            console.log(pre)
-            //当前选项卡被点击
-            $('.tab_link').click(function (e) {
-                //阻止默认事件
-                e.preventDefault();
-                //获取当前选项卡的data-w-tab属性值
-                var tabEntry = $(this).attr('data-w-tab');
-
-                $('.tab_link').removeClass('w--current');
-                $(this).addClass('w--current');
-
-                //隐藏所有选项卡内容
-                $('.w-tab-pane').fadeOut(100);
-
-                //显示当前选项卡内容
-                $('.w-tab-pane[data-w-tab="' + tabEntry + '"]').fadeIn(300)
-            });
-            if (pre === 'student') {
-                $('.tab_link[data-w-tab="Students"]').click();
-            } else {
-                $('.tab_link').first().click();
-            }
-        })
-
-        // Deadline time picker
-        window.addEventListener('DOMContentLoaded', (event) => {
-            flatpickr("#round1-submit", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                time_24hr: true
-            });
-
-            flatpickr("#round1-result", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                time_24hr: true
-            });
-
-            // 同样的设置也应用于 Round 2
-            flatpickr("#round2-submit", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                time_24hr: true
-            });
-
-            flatpickr("#round2-result", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                time_24hr: true
-            });
-        });
-
         //Display exist deadlines
         $(document).ready(function () {
             if ('{{ deadline_1.submit_time }}' !== 'None') {
@@ -330,96 +296,6 @@
                 $('#deadline-form-2 .submit-button').val('Reset');
             }
         });
-
-        //Deadline form submit
-        $('#deadline-form-1, #deadline-form-2').submit(function (e) {
-            e.preventDefault();
-            var formID = $(this).attr('id');
-            var roundNumber = formID === 'deadline-form-1' ? 1 : 2;
-            var submit_time = $('#round' + roundNumber + '-submit').val();
-            var result_time = $('#round' + roundNumber + '-result').val();
-            var note = $('#round' + roundNumber + '-title').val();
-            var isReset = $('#round' + roundNumber + '-submit-button').val() === 'Reset';
-            console.log(isReset)
-
-            if (isReset) {
-                resetForm(roundNumber);
-                return;
-            }
-
-            // Reset form
-            function resetForm(roundNumber) {
-                $.ajax({
-                    url: '/update_deadline',
-                    method: 'POST',
-                    data: {round_num: roundNumber, reset: 'true'},
-                    success: function (result) {
-                        $('#round' + roundNumber + '-submit').val('');
-                        $('#round' + roundNumber + '-result').val('');
-                        $('#round' + roundNumber + '-title').val('');
-                        $('#deadline-form-' + roundNumber + ' .submit-button').val('Save');
-                        location.reload()
-                    }
-                })
-            }
-
-            // submit form
-            $.ajax({
-                url: '/update_deadline',
-                method: 'POST',
-                data: {
-                    submit_time: submit_time,
-                    result_time: result_time,
-                    note: note,
-                    round_num: roundNumber
-                },
-                success: function (result) {
-                    $('#round' + roundNumber + '-submit').val(submit_time)
-                    $('#round' + roundNumber + '-result').val(result_time)
-                    $('#round' + roundNumber + '-title').val(note)
-                    $('#deadline-form-' + roundNumber + ' .submit-button').val('Reset');
-                    location.reload()
-                }
-            })
-        })
-
-        // Delete note
-        $('.delete-note').click(function (e) {
-            e.preventDefault()
-            var noteID = $(this).data('note-id');
-            var element = $(this).closest('.quick-stack-2')
-
-            var confirmed = confirm("Are you sure you want to delete this topic?");
-
-            if (confirmed) {
-                $.ajax({
-                    url: '/delete_note/' + noteID,
-                    method: 'GET',
-                    success: function (result) {
-                        element.remove()
-                    }
-                })
-            }
-        })
-
-        // Delete student
-        $('.delete-student').click(function (e) {
-            e.preventDefault()
-            var studentID = $(this).data('student-id');
-            var element = $(this).closest('.supervisor_result_item-2')
-
-            var confirmed = confirm("Are you sure you want to delete this student?");
-
-            if (confirmed) {
-                $.ajax({
-                    url: '/delete_student/' + studentID,
-                    method: 'GET',
-                    success: function (result) {
-                        element.remove()
-                    }
-                })
-            }
-        })
     </script>
     </body>
 {% endblock %}
