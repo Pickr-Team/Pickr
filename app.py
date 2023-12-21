@@ -47,6 +47,12 @@ def homepage():
     return render_template('home.html', num_of_topics=num_of_topics, num_of_supervisors=num_of_supervisors)
 
 
+@app.route('/error')
+def error():
+    message = request.args.get('message')
+    return render_template('error.html', message=message)
+
+
 # Click 'My Pickr' button
 @app.route('/my_pickr')
 def my_pickr():
@@ -134,40 +140,42 @@ def supervisor():
         return render_template('login.html')
 
 
-def get_custom_topics_with_details():
-    custom_topics = (
-        db.session.query(Topic, Student, Supervisor)
-        .join(Selection, Selection.first_topic_id == Topic.id)
-        .join(Student, Selection.student_id == Student.id)
-        .join(Supervisor, Topic.supervisor_id == Supervisor.id)
-        .filter(Selection.status.in_([3, 4]))
-        .filter(Topic.is_custom.is_(True))
-        .options(joinedload(Topic.supervisor), joinedload(Selection.student))
-        .all()
-    )
-
-    return custom_topics
-
-
 @app.route('/manager')
 def manager():
     if 'user_name' and 'user_type' in session:
         supervisor_id = Supervisor.get_id(user_name=session['user_name'])
         supervisor = Supervisor.get_by_id(id=supervisor_id)
+        pre = request.args.get('pre')
+
+        page_size = 5
+        page = request.args.get('page', 1, type=int)
+
+        search_query = request.args.get('search-student') if request.method == 'GET' else None
+        if search_query:
+            students = Student.get_by_name_username_class_number(search_query=search_query).paginate(page=page,
+                                                                                                     per_page=page_size,
+                                                                                                     error_out=False)
+            pre = 'student'
+        else:
+            students = Student.get_query().paginate(page=page, per_page=page_size, error_out=False)
+
+        next_url = url_for('manager', page=students.next_num, pre='student') if students.has_next else None
+        prev_url = url_for('manager', page=students.prev_num, pre='student') if students.has_prev else None
 
         deadline_1 = Deadline.get_first()
         deadline_2 = Deadline.get_second()
 
-        students = Student.get_all()
         supervisors = Supervisor.get_all()
 
         custom_selections = Selection.get_all_custom_selections()
         print(custom_selections)
 
         notes = Note.get_all()
+
         return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
-                               notes=notes, students=students, supervisors=supervisors,
-                               custom_selections=custom_selections)
+                               notes=notes, students=students.items, supervisors=supervisors,
+                               custom_selections=custom_selections, pre=pre, next_url=next_url, prev_url=prev_url,
+                               search_query=search_query)
     else:
         return render_template('login.html')
 
@@ -203,7 +211,7 @@ def delete_topic(topic_id):
         topic.delete()
         return jsonify(success=True)
     else:
-        return jsonify(success=False), 404
+        return redirect(url_for('error', message='Topic does not exist'))
 
 
 @app.route('/delete_student/<int:student_id>')
@@ -213,7 +221,7 @@ def delete_student(student_id):
         student.delete()
         return jsonify(success=True)
     else:
-        return jsonify(success=False), 404
+        return redirect(url_for('error', message='Student does not exist'))
 
 
 @app.route('/delete_note/<int:note_id>')
@@ -223,7 +231,7 @@ def delete_note(note_id):
         note.delete()
         return jsonify(success=True)
     else:
-        return jsonify(success=False), 404
+        return redirect(url_for('error', message='Note does not exist'))
 
 
 @app.route('/new_topic')
@@ -297,7 +305,7 @@ def add_student():
     new_student = Student(chinese_name=chinese_name, english_name=english_name, class_number=class_number,
                           email=email, password=password, user_name=user_name)
     new_student.add()
-    return redirect(url_for('manager'))
+    return redirect(url_for('manager', pre='student'))
 
 
 @app.route('/import_students', methods=['POST'])
@@ -316,8 +324,8 @@ def import_students():
             )
             db.session.add(new_student)
         db.session.commit()
-        return redirect(url_for('manager'))
-    return 'No file uploaded', 400
+        return redirect(url_for('manager', pre='student'))
+    return redirect(url_for('error', message='No file uploaded'))
 
 
 @app.route('/get_template')
@@ -400,7 +408,7 @@ def update_student(student_id):
 
     student.update(chinese_name=chinese_name, english_name=english_name, class_number=class_number, email=email,
                    password=password, user_name=user_name)
-    return redirect(url_for('manager'))
+    return redirect(url_for('manager', pre='student'))
 
 
 @app.route('/student_status/<int:student_id>')
@@ -546,24 +554,6 @@ def topic_filter():
 def topic_detail(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     return render_template('topic_detail.html', topic=topic)
-
-
-@app.route('/get_student')
-def get_student():
-    student = Student.query.filter_by(id=1).first()
-    return student.chinese_name
-
-
-@app.route('/add_deadline')
-def add_deadline():
-    new_deadline = Deadline(
-        round_num=1,
-        submit_time='2021-01-01 00:00:00',
-        result_time='2021-01-02 00:00:00',
-        note='第一轮选题'
-    )
-    new_deadline.add()
-    return "Add deadline successfully!"
 
 
 if __name__ == '__main__':

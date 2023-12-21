@@ -42,6 +42,10 @@ class Student(db.Model):
         return cls.query.all()
 
     @classmethod
+    def get_query(cls):
+        return cls.query
+
+    @classmethod
     def get_num(cls):
         return cls.query.count()
 
@@ -52,6 +56,15 @@ class Student(db.Model):
     @classmethod
     def get_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
+
+    @classmethod
+    def get_by_name_username_class_number(cls, search_query):
+        return cls.query.filter(
+            (cls.chinese_name.like(f'%{search_query}%')) |
+            (cls.english_name.like(f'%{search_query}%')) |
+            (cls.user_name.like(f'%{search_query}%')) |
+            (cls.class_number.like(f'%{search_query}%'))
+        )
 
     def __repr__(self):
         return f'<Student {self.id}>'

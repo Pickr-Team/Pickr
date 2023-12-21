@@ -19,7 +19,7 @@
         <div class="_20px_height"></div>
         <a href="{{ url_for('logout') }}" class="small_link accent"><em>Logout↗</em></a>
         <div class="_20px_height"></div>
-        <p class="paragraph-3">In this page,you can create your topic and check your applications.</p></section>
+    </section>
     <div data-current="System" data-easing="ease" data-duration-in="300" data-duration-out="100" class="w-tabs">
         <address class="tabs-menu w-tab-menu">
             <a data-w-tab="System" class="tab_link w-inline-block w-tab-link w--current">
@@ -37,7 +37,7 @@
         </address>
 
         <div class="w-tab-content">
-            <div data-w-tab="System" class="w-tab-pane w--tab-active">
+            <div data-w-tab="System" class="w-tab-pane">
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Deadline Setting</h2>
                 <div class="w-layout-blockcontainer inlimite_container w-container">
@@ -94,15 +94,22 @@
                 <h2 class="third_title-2 accent">Students</h2>
                 <div class="_20px_height"></div>
                 <div class="form-block-2 w-form">
-                    <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form-2">
-                        <input type="text" class="text-field topic_list manage w-input" name="name-2"
-                               placeholder="Student ID, Class number or name" id="name-2"/>
+                    <div class="_20px_height"></div>
+                    <form id="search-student" method="GET" class="form-2">
+                        <input type="text" class="text-field topic_list manage w-input" name="search-student"
+                               placeholder="Student ID, Class number or name" id="search-student"
+                               value="{{ search_query if search_query else '' }}"/>
                         <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
+                        <div class="div-block-4"></div>
+                        {% if prev_url %}
+                            <a href="{{ prev_url }}" class="submit-button-2 w-button"><</a>
+                        {% endif %}
+                        {% if next_url %}
+                            <a href="{{ next_url }}" class="submit-button-2 w-button">></a>
+                        {% endif %}
                         <div class="_80px_height"></div>
                     </form>
-
                 </div>
-
                 <div class="_20px_height"></div>
                 {% for student in students %}
                     <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5623-53bceb80"
@@ -129,11 +136,9 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="_20px_height"></div>
-                <div class="_20px_height"></div>
+                <div class="_40px_height"></div>
                 <a href="{{ url_for('new_student') }}" class="submit-button-2 w-button">+ Add Student</a>
                 <a href="{{ url_for('get_template') }}" class="submit-button-2 w-button">↓ Get Excel Template</a>
-
                 <form action="{{ url_for('import_students') }}" method="POST" enctype="multipart/form-data"
                       style="display: inline;">
                     <label for="file-upload" class="submit-button-2 w-button">
@@ -250,8 +255,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 
     </div>
@@ -259,6 +262,8 @@
     <script>
         // Tab switch
         $(document).ready(function () {
+            var pre = '{{ pre }}'
+            console.log(pre)
             //当前选项卡被点击
             $('.tab_link').click(function (e) {
                 //阻止默认事件
@@ -275,8 +280,11 @@
                 //显示当前选项卡内容
                 $('.w-tab-pane[data-w-tab="' + tabEntry + '"]').fadeIn(300)
             });
-
-            $('.tab_link').first().click();
+            if (pre === 'student') {
+                $('.tab_link[data-w-tab="Students"]').click();
+            } else {
+                $('.tab_link').first().click();
+            }
         })
 
         // Deadline time picker
@@ -309,7 +317,6 @@
 
         //Display exist deadlines
         $(document).ready(function () {
-            console.log('{{ deadline_1.submit_time }}' !== 'None');
             if ('{{ deadline_1.submit_time }}' !== 'None') {
                 $('#round1-submit').val('{{ deadline_1.submit_time }}').prop('disabled', true).addClass('disabled-color');
                 $('#round1-result').val('{{ deadline_1.result_time }}').prop('disabled', true).addClass('disabled-color');
