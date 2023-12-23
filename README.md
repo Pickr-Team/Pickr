@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="GitHub_Resource/Logo.png" alt="Rosetta" width="350">
+  <img src="GitHub_Resource/Logo.png" alt="Pickr" width="350">
 </h1>
 
 <h3 align="center">

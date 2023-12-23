@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}home{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder"><h1 class="first_title">Add New Supervisor</h1>
+        <p class="paragraph">In this page,you can add a new student into the system.</p></section>
+    <section>
+        <div class="_20px_height"></div>
+        <div class="w-form">
+            <form action="{{ url_for('add_supervisor') }}" id="new_supervisor_form" method="POST">
+                <label for="first_name" class="text-block _10button_spac">First Name</label>
+                <input type="text" class="text-field creatnew w-input" name="first_name" id="first_name"/>
+                <label for="last_name" class="text-block _10button_spac">Last Name</label>
+                <input type="text" class="text-field creatnew w-input" name="last_name" id="last_name"/>
+                <label for="position" class="text-block _10button_spac">Position</label>
+                <input type="number" class="text-field creatnew w-input" name="position" id="position"/>
+                <label for="email" class="text-block _10button_spac">E-mail</label>
+                <input type="text" class="text-field creatnew w-input" name="email" id="email"/>
+                <label for="username" class="text-block _10button_spac">Username</label>
+                <input type="text" class="text-field creatnew w-input" name="username" id="username"/>
+                <label for="password" class="text-block _10button_spac">Password</label>
+                <input type="text" class="text-field creatnew w-input" name="password" id="password"/>
+                <input type="submit" value="+ Add" data-wait="Please wait..." class="submit-button _20head_spacing w-button"/>
+            </form>
+        </div>
+        <div class="_80px_height"></div>
+    </section>
+    </body>
+{% endblock %}
+
+

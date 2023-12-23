@@ -205,6 +205,16 @@ def delete_student(student_id):
         return redirect(url_for('error', message='Student does not exist'))
 
 
+@app.route('/delete_supervisor/<int:supervisor_id>')
+def delete_supervisor(supervisor_id):
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    if supervisor:
+        supervisor.delete()
+        return jsonify(success=True)
+    else:
+        return redirect(url_for('error', message='Supervisor does not exist'))
+
+
 @app.route('/delete_note/<int:note_id>')
 def delete_note(note_id):
     note = Note.get_by_id(id=note_id)
@@ -229,6 +239,11 @@ def new_note():
 @app.route('/new_student')
 def new_student():
     return render_template('new_student.html')
+
+
+@app.route('/new_supervisor')
+def new_supervisor():
+    return render_template('new_supervisor.html')
 
 
 @app.route('/add_topic', methods=['POST'])
@@ -289,8 +304,24 @@ def add_student():
     return redirect(url_for('manager', pre='student'))
 
 
+@app.route('/add_supervisor', methods=['POST'])
+def add_supervisor():
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    position = request.form.get('position')
+    user_name = request.form.get('username')
+    password = request.form.get('password')
+    email = request.form.get('email')
+
+    new_supervisor = Supervisor(first_name=first_name, last_name=last_name, position=position,
+                                user_name=user_name, password=password, email=email, is_admin=False)
+    new_supervisor.add()
+    return redirect(url_for('manager', pre='supervisor'))
+
+
 @app.route('/import_students', methods=['POST'])
 def import_students():
+    print('import_students')
     file = request.files['file']
     if file:
         df = pd.read_excel(file)
@@ -309,10 +340,38 @@ def import_students():
     return redirect(url_for('error', message='No file uploaded'))
 
 
+@app.route('/import_supervisors', methods=['POST'])
+def import_supervisors():
+    print('import_supervisors')
+    file = request.files['file']
+    if file:
+        df = pd.read_excel(file)
+        for index, row in df.iterrows():
+            new_supervisor = Supervisor(
+                first_name=row['first_name'],
+                last_name=row['last_name'],
+                position=row['position'],
+                user_name=row['user_name'],
+                password=row['password'],
+                email=row['email'],
+                is_admin=False
+            )
+            db.session.add(new_supervisor)
+        db.session.commit()
+        return redirect(url_for('manager', pre='supervisor'))
+    return redirect(url_for('error', message='No file uploaded'))
+
+
 @app.route('/get_template')
 def get_template():
     directory = os.path.join(app.root_path, 'static', 'file')
     filename = 'students_example.xlsx'
+    return send_from_directory(directory, filename, as_attachment=True)
+
+@app.route('/get_template_supervisor')
+def get_template_supervisor():
+    directory = os.path.join(app.root_path, 'static', 'file')
+    filename = 'supervisor_example.xlsx'
     return send_from_directory(directory, filename, as_attachment=True)
 
 
@@ -333,6 +392,20 @@ def edit_note(note_id):
 def edit_student(student_id):
     student = Student.get_by_id(id=student_id)
     return render_template('edit_student.html', student=student)
+
+
+@app.route('/edit_supervisor/<int:supervisor_id>')
+def edit_supervisor(supervisor_id):
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    return render_template('edit_supervisor.html', supervisor=supervisor)
+
+
+@app.route('/check_custom_selection/<int:selection_id>')
+def check_custom_selection(selection_id):
+    selection = Selection.get_by_id(selection_id=selection_id)
+    supervisors = Supervisor.get_all()
+    types = Type.get_all()
+    return render_template('check_custom_selection.html', selection=selection, supervisors=supervisors, types=types)
 
 
 @app.route('/update_topic/<int:topic_id>', methods=['POST'])
@@ -392,11 +465,67 @@ def update_student(student_id):
     return redirect(url_for('manager', pre='student'))
 
 
+@app.route('/update_supervisor/<int:supervisor_id>', methods=['POST'])
+def update_supervisor(supervisor_id):
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    position = request.form.get('position')
+    user_name = request.form.get('user_name')
+    password = request.form.get('password')
+    email = request.form.get('email')
+
+    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+
+    total_quta = 0
+    for topic in topics:
+        total_quta += topic.quota
+
+    if total_quta > int(position):
+        return render_template('edit_supervisor.html',
+                               message='Can not save your modify, excess quota, supervisor already have ' + str(
+                                   total_quta) + ' quta.',
+                               supervisor=supervisor)
+
+    supervisor.update(first_name=first_name, last_name=last_name, position=position,
+                      user_name=user_name, password=password, email=email)
+    return redirect(url_for('manager', pre='supervisor'))
+
+
+@app.route('/update_custom_selection/<int:selection_id>', methods=['POST'])
+def update_custom_selection(selection_id):
+    selection = Selection.get_by_id(selection_id=selection_id)
+    supervisor_id = request.form.get('supervisor')
+    topic_name = request.form.get('name')
+    description = request.form.get('description')
+    type_id = request.form.get('type')
+    status = request.form.get('status')
+
+    selection.update_status(status=status)
+    selection.update_first_topic_supervisor_id(supervisor_id=supervisor_id)
+    selection.update_first_topic_name(name=topic_name)
+    selection.update_first_topic_description(description=description)
+    selection.update_first_topic_type_id(type_id=type_id)
+    return redirect(url_for('manager', pre='custom_selection'))
+
+
 @app.route('/student_status/<int:student_id>')
 def student_status(student_id):
     selection = Selection.get_by_student_id(student_id=student_id)
     student = Student.get_by_id(id=student_id)
     return render_template('student_status.html', selection=selection, student=student)
+
+
+@app.route('/supervisor_status/<int:supervisor_id>')
+def supervisor_status(supervisor_id):
+    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+
+    total_quta = 0
+    for topic in topics:
+        total_quta += topic.quota
+
+    return render_template('supervisor_status.html', topics=topics, supervisor=supervisor, total_quta=total_quta)
 
 
 @app.route('/topic_poster')

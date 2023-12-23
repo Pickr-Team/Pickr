@@ -104,11 +104,9 @@
 
                 <div class="_40px_height"></div>
                 <a href="{{ url_for('new_note') }}" class="submit-button-2 w-button">+ New Note</a></div>
-
             <div data-w-tab="Students" class="w-tab-pane">
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Students</h2>
-                <div class="_20px_height"></div>
                 <div class="form-block-2 w-form">
                     <div class="_20px_height"></div>
                     <form id="search-student" method="GET" class="form-2">
@@ -125,8 +123,7 @@
                     </form>
                 </div>
                 <div class="_20px_height"></div>
-                <div id="no-results-message" class="hidden third_title accent not_found">No topic found, try again.
-                </div>
+                <div id="no-results-message" class="hidden third_title accent not_found">No student found, try again.</div>
                 {% for student in students %}
                     <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5623-53bceb80"
                          class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout student-item">
@@ -159,11 +156,11 @@
                 <div class="_40px_height"></div>
                 <a href="{{ url_for('new_student') }}" class="submit-button-2 w-button">+ Add Student</a>
                 <a href="{{ url_for('get_template') }}" class="submit-button-2 w-button">↓ Get Excel Template</a>
-                <form action="{{ url_for('import_students') }}" method="POST" enctype="multipart/form-data"
-                      style="display: inline;">
-                    <label for="file-upload" class="submit-button-2 w-button">
+                <form id="student-import" action="{{ url_for('import_students') }}" method="POST"
+                      enctype="multipart/form-data" style="display: inline;">
+                    <label for="file-upload-student" class="submit-button-2 w-button">
                         ↑ Import From Excel
-                        <input id="file-upload" type="file" name="file" accept=".xlsx, .xls"
+                        <input id="file-upload-student" type="file" name="file" accept=".xlsx, .xls"
                                onchange="this.form.submit()" style="display: none;">
                     </label>
                 </form>
@@ -173,31 +170,37 @@
                 <h2 class="third_title-2 accent">Supervisors</h2>
                 <div class="_20px_height"></div>
                 <div class="form-block-2 w-form">
-                    <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form-2"
-                          data-wf-page-id="657da25ce4daac8653bceb80"
-                          data-wf-element-id="48dded6f-4355-636c-db0f-fae327081788">
-                        <input type="text" class="text-field topic_list manage w-input" name="name-3"
-                               placeholder="Supervisor name" id="name-3"/>
+                    <form id="search-supervisor" method="GET" class="form-2">
+                        <input type="text" class="text-field topic_list manage w-input" name="search-supervisor"
+                               placeholder="Supervisor name, ID" id="search-supervisor"/>
                         <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
+                        <div class="div-block-4"></div>
+                        <a class="submit-button-2 w-button" id="pre-page-supervisor"><</a>
+                        <div class="div-block-4"></div>
+                        <div id="page-number-supervisor" class="page-info accent"> 1 / X</div>
+                        <div class="div-block-4"></div>
+                        <a class="submit-button-2 w-button" id="last-page-supervisor">></a>
                     </form>
                     <div class="_20px_height"></div>
                     <div class="_20px_height"></div>
                 </div>
-
+                <div id="no-results-message-supervisor" class="hidden third_title accent not_found">No supervisor found,
+                    try again.
+                </div>
                 {% for supervisor in supervisors %}
                     {% if supervisor.is_admin == 0 %}
                         <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752842-53bceb80"
-                             class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout">
+                             class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout supervisor-item">
                             <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752843-53bceb80"
                                  class="w-layout-cell cell-11">
-                                <div class="text-block-2"><em
-                                        class="italic-text-3">{{ supervisor.first_name }} {{ supervisor.last_name }}</em>
+                                <div class="text-block-2 supervisor-name">
+                                    {{ supervisor.first_name }} {{ supervisor.last_name }}
                                 </div>
                             </div>
                             <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752847-53bceb80"
                                  class="w-layout-cell cell-13">
                                 <div class="text-block-2 italic-text _20_leading">
-                                    <em>{{ supervisor.get_topic_num() }}/{{ supervisor.position }}</em>
+                                    {{ supervisor.get_topic_num() }}/{{ supervisor.position }}
                                 </div>
                             </div>
                             <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284b-53bceb80"
@@ -205,49 +208,74 @@
                                 <div class="text-block-2 phone_button phone_leading">{{ supervisor.email }}</div>
                             </div>
                             <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284e-53bceb80"
-                                 class="w-layout-cell cell-12"><a
-                                    href="#" class="submit-button-2 w-button">Detail</a>
+                                 class="w-layout-cell cell-12">
+                                <a href="{{ url_for('supervisor_status', supervisor_id = supervisor.id) }}"
+                                   class="submit-button-2 w-button">Detail</a>
                                 <div class="div-block-4"></div>
-                                <a href="#" class="submit-button-2 w-button">Edit</a>
+                                <a href="{{ url_for('edit_supervisor', supervisor_id = supervisor.id) }}"
+                                   class="submit-button-2 w-button">Edit</a>
                                 <div class="div-block-4"></div>
-                                <a href="#" class="submit-button-2 delete_button w-button">Delete</a></div>
+                                <a href="#" data-supervisor-id="{{ supervisor.id }}"
+                                   class="submit-button-2 delete_button w-button delete-supervisor">Delete</a></div>
                         </div>
                     {% endif %}
                 {% endfor %}
-                <div class="_20px_height"></div>
-                <div class="_20px_height"></div>
-                <a href="#" class="submit-button-2 w-button">+ Add Supervisor</a>
+                <div class="_40px_height"></div>
+                <a href="{{ url_for('new_supervisor') }}" class="submit-button-2 w-button">+ Add Supervisor</a>
+                <a href="{{ url_for('get_template_supervisor') }}" class="submit-button-2 w-button">↓ Get Excel
+                    Template</a>
+                <form id="supervisor-import" action="{{ url_for('import_supervisors') }}" method="POST"
+                      enctype="multipart/form-data" style="display: inline;">
+                    <label for="file-upload-supervisor" class="submit-button-2 w-button">↑ Import From Excel
+                        <input id="file-upload-supervisor" type="file" name="file" accept=".xlsx, .xls"
+                               onchange="this.form.submit()" style="display: none;">
+                    </label>
+                </form>
             </div>
             <div data-w-tab="Topics" class="w-tab-pane">
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Custom Topics</h2>
                 <div class="_20px_height"></div>
                 <div class="form-block-2 w-form">
-                    <form id="email-form" name="email-form" data-name="Email Form" method="get" class="form-2">
-                        <input type="text" class="text-field topic_list manage w-input" name="name"
-                               placeholder="Supervisor name" id="name"/>
+                    <form id="search-topic" name="search-topic" method="GET" class="form-2">
+                        <input type="text" class="text-field topic_list manage w-input" name="search-topic"
+                               placeholder="Topic name, Student name, Supervisor name" id="search-topic"/>
                         <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
+                        <div class="div-block-4"></div>
+                        <a class="submit-button-2 w-button" id="pre-page-topic"><</a>
+                        <div class="div-block-4"></div>
+                        <div id="page-number-topic" class="page-info accent"> 1 / X</div>
+                        <div class="div-block-4"></div>
+                        <a class="submit-button-2 w-button" id="last-page-topic">></a>
                     </form>
                 </div>
-
                 <div class="_20px_height">
+                    <div id="no-results-message-topic" class="hidden third_title accent not_found">No supervisor
+                        found,
+                        try again.
+                        <div class="_20px_height"></div>
+                    </div>
+
                     {% if custom_selections %}
                         {% for custom_selection in custom_selections %}
                             <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21021-53bceb80"
-                                 class="w-layout-layout supervisor_result_item-2 _5row wf-layout-layout">
+                                 class="w-layout-layout supervisor_result_item-2 _5row wf-layout-layout topic-item">
                                 <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21022-53bceb80"
                                      class="w-layout-cell cell-11">
-                                    <div class="text-block-2"><em
-                                            class="italic-text-3">{{ custom_selection.first_topic_name }}</em>
+                                    <div class="text-block-2">
+                                        <em class="italic-text-3"
+                                            id="topic-name">{{ custom_selection.first_topic_name }}</em>
                                     </div>
                                 </div>
                                 <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21026-53bceb80"
                                      class="w-layout-cell cell-8">
-                                    <div class="text-block-2 phone_button phone_leading">{{ custom_selection.english_name }}</div>
+                                    <div class="text-block-2 phone_button phone_leading"
+                                         id="student-name">{{ custom_selection.english_name }}</div>
                                 </div>
                                 <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102a-53bceb80"
                                      class="w-layout-cell cell-16">
-                                    <div class="text-block-2 phone_button phone_leading">{{ custom_selection.first_topic_supervisor_name }}</div>
+                                    <div class="text-block-2 phone_button phone_leading"
+                                         id="supervisor-name">{{ custom_selection.first_topic_supervisor_name }}</div>
                                 </div>
                                 <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102d-53bceb80"
                                      class="w-layout-cell cell-12">
@@ -261,11 +289,10 @@
                                     </div>
                                 </div>
                                 <div id="w-node-_14f71255-086f-cc72-20b2-b7d625be6b97-53bceb80"
-                                     class="w-layout-cell cell-15"><a
-                                        href="#" class="submit-button-2 w-button">Check</a>
-                                    <div class="div-block-4"></div>
-                                    <div class="div-block-4"></div>
-                                    <a href="#" class="submit-button-2 delete_button w-button">Delete</a></div>
+                                     class="w-layout-cell cell-15">
+                                    <a href="{{ url_for('check_custom_selection', selection_id = custom_selection.id) }}"
+                                       class="submit-button-2 w-button">Check</a>
+                                </div>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -279,8 +306,61 @@
 
     </div>
     <div class="_80px_height"></div>
-    <script src="../static/js/manager.js"></script>
     <script>
+        // Tab switch
+        $(document).ready(function () {
+            var pre = '{{ pre }}'
+            console.log(pre)
+            $('.tab_link').click(function (e) {
+                e.preventDefault();
+
+                var tabEntry = $(this).attr('data-w-tab');
+
+                $('.tab_link').removeClass('w--current');
+                $(this).addClass('w--current');
+
+                $('.w-tab-pane').fadeOut(100);
+
+                $('.w-tab-pane[data-w-tab="' + tabEntry + '"]').fadeIn(300)
+            });
+            if (pre === 'student') {
+                $('.tab_link[data-w-tab="Students"]').click();
+            } else if (pre === 'supervisor') {
+                $('.tab_link[data-w-tab="Supervisor"]').click();
+            } else if (pre === 'custom_selection') {
+                $('.tab_link[data-w-tab="Topics"]').click();
+            } else {
+                $('.tab_link').first().click();
+            }
+        })
+
+        // Deadline time picker
+        window.addEventListener('DOMContentLoaded', (event) => {
+            flatpickr("#round1-submit", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true
+            });
+
+            flatpickr("#round1-result", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true
+            });
+
+            flatpickr("#round2-submit", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true
+            });
+
+            flatpickr("#round2-result", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true
+            });
+        });
+
         //Display exist deadlines
         $(document).ready(function () {
             if ('{{ deadline_1.submit_time }}' !== 'None') {
@@ -296,8 +376,328 @@
                 $('#deadline-form-2 .submit-button').val('Reset');
             }
         });
+
+        //Deadline form submit
+        $('#deadline-form-1, #deadline-form-2').submit(function (e) {
+            e.preventDefault();
+            var formID = $(this).attr('id');
+            var roundNumber = formID === 'deadline-form-1' ? 1 : 2;
+            var submit_time = $('#round' + roundNumber + '-submit').val();
+            var result_time = $('#round' + roundNumber + '-result').val();
+            var note = $('#round' + roundNumber + '-title').val();
+            var isReset = $('#round' + roundNumber + '-submit-button').val() === 'Reset';
+            console.log(isReset)
+
+            if (isReset) {
+                resetForm(roundNumber);
+                return;
+            }
+
+            // Reset form
+            function resetForm(roundNumber) {
+                $.ajax({
+                    url: '/update_deadline',
+                    method: 'POST',
+                    data: {round_num: roundNumber, reset: 'true'},
+                    success: function (result) {
+                        $('#round' + roundNumber + '-submit').val('');
+                        $('#round' + roundNumber + '-result').val('');
+                        $('#round' + roundNumber + '-title').val('');
+                        $('#deadline-form-' + roundNumber + ' .submit-button').val('Save');
+                        location.reload()
+                    }
+                })
+            }
+
+            // submit form
+            $.ajax({
+                url: '/update_deadline',
+                method: 'POST',
+                data: {
+                    submit_time: submit_time,
+                    result_time: result_time,
+                    note: note,
+                    round_num: roundNumber
+                },
+                success: function (result) {
+                    $('#round' + roundNumber + '-submit').val(submit_time)
+                    $('#round' + roundNumber + '-result').val(result_time)
+                    $('#round' + roundNumber + '-title').val(note)
+                    $('#deadline-form-' + roundNumber + ' .submit-button').val('Reset');
+                    location.reload()
+                }
+            })
+        })
+
+        // Delete note
+        $('.delete-note').click(function (e) {
+            e.preventDefault()
+            var noteID = $(this).data('note-id');
+            var element = $(this).closest('.quick-stack-2')
+
+            var confirmed = confirm("Are you sure you want to delete this topic?");
+
+            if (confirmed) {
+                $.ajax({
+                    url: '/delete_note/' + noteID,
+                    method: 'GET',
+                    success: function (result) {
+                        element.remove()
+                    }
+                })
+            }
+        })
+
+        // Delete student
+        $('.delete-student').click(function (e) {
+            e.preventDefault()
+            var studentID = $(this).data('student-id');
+            var element = $(this).closest('.supervisor_result_item-2')
+
+            var confirmed = confirm("Are you sure you want to delete this student?");
+
+            if (confirmed) {
+                $.ajax({
+                    url: '/delete_student/' + studentID,
+                    method: 'GET',
+                    success: function (result) {
+                        element.remove()
+                    }
+                })
+            }
+        })
+
+        //delete supervisor
+        $('.delete-supervisor').click(function (e) {
+            e.preventDefault()
+            var supervisorID = $(this).data('supervisor-id');
+            var element = $(this).closest('.supervisor_result_item-2')
+
+            var confirmed = confirm("Are you sure you want to delete this supervisor?");
+
+            if (confirmed) {
+                $.ajax({
+                    url: '/delete_supervisor/' + supervisorID,
+                    method: 'GET',
+                    success: function (result) {
+                        element.remove()
+                    }
+                })
+            }
+        })
+
+        // Pagination and Search for student list
+        $(document).ready(function () {
+            var pageSize = 5;
+            var currentPage = 1;
+            var students = $('.student-item');
+            var visibleStudents = students;
+            var pageCount = updatePageCount();
+
+            function updatePageCount() {
+                // Update the page count
+                return Math.ceil(visibleStudents.length / pageSize);
+            }
+
+            function updateButtons() {
+                // Update the buttons
+                $('#pre-page').toggleClass('disabled', currentPage === 1);
+                $('#last-page').toggleClass('disabled', currentPage === pageCount);
+                $('#page-number').text(currentPage + ' / ' + pageCount);
+            }
+
+            function toggleNoResultsMessage(show) {
+                // Used to show or hide the "No results found" message
+                if (show) {
+                    $('#no-results-message').removeClass('hidden');
+                } else {
+                    $('#no-results-message').addClass('hidden');
+                }
+            }
+
+            function renderPage() {
+                // Render the current page
+                students.addClass('hidden').removeClass('visible');
+                var start = (currentPage - 1) * pageSize;
+                visibleStudents.slice(start, start + pageSize).removeClass('hidden').addClass('visible');
+                updateButtons();
+                toggleNoResultsMessage(visibleStudents.length === 0);
+            }
+
+            $('#pre-page').click(function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage();
+                }
+            });
+
+            $('#last-page').click(function () {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    renderPage();
+                }
+            });
+
+            // Search Function
+            $('#search-student').submit(function (e) {
+                e.preventDefault();
+                var searchTerm = $('input[name="search-student"]').val().toLowerCase();
+                visibleStudents = students.filter(function () {
+                    var student = $(this);
+                    var name = student.find('#student-name').text().toLowerCase();
+                    var classNum = student.find('#student-class-number').text().toLowerCase();
+                    var userName = student.find('#student-username').text().toLowerCase();
+                    return !searchTerm || name.includes(searchTerm) || classNum.includes(searchTerm) || userName.includes(searchTerm);
+                });
+                currentPage = 1;
+                pageCount = updatePageCount();
+                renderPage();
+            });
+
+            renderPage();
+        });
+
+        // Pagination and Search for supervisor list
+        $(document).ready(function () {
+            var pageSize = 5;
+            var currentPage = 1;
+            var supervisors = $('.supervisor-item');
+            var visibleSupervisors = supervisors;
+            var pageCount = updatePageCount();
+
+            function updatePageCount() {
+                // Update the page count
+                return Math.ceil(visibleSupervisors.length / pageSize);
+            }
+
+            function updateButtons() {
+                // Update the buttons
+                $('#pre-page-supervisor').toggleClass('disabled', currentPage === 1);
+                $('#last-page-supervisor').toggleClass('disabled', currentPage === pageCount);
+                $('#page-number-supervisor').text(currentPage + ' / ' + pageCount);
+            }
+
+            function toggleNoResultsMessage(show) {
+                // Used to show or hide the "No results found" message
+                if (show) {
+                    $('#no-results-message-supervisor').removeClass('hidden');
+                } else {
+                    $('#no-results-message-supervisor').addClass('hidden');
+                }
+            }
+
+            function renderPage() {
+                // Render the current page
+                supervisors.addClass('hidden').removeClass('visible');
+                var start = (currentPage - 1) * pageSize;
+                visibleSupervisors.slice(start, start + pageSize).removeClass('hidden').addClass('visible');
+                updateButtons();
+                toggleNoResultsMessage(visibleSupervisors.length === 0);
+            }
+
+            $('#pre-page-supervisor').click(function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage();
+                }
+            });
+
+            $('#last-page-supervisor').click(function () {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    renderPage();
+                }
+            });
+
+            // Search Function
+            $('#search-supervisor').submit(function (e) {
+                e.preventDefault();
+                var searchTerm = $('input[name="search-supervisor"]').val().toLowerCase();
+                visibleSupervisors = supervisors.filter(function () {
+                    var supervisor = $(this);
+                    var name = supervisor.find('.supervisor-name').text().toLowerCase();
+                    return !searchTerm || name.includes(searchTerm);
+                });
+                currentPage = 1;
+                pageCount = updatePageCount();
+                renderPage();
+            });
+
+            renderPage();
+        });
+
+        // Pagination and Search for topic list
+        $(document).ready(function () {
+            var pageSize = 10;
+            var currentPage = 1;
+            var topics = $('.topic-item');
+            var visibleTopics = topics;
+            var pageCount = updatePageCount();
+
+            function updatePageCount() {
+                // Update the page count
+                return Math.ceil(visibleTopics.length / pageSize);
+            }
+
+            function updateButtons() {
+                // Update the buttons
+                $('#pre-page-topic').toggleClass('disabled', currentPage === 1);
+                $('#last-page-topic').toggleClass('disabled', currentPage === pageCount);
+                $('#page-number-topic').text(currentPage + ' / ' + pageCount);
+            }
+
+            function toggleNoResultsMessage(show) {
+                // Used to show or hide the "No results found" message
+                if (show) {
+                    $('#no-results-message-topic').removeClass('hidden');
+                } else {
+                    $('#no-results-message-topic').addClass('hidden');
+                }
+            }
+
+            function renderPage() {
+                // Render the current page
+                topics.addClass('hidden').removeClass('visible');
+                var start = (currentPage - 1) * pageSize;
+                visibleTopics.slice(start, start + pageSize).removeClass('hidden').addClass('visible');
+                updateButtons();
+                toggleNoResultsMessage(visibleTopics.length === 0);
+            }
+
+            $('#pre-page-topic').click(function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage();
+                }
+            });
+
+            $('#last-page-topic').click(function () {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    renderPage();
+                }
+            });
+
+            // Search Function
+            $('#search-topic').submit(function (e) {
+                console.log('search')
+                e.preventDefault();
+                var searchTerm = $('input[name="search-topic"]').val().toLowerCase();
+                console.log(searchTerm)
+                visibleTopics = topics.filter(function () {
+                    var topic = $(this);
+                    var name = topic.find('#topic-name').text().toLowerCase();
+                    var studentName = topic.find('#student-name').text().toLowerCase();
+                    var supervisorName = topic.find('#supervisor-name').text().toLowerCase();
+                    return !searchTerm || name.includes(searchTerm) || studentName.includes(searchTerm) || supervisorName.includes(searchTerm);
+                });
+                currentPage = 1;
+                pageCount = updatePageCount();
+                renderPage();
+            });
+
+            renderPage();
+        });
     </script>
     </body>
 {% endblock %}
-
-

@@ -103,10 +103,33 @@ class Selection(db.Model):
     def get_all_custom_selections(cls):
         return cls.query.filter(cls.status.in_([2, 3])).all()
 
+    @classmethod
+    def get_by_id(cls, selection_id):
+        return cls.query.filter_by(id=selection_id).first()
+
     # get student name
     @classmethod
     def get_student_name(cls, student_id):
         return cls.query.filter_by(student_id=student_id).first().student.english_name
+
+    def update_status(self, status):
+        self.status = status
+
+    def update_first_topic_supervisor_id(self, supervisor_id):
+        self.first_topic.supervisor_id = supervisor_id
+        db.session.commit()
+
+    def update_first_topic_type_id(self, type_id):
+        self.first_topic.type_id = type_id
+        db.session.commit()
+
+    def update_first_topic_description(self, description):
+        self.first_topic.description = description
+        db.session.commit()
+
+    def update_first_topic_name(self, name):
+        self.first_topic.name = name
+        db.session.commit()
 
     def __repr__(self):
         return f'<Selection {self.id}>'
