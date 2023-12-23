@@ -36,6 +36,10 @@ class Selection(db.Model):
         self.final_topic_id = final_topic_id
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @property
     def first_topic_name(self):
         return self.first_topic.name
@@ -43,6 +47,14 @@ class Selection(db.Model):
     @property
     def first_topic_supervisor_name(self):
         return self.first_topic.supervisor.first_name + ' ' + self.first_topic.supervisor.last_name
+
+    @property
+    def final_topic_supervisor_name(self):
+        return self.final_topic.supervisor.first_name + ' ' + self.final_topic.supervisor.last_name
+
+    @property
+    def final_topic_supervisor_email(self):
+        return self.final_topic.supervisor.email
 
     @property
     def english_name(self):
@@ -80,6 +92,10 @@ class Selection(db.Model):
         return self.first_topic.type.name
 
     @property
+    def final_type_name(self):
+        return self.final_topic.type.name
+
+    @property
     def custom_description(self):
         return self.first_topic.description
 
@@ -111,6 +127,11 @@ class Selection(db.Model):
     @classmethod
     def get_student_name(cls, student_id):
         return cls.query.filter_by(student_id=student_id).first().student.english_name
+
+    # get number of status equal to 3 or 4 (success)
+    @classmethod
+    def get_num_of_status_3or4(cls):
+        return cls.query.filter(cls.status.in_([3, 4])).count()
 
     def update_status(self, status):
         self.status = status

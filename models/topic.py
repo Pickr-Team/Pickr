@@ -109,11 +109,22 @@ class Topic(db.Model):
     def get_all(cls):
         return cls.query.all()
 
+    # Get the number of students who have selected this topic (selection.status == 0)
     def get_selected_num(self):
         return Selection.query.filter(
-            (Selection.first_topic_id == self.id) |
-            (Selection.second_topic_id == self.id) |
-            (Selection.third_topic_id == self.id)
+            Selection.status == 0,
+            (
+                    (Selection.first_topic_id == self.id) |
+                    (Selection.second_topic_id == self.id) |
+                    (Selection.third_topic_id == self.id)
+            )
+        ).count()
+
+    # Get the number of students who have selected this topic (selection.status == 3 or 4)
+    def get_selected_num_final(self):
+        return Selection.query.filter(
+            Selection.status.in_([3, 4]),
+            (Selection.final_topic_id == self.id)
         ).count()
 
     def get_supervisor_name(self):
@@ -125,6 +136,10 @@ class Topic(db.Model):
     @classmethod
     def get_num(cls):
         return cls.query.filter(cls.is_custom == False).count()
+
+    @classmethod
+    def get_num_custom(cls):
+        return cls.query.filter(cls.is_custom == True).count()
 
     # Get all topics that are custom
     @classmethod

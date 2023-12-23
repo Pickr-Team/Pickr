@@ -67,5 +67,14 @@ class Supervisor(db.Model):
             .scalar()
         return total_quota if total_quota is not None else 0
 
+    def get_total_final_selections(self):
+        topics = Topic.query.filter_by(supervisor_id=self.id).all()
+        total_selections = 0
+        for topic in topics:
+            final_selections = topic.get_selected_num_final()
+            if final_selections is not None:
+                total_selections += final_selections
+        return total_selections
+
     def __repr__(self):
         return f'<Supervisor {self.id}>'

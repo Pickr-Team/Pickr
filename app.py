@@ -153,10 +153,14 @@ def manager():
         supervisors = Supervisor.get_all()
         custom_selections = Selection.get_all_custom_selections()
         notes = Note.get_all()
+        topic_num = Topic.get_num()
+        custom_topic_num = Topic.get_num_custom()
+        numer_success = Selection.get_num_of_status_3or4()
 
         return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
                                notes=notes, students=students, supervisors=supervisors,
-                               custom_selections=custom_selections, pre=pre)
+                               custom_selections=custom_selections, topic_num=topic_num,
+                               custom_topic_num=custom_topic_num, numer_success=numer_success, pre=pre)
     else:
         return render_template('login.html')
 
@@ -189,30 +193,41 @@ def update_deadline():
 def delete_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     if topic:
-        topic.delete()
-        return jsonify(success=True)
+        if topic.get_selected_num_final() > 0 or topic.get_selected_num() > 0:
+            return jsonify(success=False, error='Can not delete this topic, students have selected this topic.')
+        else:
+            topic.delete()
+            return jsonify(success=True)
     else:
-        return redirect(url_for('error', message='Topic does not exist'))
+        return jsonify(success=False, error='Topic does not exist')
 
 
 @app.route('/delete_student/<int:student_id>')
 def delete_student(student_id):
     student = Student.get_by_id(id=student_id)
+    selection = Selection.get_by_student_id(student_id=student_id)
     if student:
-        student.delete()
-        return jsonify(success=True)
+        if selection is None:
+            student.delete()
+            return jsonify(success=True)
+        else:
+            return jsonify(success=False, error='Can not delete this student, student has selected topics.')
     else:
-        return redirect(url_for('error', message='Student does not exist'))
+        return jsonify(success=False, error='Student does not exist')
 
 
 @app.route('/delete_supervisor/<int:supervisor_id>')
 def delete_supervisor(supervisor_id):
     supervisor = Supervisor.get_by_id(id=supervisor_id)
+    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
     if supervisor:
-        supervisor.delete()
-        return jsonify(success=True)
+        if len(topics) == 0:
+            supervisor.delete()
+            return jsonify(success=True)
+        else:
+            return jsonify(success=False, error='Can not delete this supervisor, supervisor has topics.')
     else:
-        return redirect(url_for('error', message='Supervisor does not exist'))
+        return jsonify(success=False, error='Supervisor does not exist')
 
 
 @app.route('/delete_note/<int:note_id>')
@@ -368,6 +383,7 @@ def get_template():
     filename = 'students_example.xlsx'
     return send_from_directory(directory, filename, as_attachment=True)
 
+
 @app.route('/get_template_supervisor')
 def get_template_supervisor():
     directory = os.path.join(app.root_path, 'static', 'file')
@@ -423,6 +439,7 @@ def update_topic(topic_id):
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
     types = Type.get_all()
+    selected_num = topic.get_selected_num_final()
 
     total_quta = 0
     for topic_in in topics:
@@ -432,6 +449,12 @@ def update_topic(topic_id):
         return render_template('edit_topic.html',
                                message='Can not save your modify, excess quota, you only have ' + str(
                                    supervisor.position) + ' positions.',
+                               topic=topic, types=types)
+
+    if selected_num is not None and selected_num > int(position):
+        return render_template('edit_topic.html',
+                               message='Can not save your modify, excess quota, ' + str(
+                                   selected_num) + ' students have selected this topic.',
                                topic=topic, types=types)
 
     topic.update(name=topic_name, supervisor_id=topic.supervisor_id, quota=position, is_custom=False, type_id=type_id,
@@ -521,11 +544,7 @@ def supervisor_status(supervisor_id):
     topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
     supervisor = Supervisor.get_by_id(id=supervisor_id)
 
-    total_quta = 0
-    for topic in topics:
-        total_quta += topic.quota
-
-    return render_template('supervisor_status.html', topics=topics, supervisor=supervisor, total_quta=total_quta)
+    return render_template('supervisor_status.html', topics=topics, supervisor=supervisor)
 
 
 @app.route('/topic_poster')
@@ -573,6 +592,9 @@ def update_selection():
         return json.dumps({'success': False, 'error': 'You have already selected this topic'})
 
     topic = Topic.get_by_id(id=formatted_topic_id)
+
+    if topic.get_selected_num_final() == topic.quota:
+        return json.dumps({'success': False, 'error': 'This topic is full'})
 
     if topic:
         if match:

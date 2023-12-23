@@ -76,22 +76,20 @@
 
     <section class="_20header_section" id="topic-section">
         {% for topic in topics %}
-            {% if topic.is_custom == 0 %}
+            {% if (topic.is_custom == 0) and (topic.quota - topic.get_selected_num_final() != 0) %}
                 <a href="{{ url_for('topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
                    data-topic-id="{{ topic.id }}"
                    data-type-id="{{ topic.type_id }}" data-supervisor-id="{{ topic.supervisor_id }}">
                     <div class="w-layout-hflex flex-block-5">
-                        {#                        <div class="topic_image"></div>#}
-                        {#                        <div class="_40px_width"></div>#}
                         <div class="w-layout-vflex flex-block-8">
                             <h1 class="third_title no_head_spacing accent no_button_spacing">{{ topic.name }}</h1>
                             <div class="text-block">By {{ topic.get_supervisor_name() }}</div>
                             <div class="text-block _10head_spacing">{{ topic.get_type_name() }}</div>
                             <div class="w-layout-hflex">
-                                <div class="text-block _10head_spacing _10button_spacing">{{ topic.quota }} Positions
+                                <div class="text-block _10head_spacing _10button_spacing">{{ topic.quota - topic.get_selected_num_final()}} Positions
                                 </div>
                                 <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">
-                                    ({{ topic.get_selected_num() }} other candidates)
+                                    ({{ topic.get_selected_num()}} other candidates)
                                 </div>
                             </div>
                         </div>

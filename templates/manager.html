@@ -55,9 +55,47 @@
         <div class="w-tab-content">
             <div data-w-tab="System" class="w-tab-pane">
                 <div class="_40px_height"></div>
+                <h2 class="third_title-2 accent">Overview</h2>
+                <div class="_20px_height"></div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Student number</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ students|length }} ({{ numer_success }} success)</div>
+                    </div>
+                </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Supervisor number</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ supervisors|length }}</div>
+                    </div>
+                </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Supervisor's Topic number</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ topic_num }}</div>
+                    </div>
+                </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Custom Topic number</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ custom_topic_num }}</div>
+                    </div>
+                </div>
+                <div class="_20px_height"></div>
                 <h2 class="third_title-2 accent">Deadline Setting</h2>
                 <div class="w-layout-blockcontainer inlimite_container w-container">
-
                     <div class="w-form">
                         <div class="text-block _10button_spac">Round 1</div>
                         <form id="deadline-form-1" class="student_submit_form">
@@ -86,7 +124,7 @@
                         </form>
                     </div>
                 </div>
-
+                <div class="_20px_height"></div>
                 <h2 class="third_title-2 accent">Notes Setting</h2>
                 {% for note in notes %}
                     <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda1-53bceb80"
@@ -123,7 +161,8 @@
                     </form>
                 </div>
                 <div class="_20px_height"></div>
-                <div id="no-results-message" class="hidden third_title accent not_found">No student found, try again.</div>
+                <div id="no-results-message" class="hidden third_title accent not_found">No student found, try again.
+                </div>
                 {% for student in students %}
                     <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5623-53bceb80"
                          class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout student-item">
@@ -200,7 +239,7 @@
                             <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752847-53bceb80"
                                  class="w-layout-cell cell-13">
                                 <div class="text-block-2 italic-text _20_leading">
-                                    {{ supervisor.get_topic_num() }}/{{ supervisor.position }}
+                                    {{ supervisor.get_total_final_selections() }}/{{ supervisor.position }}
                                 </div>
                             </div>
                             <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284b-53bceb80"
@@ -460,8 +499,12 @@
                 $.ajax({
                     url: '/delete_student/' + studentID,
                     method: 'GET',
-                    success: function (result) {
-                        element.remove()
+                    success: function (response) {
+                        if (response.success) {
+                            element.remove()
+                        } else {
+                            alert(response.error)
+                        }
                     }
                 })
             }
@@ -479,8 +522,12 @@
                 $.ajax({
                     url: '/delete_supervisor/' + supervisorID,
                     method: 'GET',
-                    success: function (result) {
-                        element.remove()
+                    success: function (response) {
+                        if (response.success) {
+                            element.remove()
+                        } else {
+                            alert(response.error)
+                        }
                     }
                 })
             }

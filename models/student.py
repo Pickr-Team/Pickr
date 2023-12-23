@@ -1,6 +1,5 @@
 from .db_instance import db
 
-
 class Student(db.Model):
     __tablename__ = 'students'
 

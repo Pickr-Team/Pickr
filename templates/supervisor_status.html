@@ -22,7 +22,7 @@
         <div class="_30px_height">
             <div class="third_title accent">Position status</div>
             <div class="_20px_height"></div>
-            <div class="fourth_title">{{ total_quta }} / {{ supervisor.position }}</div>
+            <div class="fourth_title">{{ supervisor.get_total_final_selections() }} / {{ supervisor.position }} (Topics occupy {{ supervisor.get_topic_num()}} positions)</div>
         </div>
         <div class="_30px_height">
             <div class="third_title accent">{{ supervisor.first_name }} {{ supervisor.last_name }}&#x27;s topics</div>
@@ -41,11 +41,8 @@
                                 <div class="text-block">By {{ topic.get_supervisor_name() }}</div>
                                 <div class="text-block _10head_spacing">{{ topic.get_type_name() }}</div>
                                 <div class="w-layout-hflex">
-                                    <div class="text-block _10head_spacing _10button_spacing">{{ topic.quota }}
+                                    <div class="text-block _10head_spacing _10button_spacing">{{ topic.get_selected_num_final() }} / {{ topic.quota }}
                                         Positions
-                                    </div>
-                                    <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">
-                                        ({{ topic.get_selected_num() }} other candidates)
                                     </div>
                                 </div>
                             </div>

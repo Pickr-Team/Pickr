@@ -26,8 +26,10 @@
                 <div data-w-tab="Topics" class="w-tab-pane">
                     <div class="_40px_height"></div>
                     <h2 class="third_title-2 accent">Your Topics</h2>
-                    <div class="text-block-2 phone_button">Position: <span
-                            id="total-quota">{{ total_quta }}</span>/{{ supervisor.position }}</div>
+                    <div class="text-block-2 phone_button">Position:
+                        <span id="total-quota">{{ supervisor.get_total_final_selections() }} / {{ supervisor.position }}</span>
+                        ({{ total_quta }} quota used)
+                    </div>
                     <div class="_40px_height"></div>
                     {% for topic in topics %}
                         {% if topic.is_custom == 0 %}
@@ -39,7 +41,8 @@
                                 </div>
                                 <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c2d-06e36864"
                                      class="w-layout-cell cell-8">
-                                    <div class="text-block-2 italic-text _20_leading"><em>{{ topic.quota }}</em></div>
+                                    <div class="text-block-2 italic-text _20_leading">
+                                        <em>{{ topic.get_selected_num_final() }} / {{ topic.quota }}</em></div>
                                 </div>
                                 <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c31-06e36864"
                                      class="w-layout-cell cell-10">
@@ -110,25 +113,19 @@
     </section>
     <script>
         $(document).ready(function () {
-            // 当选项卡链接被点击
             $('.tab_link').click(function (e) {
-                e.preventDefault(); // 阻止链接的默认行为
+                e.preventDefault();
 
-                var tabId = $(this).attr('data-w-tab'); // 获取被点击选项卡的 data-w-tab 值
+                var tabId = $(this).attr('data-w-tab');
 
-                // 移除所有选项卡链接的 'w--current' 类，并给被点击的链接添加 'w--current' 类
                 $('.tab_link').removeClass('w--current');
                 $(this).addClass('w--current');
 
-                // 隐藏所有的选项卡内容
-                $('.w-tab-pane').fadeOut(100); // 使用 fadeOut 方法隐藏
+                $('.w-tab-pane').fadeOut(100);
 
-                // 显示与被点击选项卡相对应的内容区域
-                // 使用 fadeIn 方法显示
                 $('.w-tab-pane[data-w-tab="' + tabId + '"]').fadeIn(300);
             });
 
-            // 模拟点击第一个选项卡，以便默认显示
             $('.tab_link').first().click();
         });
 
@@ -145,11 +142,14 @@
                     url: '/delete_topic/' + topicId,
                     type: 'GET',
                     success: function (response) {
-                        element.remove();
-                        // refresh total quota
-                        var totalQuotaElement = $('#total-quota');
-                        var currentTotalQuota = parseInt(totalQuotaElement.text());
-                        totalQuotaElement.text(currentTotalQuota - quota);
+                        if (response.success) {
+                            element.remove();
+                            var totalQuotaElement = $('#total-quota');
+                            var currentTotalQuota = parseInt(totalQuotaElement.text());
+                            totalQuotaElement.text(currentTotalQuota - quota);
+                        } else {
+                            alert(response.error);
+                        }
                     },
                     error: function (xhr, status, error) {
                         console.error("Deletion failed: " + error);
@@ -157,7 +157,6 @@
                 });
             }
         });
-
     </script>
     </body>
 {% endblock %}

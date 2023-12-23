@@ -29,9 +29,9 @@
                     {% for supervisor in supervisors %}
                         {% if supervisor.id == selection.custom_supervisor_id %}
                             <option value="{{ supervisor.id }}"
-                                    selected>{{ supervisor.first_name }} {{ supervisor.last_name }}</option>
-                        {% else %}
-                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }} {{ supervisor.last_name }}</option>
+                                    selected>{{ supervisor.first_name }} {{ supervisor.last_name }} ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})</option>
+                        {% elif supervisor.is_admin == 0 %}
+                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }} {{ supervisor.last_name }} ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})</option>
                         {% endif %}
                     {% endfor %}
                 </select>

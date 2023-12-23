@@ -5,7 +5,8 @@
 {% block content %}
     <body>
     <section class="page_hearder"><h1 class="first_title">{{ topic.name }}</h1></section>
-    <section><h1 class="third_title accent">Basic info</h1>
+    <section>
+        <h1 class="third_title accent">Basic info</h1>
         <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
              class="w-layout-layout course_list_item wf-layout-layout">
             <div class="w-layout-cell">
@@ -58,7 +59,7 @@
         <div class="text-block back_space">{{ topic.reference }}</div>
 
         <div class="_80px_header"></div>
-        <a href="/topic-list" class="link link_accent">Apply Now<em>↗</em></a>
+        <a href="{{ url_for('my_pickr') }}" class="link link_accent">Apply Now<em>↗</em></a>
         <div class="_80px_header"></div>
     </section>
     </body>
