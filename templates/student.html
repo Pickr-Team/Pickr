@@ -8,6 +8,13 @@
             background-color: #a8a8a8 !important;
             color: #000000;
         }
+
+        .submit-button.disabled {
+            border-color: #666666;
+            color: #666666;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
     <body>
 
@@ -126,8 +133,13 @@
             </div>
 
             {#Submit button#}
-            <a href="#" class="submit-button _20head_spacing w-button">Submit Application</a>
+            {% if error != None %}
+                <div><em class="accent">Error: {{ error }}</em></div>
+            {% endif %}
 
+            <a href="{{ url_for('submit') }}" id="submit-button" class="submit-button _20head_spacing w-button disabled">Loading...</a>
+
+            <div id="countdown" class="text-block _10button_spac" style="display: none">Countdown: <span id="time">Loading...</span></div>
         {% endif %}
 
         {#Result#}
@@ -521,6 +533,64 @@
                 });
             });
         });
+
+        // countdown and submit button control
+        document.addEventListener('DOMContentLoaded', function () {
+            var submitButton = document.getElementById('submit-button');
+            var countdownDisplay = document.getElementById('time');
+
+            var now = new Date('{{ now }}');
+            var deadlines = [
+                {% for deadline in deadlines %}
+                    {
+                        submit_time: new Date('{{ deadline.submit_time }}'),
+                        result_time: new Date('{{ deadline.result_time }}')
+                    },
+                {% endfor %}
+            ];
+
+            console.log(deadlines)
+            console.log(now)
+
+            function formatTimeLeft(timeLeft) {
+                var hours = Math.floor(timeLeft / 3600);
+                var minutes = Math.floor((timeLeft % 3600) / 60);
+                var seconds = timeLeft % 60;
+                return hours.toString().padStart(2, '0') + ":" +
+                    minutes.toString().padStart(2, '0') + ":" +
+                    seconds.toString().padStart(2, '0');
+            }
+
+            function updateCountdown() {
+                var currentTime = new Date(now.getTime() + performance.now());
+                var activeDeadline = deadlines.find(function (d) {
+                    return currentTime < d.result_time;
+                });
+
+                if (activeDeadline) {
+                    var timeLeft = Math.ceil((activeDeadline.submit_time - currentTime) / 1000);
+                    if (timeLeft > 0) {
+                        countdownDisplay.textContent = formatTimeLeft(timeLeft);
+                        submitButton.disabled = true;
+                        //submitButton.classList.add('disabled');
+                        submitButton.textContent = 'Submit will open in ' + formatTimeLeft(timeLeft);
+                    } else {
+                        countdownDisplay.textContent = 'Submission open!';
+                        submitButton.disabled = false;
+                        submitButton.classList.remove('disabled');
+                        submitButton.textContent = 'Submit Application';
+                    }
+                } else {
+                    countdownDisplay.textContent = 'All deadlines have passed.';
+                    submitButton.disabled = true;
+                    //submitButton.classList.add('disabled');
+                    submitButton.textContent = 'All deadlines have passed';
+                }
+            }
+
+            setInterval(updateCountdown, 1000);
+        });
+
 
     </script>
     </body>

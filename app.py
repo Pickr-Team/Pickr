@@ -118,8 +118,10 @@ def student():
         selection = Selection.get_by_student_id(student_id=student_id)
         supervisors = Supervisor.get_all()
         types = Type.get_all()
+        error = request.args.get('error')
+        deadlines = Deadline.get_all()
         return render_template('student.html', name=session['user_name'], selection=selection, supervisors=supervisors,
-                               types=types)
+                               types=types, deadlines=deadlines, now=now, error=error)
     else:
         return render_template('login.html')
 
@@ -163,6 +165,39 @@ def manager():
                                custom_topic_num=custom_topic_num, numer_success=numer_success, pre=pre)
     else:
         return render_template('login.html')
+
+
+@app.route('/submit')
+def submit():
+    student_id = Student.get_id(english_name=session['user_name'])
+    selection = Selection.get_by_student_id(student_id=student_id)
+    submit_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(selection)
+    print(selection.first_topic_id)
+    print(selection.status)
+
+    if selection:
+        if selection.if_custom:
+            if selection.first_topic_id is None:
+                print("1")
+                return redirect(url_for('student', error='You have not selected any topic'))
+            else:
+                print("2")
+                selection.update_status(status=2)
+                selection.update_submit_time(submit_time=submit_time)
+                return redirect(url_for('student'))
+        else:
+            if selection.first_topic_id is None or selection.second_topic_id is None or selection.third_topic_id is None:
+                print("3")
+                return redirect(url_for('student', error='You have full all three choices'))
+            else:
+                print("4")
+                selection.update_status(status=1)
+                selection.update_submit_time(submit_time=submit_time)
+                return redirect(url_for('student'))
+    else:
+        print("5")
+        return redirect(url_for('student', error='You have not selected any topic'))
 
 
 @app.route('/update_deadline', methods=['POST'])
@@ -523,6 +558,11 @@ def update_custom_selection(selection_id):
     description = request.form.get('description')
     type_id = request.form.get('type')
     status = request.form.get('status')
+
+    if status == '3':
+        selection.final_topic_id = selection.first_topic_id
+    elif status == '2':
+        selection.final_topic_id = None
 
     selection.update_status(status=status)
     selection.update_first_topic_supervisor_id(supervisor_id=supervisor_id)

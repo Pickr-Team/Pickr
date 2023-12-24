@@ -135,6 +135,11 @@ class Selection(db.Model):
 
     def update_status(self, status):
         self.status = status
+        db.session.commit()
+
+    def update_submit_time(self, submit_time):
+        self.submit_time = submit_time
+        db.session.commit()
 
     def update_first_topic_supervisor_id(self, supervisor_id):
         self.first_topic.supervisor_id = supervisor_id
