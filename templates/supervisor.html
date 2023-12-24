@@ -69,42 +69,54 @@
                 {#Applications Section#}
                 <div data-w-tab="Applications" class="w-tab-pane w--tab-active">
                     <div class="_40px_height"></div>
-                    <h2 class="third_title-2 accent">Applications</h2>
+                    <h2 class="third_title-2 accent">Your Topics</h2>
+                    {% for not_custom_selection in not_custom_selections %}
+                        <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc5-06e36864"
+                             class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc6-06e36864"
+                                 class="w-layout-cell cell-11">
+                                <div class="text-block-2">{{ not_custom_selection.final_topic_name }}</div>
+                            </div>
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cca-06e36864"
+                                 class="w-layout-cell cell-8">
+                                <div class="text-block-2 _20_leading">
+                                    {{ not_custom_selection.submit_time }}
+                                </div>
+                            </div>
+                            <div id="w-node-_0c60fc55-54be-aa12-927a-9a84a0a6b64c-06e36864"
+                                 class="w-layout-cell cell-10">
+                                <div class="text-block-2 _20_leading">
+                                    {{ not_custom_selection.final_topic_student_english_name }}({{ not_custom_selection.final_topic_student_chinese_name }})
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                     <div class="_20px_height"></div>
-                    <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc5-06e36864"
-                         class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
-                        <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc6-06e36864" class="w-layout-cell cell-11">
-                            <div class="text-block-2"><em class="italic-text-3">Collaborative Code Editor</em></div>
+                    <h2 class="third_title-2 accent">Custom Topics</h2>
+                    {% for custom_selection in custom_selections %}
+                        <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc5-06e36864"
+                             class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc6-06e36864"
+                                 class="w-layout-cell cell-11">
+                                <a class="small_link accent" href="{{ url_for('topic_detail_custom', topic_id=custom_selection.final_topic_id) }}">
+                                    {{ custom_selection.final_topic_name }}↗
+                                </a>
+                            </div>
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cca-06e36864"
+                                 class="w-layout-cell cell-8">
+                                <div class="text-block-2 _20_leading">
+                                    {{ custom_selection.submit_time }}
+                                </div>
+                            </div>
+                            <div id="w-node-_0c60fc55-54be-aa12-927a-9a84a0a6b64c-06e36864"
+                                 class="w-layout-cell cell-10">
+                                <div class="text-block-2 _20_leading">
+                                    {{ custom_selection.final_topic_student_english_name }}({{ custom_selection.final_topic_student_chinese_name }})
+                                </div>
+                            </div>
                         </div>
-                        <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cca-06e36864" class="w-layout-cell cell-8">
-                            <div class="text-block-2 italic-text _20_leading"><em class="accent-2">1/2</em></div>
-                        </div>
-                        <div id="w-node-_0c60fc55-54be-aa12-927a-9a84a0a6b64c-06e36864" class="w-layout-cell cell-10"><a
-                                href="#" class="submit-button w-button">View</a></div>
-                    </div>
-                    <div id="w-node-_56af5ad5-4164-93c2-bdb1-d8bf0fed846c-06e36864"
-                         class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
-                        <div id="w-node-_56af5ad5-4164-93c2-bdb1-d8bf0fed846d-06e36864" class="w-layout-cell cell-11">
-                            <div class="text-block-2"><em class="italic-text-3">Collaborative Code Editor</em></div>
-                        </div>
-                        <div id="w-node-_56af5ad5-4164-93c2-bdb1-d8bf0fed8471-06e36864" class="w-layout-cell cell-8">
-                            <div class="text-block-2 italic-text _20_leading"><em class="accent-2">1/2</em></div>
-                        </div>
-                        <div id="w-node-_56af5ad5-4164-93c2-bdb1-d8bf0fed8475-06e36864" class="w-layout-cell cell-10"><a
-                                href="#" class="submit-button w-button">View</a></div>
-                    </div>
-                    <div id="w-node-_93709fe4-a95d-a0f2-4d02-992aa4ffe1ea-06e36864"
-                         class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
-                        <div id="w-node-_93709fe4-a95d-a0f2-4d02-992aa4ffe1eb-06e36864" class="w-layout-cell cell-11">
-                            <div class="text-block-2"><em class="italic-text-3">Collaborative Code Editor</em></div>
-                        </div>
-                        <div id="w-node-_93709fe4-a95d-a0f2-4d02-992aa4ffe1ef-06e36864" class="w-layout-cell cell-8">
-                            <div class="text-block-2 italic-text _20_leading"><em class="accent-2">1/2</em></div>
-                        </div>
-                        <div id="w-node-_93709fe4-a95d-a0f2-4d02-992aa4ffe1f3-06e36864" class="w-layout-cell cell-10"><a
-                                href="#" class="submit-button w-button">View</a></div>
-                    </div>
-                    <div class="_40px_height"><a href="#" class="submit-button-2 phone w-button"><em>→</em> Export</a>
+                    {% endfor %}
+                    <div class="_40px_height"><a href="{{ url_for('export_student_list') }}" class="submit-button-2 phone w-button"><em>→</em> Export</a>
                     </div>
                 </div>
             </div>

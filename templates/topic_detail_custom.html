@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ topic.name }}{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder"><h1 class="first_title">{{ topic.name }}</h1></section>
+    <section>
+        <h1 class="third_title accent">Basic info</h1>
+        <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+             class="w-layout-layout course_list_item wf-layout-layout">
+            <div class="w-layout-cell">
+                <div class="text-block"><em>◇</em> Tutor</div>
+            </div>
+            <div class="w-layout-cell">
+                <div class="text-block italic-text">{{ topic.get_supervisor_name() }}</div>
+            </div>
+        </div>
+        <div id="w-node-_4b3765c4-aa80-156f-7bee-22f97672b60c-12a95ea8"
+             class="w-layout-layout course_list_item wf-layout-layout">
+            <div class="w-layout-cell">
+                <div class="text-block"><em>◇</em> Type</div>
+            </div>
+            <div class="w-layout-cell">
+                <div class="text-block italic-text">{{ topic.get_type_name() }}</div>
+            </div>
+        </div>
+
+        <div class="_20px_height"></div>
+        <h1 class="third_title accent">Topic Describe</h1>
+        <div class="text-block back_space">{{ topic.description }}</div>
+        <div class="_80px_header"></div>
+    </section>
+    </body>
+{% endblock %}

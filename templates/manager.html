@@ -55,7 +55,7 @@
         <div class="w-tab-content">
             <div data-w-tab="System" class="w-tab-pane">
                 <div class="_40px_height"></div>
-                <h2 class="third_title-2 accent">Overview</h2>
+                <h2 class="third_title-2 accent">Apply Overview</h2>
                 <div class="_20px_height"></div>
                 <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
                      class="w-layout-layout course_list_item wf-layout-layout">
@@ -63,9 +63,51 @@
                         <div class="text-block"><em>◇</em> Student number</div>
                     </div>
                     <div class="w-layout-cell">
-                        <div class="text-block">{{ students|length }} ({{ numer_success }} success)</div>
+                        <div class="text-block">{{ students|length }} ({{ num_success }} success)</div>
                     </div>
                 </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Waiting for submit</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ num_waiting }}</div>
+                    </div>
+                </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Waiting for system process</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ num_process }}</div>
+                    </div>
+                </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Waiting for verify</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ num_verify }}</div>
+                    </div>
+                </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Fail</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ num_fail }}</div>
+                    </div>
+                </div>
+                <div class="_20px_height"></div>
+                <a href="{{ url_for('process') }}" class="submit-button-2 delete_button w-button delete-student">Process</a>
+                <a href="{{ url_for('refresh') }}" class="w-button submit-button">Refresh</a>
+                <div class="_20px_height"></div>
+                <h2 class="third_title-2 accent">Supervisor & Topic Overview</h2>
+                <div class="_20px_height"></div>
                 <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
@@ -82,6 +124,15 @@
                     </div>
                     <div class="w-layout-cell">
                         <div class="text-block">{{ topic_num }}</div>
+                    </div>
+                </div>
+                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                     class="w-layout-layout course_list_item wf-layout-layout">
+                    <div class="w-layout-cell">
+                        <div class="text-block"><em>◇</em> Supervisors Position</div>
+                    </div>
+                    <div class="w-layout-cell">
+                        <div class="text-block">{{ static_topic_num }} / {{ total_quta }}</div>
                     </div>
                 </div>
                 <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"

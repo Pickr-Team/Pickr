@@ -4,8 +4,9 @@ import secrets
 import pandas as pd
 
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
-from sqlalchemy.orm import joinedload
-
+from flask import send_file
+from openpyxl import Workbook
+import io
 from models.db_instance import db
 from datetime import datetime
 import json
@@ -132,12 +133,15 @@ def supervisor():
         supervisor_id = Supervisor.get_id(user_name=session['user_name'])
         supervisor = Supervisor.get_by_id(id=supervisor_id)
         topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+        not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
+        custom_selections = Selection.get_supervisor_selection_custom(supervisor_id=supervisor_id)
 
         total_quta = 0
         for topic in topics:
             total_quta += topic.quota
 
-        return render_template('supervisor.html', topics=topics, supervisor=supervisor, total_quta=total_quta)
+        return render_template('supervisor.html', topics=topics, supervisor=supervisor, total_quta=total_quta,
+                               not_custom_selections=not_custom_selections, custom_selections=custom_selections)
     else:
         return render_template('login.html')
 
@@ -157,12 +161,20 @@ def manager():
         notes = Note.get_all()
         topic_num = Topic.get_num()
         custom_topic_num = Topic.get_num_custom()
-        numer_success = Selection.get_num_of_status_3or4()
+        num_success = Selection.get_num_of_status_3or4()
+        num_waiting = Selection.get_num_of_status_0()
+        num_process = Selection.get_num_of_status_1()
+        num_verify = Selection.get_num_of_status_2()
+        num_fail = Selection.get_num_of_status_5()
+        total_quta = Topic.get_all_quota()
+        static_topic_num = Selection.get_num_of_status_4()
 
         return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
                                notes=notes, students=students, supervisors=supervisors,
                                custom_selections=custom_selections, topic_num=topic_num,
-                               custom_topic_num=custom_topic_num, numer_success=numer_success, pre=pre)
+                               custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
+                               num_process=num_process, num_verify=num_verify, num_fail=num_fail, total_quta=total_quta,
+                               static_topic_num=static_topic_num, pre=pre)
     else:
         return render_template('login.html')
 
@@ -172,32 +184,63 @@ def submit():
     student_id = Student.get_id(english_name=session['user_name'])
     selection = Selection.get_by_student_id(student_id=student_id)
     submit_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(selection)
-    print(selection.first_topic_id)
-    print(selection.status)
 
     if selection:
         if selection.if_custom:
             if selection.first_topic_id is None:
-                print("1")
                 return redirect(url_for('student', error='You have not selected any topic'))
             else:
-                print("2")
                 selection.update_status(status=2)
                 selection.update_submit_time(submit_time=submit_time)
                 return redirect(url_for('student'))
         else:
             if selection.first_topic_id is None or selection.second_topic_id is None or selection.third_topic_id is None:
-                print("3")
                 return redirect(url_for('student', error='You have full all three choices'))
             else:
-                print("4")
                 selection.update_status(status=1)
                 selection.update_submit_time(submit_time=submit_time)
                 return redirect(url_for('student'))
     else:
-        print("5")
         return redirect(url_for('student', error='You have not selected any topic'))
+
+
+@app.route('/process')
+def process():
+    selections = Selection.get_all_order_by_submit_time()
+    success = 0
+    fail = 0
+    for selection in selections:
+        if not selection.first_topic_is_full:
+            selection.update_status(status=4)
+            selection.update_final_topic_id(topic_id=selection.first_topic_id)
+            success += 1
+        elif not selection.second_topic_is_full:
+            selection.update_status(status=4)
+            selection.update_final_topic_id(topic_id=selection.second_topic_id)
+            success += 1
+        elif not selection.third_topic_is_full:
+            selection.update_status(status=4)
+            selection.update_final_topic_id(topic_id=selection.third_topic_id)
+            success += 1
+        else:
+            selection.update_status(status=5)
+            fail += 1
+    print("Success count: {}".format(success))
+    print("Fail count: {}".format(fail))
+    print("Total count: {}".format(len(selections)))
+    return redirect(url_for('manager'))
+
+
+@app.route('/refresh')
+def refresh():
+    selections = Selection.get_all_status_5()
+    for selection in selections:
+        selection.update_status(status=0)
+        selection.update_first_topic_id(topic_id=None)
+        selection.update_second_topic_id(topic_id=None)
+        selection.update_third_topic_id(topic_id=None)
+
+    return redirect(url_for('manager'))
 
 
 @app.route('/update_deadline', methods=['POST'])
@@ -633,6 +676,9 @@ def update_selection():
 
     topic = Topic.get_by_id(id=formatted_topic_id)
 
+    if not topic:
+        return json.dumps({'success': False, 'error': 'Topic does not exist'})
+
     if topic.get_selected_num_final() == topic.quota:
         return json.dumps({'success': False, 'error': 'This topic is full'})
 
@@ -720,6 +766,40 @@ def topic_search():
 def topic_detail(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     return render_template('topic_detail.html', topic=topic)
+
+
+@app.route('/topic_detail_custom/<int:topic_id>/')
+def topic_detail_custom(topic_id):
+    topic = Topic.get_by_id(id=topic_id)
+    return render_template('topic_detail_custom.html', topic=topic)
+
+
+@app.route('/export_student_list')
+def export_student_list():
+    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
+    custom_selections = Selection.get_supervisor_selection_custom(supervisor_id=supervisor_id)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'Student List'
+
+    columns = ['Topic name', 'Chinese Name', 'English Name', 'Class Number', 'Email']
+    ws.append(columns)
+
+    for selection in not_custom_selections:
+        student = Student.get_by_id(selection.student_id)
+        topic = Topic.get_by_id(selection.final_topic_id)
+        row = [topic.name, student.chinese_name, student.english_name, student.class_number, student.email]
+        ws.append(row)
+
+    for selection in custom_selections:
+        student = Student.get_by_id(selection.student_id)
+        topic = Topic.get_by_id(selection.first_topic_id)
+        row = [topic.name + '(Custom)', student.chinese_name, student.english_name, student.class_number, student.email]
+        ws.append(row)
+
+    wb.save('student_list.xlsx')
+    return send_file('student_list.xlsx', as_attachment=True)
 
 
 if __name__ == '__main__':
