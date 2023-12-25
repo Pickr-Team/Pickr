@@ -1,12 +1,13 @@
 import os
 import re
 import secrets
+from io import BytesIO
+
 import pandas as pd
 
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
 from flask import send_file
 from openpyxl import Workbook
-import io
 from models.db_instance import db
 from datetime import datetime
 import json
@@ -37,7 +38,7 @@ def create_tables():
     db.create_all()
 
 
-'''Set up datetime'''
+'''Server start time'''
 now = datetime.now()
 
 
@@ -122,7 +123,7 @@ def student():
         error = request.args.get('error')
         deadlines = Deadline.get_all()
         return render_template('student.html', name=session['user_name'], selection=selection, supervisors=supervisors,
-                               types=types, deadlines=deadlines, now=now, error=error)
+                               types=types, deadlines=deadlines, now=datetime.now(), error=error)
     else:
         return render_template('login.html')
 
@@ -210,19 +211,15 @@ def process():
     success = 0
     fail = 0
     for selection in selections:
-        if not selection.first_topic_is_full:
-            selection.update_status(status=4)
-            selection.update_final_topic_id(topic_id=selection.first_topic_id)
-            success += 1
-        elif not selection.second_topic_is_full:
-            selection.update_status(status=4)
-            selection.update_final_topic_id(topic_id=selection.second_topic_id)
-            success += 1
-        elif not selection.third_topic_is_full:
-            selection.update_status(status=4)
-            selection.update_final_topic_id(topic_id=selection.third_topic_id)
-            success += 1
-        else:
+        for priority in ['first', 'second', 'third']:
+            selection_successful = False
+            if not selection.topic_is_full(priority):
+                selection.update_status(status=4)
+                selection.update_final_topic_id(topic_id=getattr(selection, f'{priority}_topic_id'))
+                success += 1
+                selection_successful = True
+                break
+        if not selection_successful:
             selection.update_status(status=5)
             fail += 1
     print("Success count: {}".format(success))
@@ -798,8 +795,15 @@ def export_student_list():
         row = [topic.name + '(Custom)', student.chinese_name, student.english_name, student.class_number, student.email]
         ws.append(row)
 
-    wb.save('student_list.xlsx')
-    return send_file('student_list.xlsx', as_attachment=True)
+    virtual_workbook = BytesIO()
+    wb.save(virtual_workbook)
+    virtual_workbook.seek(0)
+
+    return Response(
+        virtual_workbook.getvalue(),
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': 'attachment;filename=student_list.xlsx'}
+    )
 
 
 if __name__ == '__main__':

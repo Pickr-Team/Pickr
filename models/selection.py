@@ -203,6 +203,11 @@ class Selection(db.Model):
         self.first_topic.name = name
         db.session.commit()
 
+    def update_topic_id(self, topic_priority, topic_id):
+        self.__setattr__(self, f'{topic_priority}_topic_id', topic_id)
+
+    # ===================================================================================================
+    # DEPRECATE
     def update_first_topic_id(self, topic_id):
         self.first_topic_id = topic_id
         db.session.commit()
@@ -219,6 +224,7 @@ class Selection(db.Model):
         self.final_topic_id = topic_id
         db.session.commit()
 
+    # ===================================================================================================
     @classmethod
     def get_supervisor_selection_not_custom(cls, supervisor_id):
         from .topic import Topic
@@ -243,6 +249,12 @@ class Selection(db.Model):
     def get_all_order_by_submit_time(cls):
         return cls.query.filter_by(status=1).order_by(cls.submit_time).all()
 
+    def topic_is_full(self, topic_priority):
+        topic = getattr(self, f'{topic_priority}_topic')
+        return topic.get_selected_num_final() >= topic.quota
+
+    # ===================================================================================================
+    # DEPRECATE
     @property
     def first_topic_is_full(self):
         return self.first_topic.get_selected_num_final() >= self.first_topic.quota
@@ -254,6 +266,8 @@ class Selection(db.Model):
     @property
     def third_topic_is_full(self):
         return self.third_topic.get_selected_num_final() >= self.third_topic.quota
+
+    # ===================================================================================================
 
     def __repr__(self):
         return f'<Selection {self.id}>'
