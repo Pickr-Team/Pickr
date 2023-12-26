@@ -67,6 +67,12 @@ class Supervisor(db.Model):
             .scalar()
         return total_quota if total_quota is not None else 0
 
+    def get_not_custom_topic_num(self):
+        total_quota = db.session.query(func.sum(Topic.quota)) \
+            .filter(Topic.supervisor_id == self.id, Topic.is_custom == False) \
+            .scalar()
+        return total_quota if total_quota is not None else 0
+
     def get_total_final_selections(self):
         topics = Topic.query.filter_by(supervisor_id=self.id).all()
         total_selections = 0

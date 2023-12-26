@@ -60,6 +60,10 @@ class Topic(db.Model):
         return cls.query.filter_by(supervisor_id=supervisor_id).all()
 
     @classmethod
+    def get_by_supervisor_id_not_custom(cls, supervisor_id):
+        return cls.query.filter_by(supervisor_id=supervisor_id, is_custom=False).all()
+
+    @classmethod
     def get_by_type_id(cls, type_id):
         return cls.query.filter_by(type_id=type_id).all()
 

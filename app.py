@@ -133,7 +133,7 @@ def supervisor():
     if 'user_name' and 'user_type' in session:
         supervisor_id = Supervisor.get_id(user_name=session['user_name'])
         supervisor = Supervisor.get_by_id(id=supervisor_id)
-        topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+        topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
         not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
         custom_selections = Selection.get_supervisor_selection_custom(supervisor_id=supervisor_id)
 
@@ -347,7 +347,7 @@ def add_topic():
     reference = request.form.get('reference')
 
     supervisor = Supervisor.get_by_id(id=supervisor_id)
-    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+    topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     types = Type.get_all()
 
     total_quta = 0
@@ -512,7 +512,7 @@ def update_topic(topic_id):
 
     supervisor_id = Supervisor.get_id(user_name=session['user_name'])
     supervisor = Supervisor.get_by_id(id=supervisor_id)
-    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+    topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     types = Type.get_all()
     selected_num = topic.get_selected_num_final()
 
@@ -573,7 +573,7 @@ def update_supervisor(supervisor_id):
     password = request.form.get('password')
     email = request.form.get('email')
 
-    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+    topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
 
     total_quta = 0
     for topic in topics:
@@ -630,7 +630,7 @@ def supervisor_status(supervisor_id):
 @app.route('/topic_poster')
 def topic_poster():
     supervisor_id = Supervisor.get_id(user_name=session['user_name'])
-    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
+    topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     supervisor = Supervisor.get_by_id(id=supervisor_id)
 
     pdf_buffer = generate_topic_poster(supervisor, topics)
