@@ -59,8 +59,21 @@
         <div class="text-block back_space">{{ topic.reference }}</div>
 
         <div class="_80px_header"></div>
-        <a href="{{ url_for('my_pickr') }}" class="link link_accent">Apply Now<em>↗</em></a>
+        {% if session['user_type'] == 'student' %}
+            <input type="text" value="PK{{ "%04d"|format(topic.id) }}" id="myText" style="position: absolute; left: -9999px;">
+            <a href="{{ url_for('my_pickr') }}" class="link link_accent" onclick="copyTextAndRedirect()">Copy Topic ID & Apply<em>↗</em></a>
+        {% endif %}
         <div class="_80px_header"></div>
     </section>
+    <script>
+        // Copy text and redirect
+        function copyTextAndRedirect() {
+            const copyText = document.getElementById("myText");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            window.location.href = "{{ url_for('my_pickr') }}";
+        }
+    </script>
     </body>
 {% endblock %}

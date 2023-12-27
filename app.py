@@ -180,6 +180,16 @@ def manager():
         return render_template('login.html')
 
 
+@app.route('/fail_students')
+def fail_students():
+    selections = Selection.get_all_status_5()
+    students = []
+    for selection in selections:
+        student = Student.get_by_id(id=selection.student_id)
+        students.append(student)
+    return jsonify(students=[student.to_json() for student in students])
+
+
 @app.route('/submit')
 def submit():
     student_id = Student.get_id(english_name=session['user_name'])

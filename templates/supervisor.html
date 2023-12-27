@@ -27,7 +27,7 @@
                     <div class="_40px_height"></div>
                     <h2 class="third_title-2 accent">Your Topics</h2>
                     <div class="text-block-2 phone_button">Position:
-                        <span id="total-quota">{{ total_quta }}</span>/{{ supervisor.position }} ({{ supervisor.get_total_final_selections() }} Students in your team)
+                        <span id="total-quota">{{ total_quta }}</span>/{{ supervisor.position }}
                     </div>
                     <div class="_40px_height"></div>
                     {% for topic in topics %}
@@ -41,7 +41,8 @@
                                 <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c2d-06e36864"
                                      class="w-layout-cell cell-8">
                                     <div class="text-block-2 italic-text _20_leading">
-                                        <em>{{ topic.get_selected_num_final() }}/<em id="quota">{{ topic.quota }}</em></em></div>
+                                        <em>{{ topic.get_selected_num_final() }}/<em
+                                                id="quota">{{ topic.quota }}</em></em></div>
                                 </div>
                                 <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c31-06e36864"
                                      class="w-layout-cell cell-10">
@@ -69,6 +70,10 @@
                 <div data-w-tab="Applications" class="w-tab-pane w--tab-active">
                     <div class="_40px_height"></div>
                     <h2 class="third_title-2 accent">Your Topics</h2>
+                    <div class="text-block-2 phone_button">
+                        {{ supervisor.get_total_final_selections() }} Students in your team
+                    </div>
+                    <div class="_40px_height"></div>
                     {% for not_custom_selection in not_custom_selections %}
                         <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc5-06e36864"
                              class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
@@ -97,7 +102,8 @@
                              class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
                             <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc6-06e36864"
                                  class="w-layout-cell cell-11">
-                                <a class="small_link accent" href="{{ url_for('topic_detail_custom', topic_id=custom_selection.final_topic_id) }}">
+                                <a class="small_link accent"
+                                   href="{{ url_for('topic_detail_custom', topic_id=custom_selection.final_topic_id) }}">
                                     {{ custom_selection.final_topic_name }}↗
                                 </a>
                             </div>
@@ -115,7 +121,8 @@
                             </div>
                         </div>
                     {% endfor %}
-                    <div class="_40px_height"><a href="{{ url_for('export_student_list') }}" class="submit-button-2 phone w-button"><em>→</em> Export</a>
+                    <div class="_40px_height"><a href="{{ url_for('export_student_list') }}"
+                                                 class="submit-button-2 phone w-button"><em>→</em> Export</a>
                     </div>
                 </div>
             </div>

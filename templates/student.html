@@ -137,9 +137,11 @@
                 <div><em class="accent">Error: {{ error }}</em></div>
             {% endif %}
 
-            <a href="{{ url_for('submit') }}" id="submit-button" class="submit-button _20head_spacing w-button disabled">Loading...</a>
+            <a href="{{ url_for('submit') }}" id="submit-button"
+               class="submit-button _20head_spacing w-button disabled">Loading...</a>
 
-            <div id="countdown" class="text-block _10button_spac" style="display: none">Countdown: <span id="time">Loading...</span></div>
+            <div id="countdown" class="text-block _10button_spac" style="display: none">Countdown: <span id="time">Loading...</span>
+            </div>
         {% endif %}
 
         {#Result#}
@@ -343,6 +345,47 @@
         {% if selection.status == 5 %}
             <div class="_40px_height"></div>
             <h2 class="third_title accent">You have failed in this round, please waiting for last round.</h2>
+            <h2 class="third_title accent">You can view your previous selections here:</h2>
+            <div class="_40px_height"></div>
+            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em>◇ Choose 1</em>
+                    </div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em>{{ selection.first_topic_name }}</em>
+                    </div>
+                </div>
+            </div>
+            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em>◇ Choose 2</em>
+                    </div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em>{{ selection.second_topic_name }}</em>
+                    </div>
+                </div>
+            </div>
+            <div id="w-node-a0356be8-a343-2772-d9df-42385edb7f34-6e227e00"
+                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em>◇ Choose 3</em>
+                    </div>
+                </div>
+                <div class="w-layout-cell">
+                    <div class="text-block">
+                        <em>{{ selection.third_topic_name }}</em>
+                    </div>
+                </div>
+            </div>
         {% endif %}
         <div class="_40px_height"></div>
     </section>

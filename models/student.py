@@ -1,5 +1,6 @@
 from .db_instance import db
 
+
 class Student(db.Model):
     __tablename__ = 'students'
 
@@ -35,6 +36,16 @@ class Student(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'chinese_name': self.chinese_name,
+            'english_name': self.english_name,
+            'email': self.email,
+            'user_name': self.user_name,
+            'class_number': self.class_number
+        }
 
     @classmethod
     def get_all(cls):

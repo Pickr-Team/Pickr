@@ -253,21 +253,5 @@ class Selection(db.Model):
         topic = getattr(self, f'{topic_priority}_topic')
         return topic.get_selected_num_final() >= topic.quota
 
-    # ===================================================================================================
-    # DEPRECATE
-    @property
-    def first_topic_is_full(self):
-        return self.first_topic.get_selected_num_final() >= self.first_topic.quota
-
-    @property
-    def second_topic_is_full(self):
-        return self.second_topic.get_selected_num_final() >= self.second_topic.quota
-
-    @property
-    def third_topic_is_full(self):
-        return self.third_topic.get_selected_num_final() >= self.third_topic.quota
-
-    # ===================================================================================================
-
     def __repr__(self):
         return f'<Selection {self.id}>'

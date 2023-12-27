@@ -29,6 +29,41 @@
             pointer-events: none;
             opacity: 0.5;
         }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #000000;
+            margin: 20% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #e16c63;
+            width: 40%; /* Could be more or less, depending on screen size */
+        }
+
+        .close {
+            color: #ffffff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #e16c63;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
     <section class="page_hearder">
         <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
@@ -99,7 +134,16 @@
                         <div class="text-block"><em>◇</em> Fail</div>
                     </div>
                     <div class="w-layout-cell">
-                        <div class="text-block">{{ num_fail }}</div>
+                        <a href="#" id="fail_students" class="small_link accent">{{ num_fail }}<em
+                                class="italic-text">↗</em></a>
+                    </div>
+                </div>
+                <!-- Floating window -->
+                <div id="modal" class="modal" style="display:none;">
+                    <!-- Contents -->
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <p id="student-data">Loading...</p>
                     </div>
                 </div>
                 <div class="_20px_height"></div>
@@ -796,6 +840,45 @@
 
             renderPage();
         });
+
+        var modal = document.getElementById("modal");
+        var span = document.getElementsByClassName("close")[0];
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        document.querySelector('#fail_students').addEventListener('click', function (event) {
+            event.preventDefault();
+
+            modal.style.display = "block";
+
+            fetch('{{ url_for('fail_students') }}')
+                .then(response => response.json())
+                .then(data => {
+                    var studentDataElement = document.getElementById("student-data");
+                    studentDataElement.innerHTML = "";
+                    if (data.students.length === 0) {
+                        studentDataElement.innerHTML = `<h2 class="second_title accent">Fail Students</h2><div class="_20px_height"></div><div class="text-block">No fail students</div>`;
+                        return;
+                    }
+                    studentDataElement.innerHTML += `<h2 class="second_title accent">Fail Students</h2><div class="_20px_height"></div>`;
+                    data.students.forEach(student => {
+                        studentDataElement.innerHTML += `
+                            <div class="text-block">${student.english_name}(${student.chinese_name}) - ${student.class_number} <a href="/student_status/${student.id}"class="small_link accent" style="display: inline !important; margin-left: 40px">Detail↗</a></div>
+                            <div class="_20px_height"></div>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
     </script>
     </body>
 {% endblock %}
