@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <link rel="icon" href="../static/image/icon.png" type="image/png">
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <link href="https://assets-global.website-files.com/6548e0e272296b4160532c3b/css/pickr-fb94fc.webflow.12a7e7bec.css" rel="stylesheet" type="text/css"/>
+    <link href="https://assets-global.website-files.com/6548e0e272296b4160532c3b/css/pickr-fb94fc.webflow.12a7e7bec.css"
+          rel="stylesheet" type="text/css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     {#    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">#}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star.css') }}">
     <script src="../static/js/star.js"></script>
@@ -12,16 +14,17 @@
 </head>
 <body class="body-2">
 <canvas id='c'></canvas>
-<div class="w-layout-blockcontainer container-4 w-container"><h1 class="second_title center accent">Welcome to Pickr</h1>
+<div class="w-layout-blockcontainer container-4 w-container"><h1 class="second_title center accent">Welcome to
+    Pickr</h1>
     <div class="_20px_height"></div>
     <div class="text-block center">The user name &amp; password is as same as your student website</div>
 
     <div class="form-block w-form">
-        <form action="{{ url_for('login') }}" method="POST" id="login_form" class="form">
+        <form id="login_form" class="form">
             <div class="_20px_height"></div>
 
             {% if message %}
-                <p><strong>{{ message }}</strong></p>
+                <p id="login-message"><strong>{{ message }}</strong></p>
             {% endif %}
 
             <label for="user_name" class="text-block login_text">User name</label>
@@ -34,6 +37,55 @@
         </form>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#login_form").on('submit', function (event) {
+            event.preventDefault(); // 阻止表单的默认提交行为
+
+            var user_name = $('input[name="user_name"]').val();
+            var password = $('input[name="password"]').val();
+
+            // 假设你使用的是SHA-256哈希算法
+            window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
+                .then(hashBuffer => {
+                    // 将哈希值转换为十六进制字符串
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    // 发送哈希密码到服务器
+                    sendData(user_name, hashHex);
+                })
+                .catch(error => {
+                    console.error('Error hashing the password:', error);
+                });
+        });
+
+        function sendData(user_name, password_hash) {
+            $.ajax({
+                type: "POST",
+                url: "/login",
+                data: {
+                    user_name: user_name,
+                    password_hash: password_hash
+                },
+                success: function (response) {
+                    // 检查服务器响应的状态
+                    if (response.status === 'success') {
+                        // 如果登录成功，重定向到服务器指定的URL
+                        window.location.href = response.redirect;
+                    } else {
+                        // 如果登录失败，显示错误消息
+                        alert('Login failed: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // 如果请求失败，显示错误消息
+                    alert('An error occurred: ' + error);
+                }
+            });
+        }
+    });
+</script>
+
 </body>
 
 </html>

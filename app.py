@@ -8,6 +8,8 @@ import pandas as pd
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
 from flask import send_file
 from openpyxl import Workbook
+from werkzeug.security import check_password_hash
+
 from models.db_instance import db
 from datetime import datetime
 import json
@@ -72,38 +74,28 @@ def my_pickr():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user_name = request.form.get('user_name')
-        password = request.form.get('password')
+        user_name = request.form['user_name']
+        password_hash = request.form['password_hash']
 
         student = Student.query.filter_by(user_name=user_name).first()
         supervisor = Supervisor.query.filter_by(user_name=user_name).first()
 
-        if student:
-            if student.password == password:
-                session['user_name'] = student.english_name
-                session['user_type'] = 'student'
-                return redirect(url_for('student'))
-            else:
-                return render_template('login.html', message='Wrong password')
+        if student and student.password == password_hash:
+            session['user_name'] = student.english_name
+            session['user_type'] = 'student'
+            return jsonify(status='success', redirect=url_for('student'))
 
-        elif supervisor:
-            if supervisor.password == password:
-                if supervisor.if_admin():
-                    session['user_name'] = supervisor.user_name
-                    session['user_type'] = 'manager'
-                    return redirect(url_for('manager'))
-                else:
-                    session['user_name'] = supervisor.user_name
-                    session['user_type'] = 'supervisor'
-                    return redirect(url_for('supervisor'))
-            else:
-                return render_template('login.html', message='Wrong password')
+        elif supervisor and supervisor.password == password_hash:
+            session['user_name'] = supervisor.user_name
+            session['user_type'] = 'supervisor' if not supervisor.if_admin() else 'manager'
+            redirect_url = url_for('manager') if supervisor.if_admin() else url_for('supervisor')
+            return jsonify(status='success', redirect=redirect_url)
 
         else:
-            return render_template('login.html', message='User does not exist')
+            return jsonify(status='fail', message='Invalid username or password')
 
     else:
-        return render_template('login.html', message='Please login')
+        return render_template('login.html')
 
 
 @app.route('/logout')

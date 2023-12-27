@@ -12,7 +12,7 @@ class Supervisor(db.Model):
     is_admin = db.Column(db.Boolean)
     position = db.Column(db.Integer)
     user_name = db.Column(db.String(20))
-    password = db.Column(db.String(40))
+    password = db.Column(db.String(100))
     email = db.Column(db.String(30))
 
     def __init__(self, first_name, last_name, is_admin, position, user_name, password, email):
