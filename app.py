@@ -6,9 +6,7 @@ from io import BytesIO
 import pandas as pd
 
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
-from flask import send_file
 from openpyxl import Workbook
-from werkzeug.security import check_password_hash
 
 from models.db_instance import db
 from datetime import datetime
@@ -57,7 +55,6 @@ def error():
     return render_template('error.html', message=message)
 
 
-# Click 'My Pickr' button
 @app.route('/my_pickr')
 def my_pickr():
     if 'user_name' and 'user_type' in session:
@@ -84,16 +81,13 @@ def login():
             session['user_name'] = student.english_name
             session['user_type'] = 'student'
             return jsonify(status='success', redirect=url_for('student'))
-
         elif supervisor and supervisor.password == password_hash:
             session['user_name'] = supervisor.user_name
             session['user_type'] = 'supervisor' if not supervisor.if_admin() else 'manager'
             redirect_url = url_for('manager') if supervisor.if_admin() else url_for('supervisor')
             return jsonify(status='success', redirect=redirect_url)
-
         else:
             return jsonify(status='fail', message='Invalid username or password')
-
     else:
         return render_template('login.html')
 
@@ -116,6 +110,58 @@ def student():
         deadlines = Deadline.get_all()
         return render_template('student.html', name=session['user_name'], selection=selection, supervisors=supervisors,
                                types=types, deadlines=deadlines, now=datetime.now(), error=error)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/change_password')
+def change_password():
+    if 'user_name' and 'user_type' in session:
+        return render_template('change_password.html')
+    else:
+        return render_template('login.html')
+
+
+@app.route('/update_password', methods=['POST'])
+def update_password():
+    if 'user_name' and 'user_type' in session:
+        if request.method == 'POST':
+            user_type = session['user_type']
+            user_name = session['user_name']
+            new_password = request.form['new_password_hash']
+
+            if user_type == 'student':
+                student = Student.query.filter_by(english_name=user_name).first()
+                student.password = new_password
+                db.session.commit()
+                return jsonify(status='success', redirect=url_for('my_pickr'))
+            elif user_type == 'supervisor' or user_type == 'manager':
+                supervisor = Supervisor.query.filter_by(user_name=user_name).first()
+                supervisor.password = new_password
+                db.session.commit()
+                return jsonify(status='success', redirect=url_for('my_pickr'))
+    else:
+        return render_template('login.html')
+
+
+@app.route('/reset_password', methods=['POST'])
+def reset_password():
+    if 'user_name' and 'user_type' in session:
+        if request.method == 'POST':
+            user_id = request.form['user_id']
+            user_type = request.form['user_type']
+            new_password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
+
+            if user_type == 'student':
+                student = Student.query.filter_by(id=user_id).first()
+                student.password = new_password
+                db.session.commit()
+                return jsonify(status='success')
+            elif user_type == 'supervisor':
+                supervisor = Supervisor.query.filter_by(id=user_id).first()
+                supervisor.password = new_password
+                db.session.commit()
+                return jsonify(status='success')
     else:
         return render_template('login.html')
 
@@ -152,6 +198,7 @@ def manager():
         supervisors = Supervisor.get_all()
         custom_selections = Selection.get_all_custom_selections()
         notes = Note.get_all()
+        types = Type.get_all()
         topic_num = Topic.get_num()
         custom_topic_num = Topic.get_num_custom()
         num_success = Selection.get_num_of_status_3or4()
@@ -164,7 +211,7 @@ def manager():
 
         return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
                                notes=notes, students=students, supervisors=supervisors,
-                               custom_selections=custom_selections, topic_num=topic_num,
+                               custom_selections=custom_selections, topic_num=topic_num, types=types,
                                custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
                                num_process=num_process, num_verify=num_verify, num_fail=num_fail, total_quta=total_quta,
                                static_topic_num=static_topic_num, pre=pre)
@@ -293,6 +340,20 @@ def delete_student(student_id):
         return jsonify(success=False, error='Student does not exist')
 
 
+@app.route('/delete_type/<int:type_id>')
+def delete_type(type_id):
+    type_item = Type.get_by_id(id=type_id)
+    topics = Topic.get_by_type_id(type_id=type_id)
+    if type_item:
+        if len(topics) == 0:
+            type_item.delete()
+            return jsonify(success=True)
+        else:
+            return jsonify(success=False, error='Can not delete this type, type has topics.')
+    else:
+        return jsonify(success=False, error='Type does not exist')
+
+
 @app.route('/delete_supervisor/<int:supervisor_id>')
 def delete_supervisor(supervisor_id):
     supervisor = Supervisor.get_by_id(id=supervisor_id)
@@ -326,6 +387,10 @@ def new_topic():
 @app.route('/new_note')
 def new_note():
     return render_template('new_note.html')
+
+@app.route('/new_type')
+def new_type():
+    return render_template('new_type.html')
 
 
 @app.route('/new_student')
@@ -381,6 +446,15 @@ def add_note():
     return redirect(url_for('manager'))
 
 
+@app.route('/add_type', methods=['POST'])
+def add_type():
+    name = request.form.get('name')
+
+    new_type = Type(name=name)
+    new_type.add()
+    return redirect(url_for('manager'))
+
+
 @app.route('/add_student', methods=['POST'])
 def add_student():
     chinese_name = request.form.get('chinese_name')
@@ -423,7 +497,7 @@ def import_students():
                 english_name=row['english_name'],
                 class_number=row['class_number'],
                 email=row['email'],
-                password=row['password'],
+                password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
                 user_name=row['user_name']
             )
             db.session.add(new_student)
@@ -444,7 +518,7 @@ def import_supervisors():
                 last_name=row['last_name'],
                 position=row['position'],
                 user_name=row['user_name'],
-                password=row['password'],
+                password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
                 email=row['email'],
                 is_admin=False
             )
@@ -491,6 +565,13 @@ def edit_student(student_id):
 def edit_supervisor(supervisor_id):
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     return render_template('edit_supervisor.html', supervisor=supervisor)
+
+
+@app.route('/edit_type/<int:type_id>')
+def edit_type(type_id):
+    type_item = Type.get_by_id(id=type_id)
+    topics = Topic.get_by_type_id(type_id=type_id)
+    return render_template('edit_type.html', type=type_item, topics=topics)
 
 
 @app.route('/check_custom_selection/<int:selection_id>')
@@ -547,6 +628,15 @@ def update_note(note_id):
     content = request.form.get('content')
 
     note.update(title=title, content=content)
+    return redirect(url_for('manager'))
+
+
+@app.route('/update_type/<int:type_id>', methods=['POST'])
+def update_type(type_id):
+    type_item = Type.get_by_id(id=type_id)
+    name = request.form.get('name')
+
+    type_item.update(name=name)
     return redirect(url_for('manager'))
 
 

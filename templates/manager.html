@@ -69,6 +69,8 @@
         <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
         <div class="_20px_height"></div>
         <a href="{{ url_for('logout') }}" class="small_link accent"><em>Logout↗</em></a>
+        <a href="{{ url_for('change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
+            Password↗</em></a>
         <div class="_20px_height"></div>
     </section>
     <div data-current="System" data-easing="ease" data-duration-in="300" data-duration-out="100" class="w-tabs">
@@ -235,7 +237,28 @@
                     </div>
                 {% endfor %}
                 <div class="_40px_height"></div>
-                <a href="{{ url_for('new_note') }}" class="submit-button-2 w-button">+ New Note</a></div>
+                <a href="{{ url_for('new_note') }}" class="submit-button-2 w-button">+ New Note</a>
+
+                <div class="_40px_height"></div>
+                <h2 class="third_title-2 accent">Types Setting</h2>
+                {% for type in types %}
+                    <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda1-53bceb80"
+                         class="w-layout-layout quick-stack-2 wf-layout-layout">
+                        <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda2-53bceb80" class="w-layout-cell cell-11">
+                            <div class="text-block-2"><em class="italic-text-3">{{ type.name }}</em></div>
+                        </div>
+                        <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda6-53bceb80" class="w-layout-cell cell-17">
+                            <a href="{{ url_for('edit_type', type_id = type.id) }}"
+                               class="submit-button-2 w-button edit-type">Edit</a>
+                            <div class="div-block-4"></div>
+                            <a href="#" class="submit-button-2 delete_button w-button delete-type"
+                               data-type-id="{{ type.id }}">Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="_40px_height"></div>
+                <a href="{{ url_for('new_type') }}" class="submit-button-2 w-button">+ New Type</a>
+            </div>
             <div data-w-tab="Students" class="w-tab-pane">
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Students</h2>
@@ -436,8 +459,6 @@
             </div>
         </div>
     </div>
-
-    </div>
     <div class="_80px_height"></div>
     <script>
         // Tab switch
@@ -592,6 +613,29 @@
             if (confirmed) {
                 $.ajax({
                     url: '/delete_student/' + studentID,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            element.remove()
+                        } else {
+                            alert(response.error)
+                        }
+                    }
+                })
+            }
+        })
+
+        // Delete type
+        $('.delete-type').click(function (e) {
+            e.preventDefault()
+            var typeID = $(this).data('type-id');
+            var element = $(this).closest('.quick-stack-2')
+
+            var confirmed = confirm("Are you sure you want to delete this type?");
+
+            if (confirmed) {
+                $.ajax({
+                    url: '/delete_type/' + typeID,
                     method: 'GET',
                     success: function (response) {
                         if (response.success) {

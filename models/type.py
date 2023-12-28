@@ -1,5 +1,6 @@
 from .db_instance import db
 
+
 class Type(db.Model):
     __tablename__ = 'types'
 
@@ -24,6 +25,10 @@ class Type(db.Model):
     @classmethod
     def get_all(cls):
         return cls.query.all()
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
     def __repr__(self):
         return f'<Type {self.id}>'

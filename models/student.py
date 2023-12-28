@@ -9,7 +9,7 @@ class Student(db.Model):
     english_name = db.Column(db.String(20))
     class_number = db.Column(db.String(30))
     email = db.Column(db.String(100))
-    password = db.Column(db.String(40))
+    password = db.Column(db.String(100))
     user_name = db.Column(db.String(20))
 
     def __init__(self, chinese_name, english_name, email, password, user_name, class_number):

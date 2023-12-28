@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}home{% endblock %}
+{% block title %}Edit student{% endblock %}
 
 {% block content %}
     <body>
@@ -11,22 +11,46 @@
         <div class="w-form">
             <form action="{{ url_for('update_student', student_id = student.id) }}" id="new_student_form" method="POST">
                 <label for="chinese_name" class="text-block _10button_spac">Chinese Name</label>
-                <input type="text" class="text-field creatnew w-input" name="chinese_name" id="chinese_name" value="{{ student.chinese_name }}"/>
+                <input type="text" class="text-field creatnew w-input" name="chinese_name" id="chinese_name"
+                       value="{{ student.chinese_name }}"/>
                 <label for="english_name" class="text-block _10button_spac">English Name</label>
-                <input type="text" class="text-field creatnew w-input" name="english_name" id="english_name" value="{{ student.english_name }}"/>
+                <input type="text" class="text-field creatnew w-input" name="english_name" id="english_name"
+                       value="{{ student.english_name }}"/>
                 <label for="class_number" class="text-block _10button_spac">Class Number</label>
-                <input type="text" class="text-field creatnew w-input" name="class_number" id="class_number" value="{{ student.class_number }}"/>
+                <input type="text" class="text-field creatnew w-input" name="class_number" id="class_number"
+                       value="{{ student.class_number }}"/>
                 <label for="email" class="text-block _10button_spac">E-mail</label>
-                <input type="text" class="text-field creatnew w-input" name="email" id="email" value="{{ student.email }}"/>
+                <input type="text" class="text-field creatnew w-input" name="email" id="email"
+                       value="{{ student.email }}"/>
                 <label for="username" class="text-block _10button_spac">Username</label>
-                <input type="text" class="text-field creatnew w-input" name="username" id="username" value="{{ student.user_name }}"/>
-                <label for="password" class="text-block _10button_spac">Password</label>
-                <input type="text" class="text-field creatnew w-input" name="password" id="password" value="{{ student.password }}"/>
-                <input type="submit" value="Save Edit" data-wait="Please wait..." class="submit-button _20head_spacing w-button"/>
+                <input type="text" class="text-field creatnew w-input" name="username" id="username"
+                       value="{{ student.user_name }}"/>
+                <input type="submit" value="Save Edit" data-wait="Please wait..."
+                       class="submit-button _20head_spacing w-button"/>
+                <a class="submit-button-2 delete_button w-button" id="reset">Reset Password</a>
             </form>
         </div>
         <div class="_80px_height"></div>
     </section>
+    <script>
+        $(document).ready(function () {
+            $("#reset").click(function () {
+                var r = confirm("Are you sure to reset the password?");
+                var user_id = {{ student.id }};
+                var user_type = "student";
+                if (r) {
+                    $.ajax({
+                        url: "{{ url_for('reset_password') }}",
+                        type: "POST",
+                        data: {user_id: user_id, user_type: user_type},
+                        success: function (data) {
+                            alert("This student's password has been reset to 123456.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
     </body>
 {% endblock %}
 

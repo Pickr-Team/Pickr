@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}home{% endblock %}
+{% block title %}Edit supervisor{% endblock %}
 
 {% block content %}
     <body>
@@ -12,25 +12,48 @@
             {% if message %}
                 <p class="accent"><strong>{{ message }}</strong></p>
             {% endif %}
-            <form action="{{ url_for('update_supervisor', supervisor_id = supervisor.id) }}" id="new_student_form" method="POST">
+            <form action="{{ url_for('update_supervisor', supervisor_id = supervisor.id) }}" id="new_student_form"
+                  method="POST">
                 <label for="first_name" class="text-block _10button_spac">First Name</label>
-                <input type="text" class="text-field creatnew w-input" name="first_name" id="first_name" value="{{ supervisor.first_name }}"/>
+                <input type="text" class="text-field creatnew w-input" name="first_name" id="first_name"
+                       value="{{ supervisor.first_name }}"/>
                 <label for="last_name" class="text-block _10button_spac">Last Name</label>
-                <input type="text" class="text-field creatnew w-input" name="last_name" id="last_name" value="{{ supervisor.last_name }}"/>
+                <input type="text" class="text-field creatnew w-input" name="last_name" id="last_name"
+                       value="{{ supervisor.last_name }}"/>
                 <label for="position" class="text-block _10button_spac">Position</label>
-                <input type="text" class="text-field creatnew w-input" name="position" id="position" value="{{ supervisor.position }}"/>
+                <input type="text" class="text-field creatnew w-input" name="position" id="position"
+                       value="{{ supervisor.position }}"/>
                 <label for="email" class="text-block _10button_spac">E-mail</label>
-                <input type="text" class="text-field creatnew w-input" name="email" id="email" value="{{ supervisor.email }}"/>
+                <input type="text" class="text-field creatnew w-input" name="email" id="email"
+                       value="{{ supervisor.email }}"/>
                 <label for="username" class="text-block _10button_spac">Username</label>
-                <input type="text" class="text-field creatnew w-input" name="username" id="username" value="{{ supervisor.user_name }}"/>
-                <label for="password" class="text-block _10button_spac">Password</label>
-                <input type="text" class="text-field creatnew w-input" name="password" id="password" value="{{ supervisor.password }}"/>
-                <input type="submit" value="Save Edit" data-wait="Please wait..." class="submit-button _20head_spacing w-button"/>
+                <input type="text" class="text-field creatnew w-input" name="username" id="username"
+                       value="{{ supervisor.user_name }}"/>
+                <input type="submit" value="Save Edit" data-wait="Please wait..."
+                       class="submit-button _20head_spacing w-button"/>
+                <a class="submit-button-2 delete_button w-button" id="reset">Reset Password</a>
             </form>
         </div>
         <div class="_80px_height"></div>
     </section>
+    <script>
+        $(document).ready(function () {
+            $("#reset").click(function () {
+                var r = confirm("Are you sure to reset the password?");
+                var user_id = {{ supervisor.id }};
+                var user_type = "supervisor";
+                if (r) {
+                    $.ajax({
+                        url: "{{ url_for('reset_password') }}",
+                        type: "POST",
+                        data: {user_id: user_id, user_type: user_type},
+                        success: function (data) {
+                            alert("This supervisor's password has been reset to 123456.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
     </body>
 {% endblock %}
-
-
