@@ -388,6 +388,7 @@ def new_topic():
 def new_note():
     return render_template('new_note.html')
 
+
 @app.route('/new_type')
 def new_type():
     return render_template('new_type.html')
@@ -461,8 +462,8 @@ def add_student():
     english_name = request.form.get('english_name')
     class_number = request.form.get('class_number')
     email = request.form.get('email')
-    password = request.form.get('password')
     user_name = request.form.get('username')
+    password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
 
     new_student = Student(chinese_name=chinese_name, english_name=english_name, class_number=class_number,
                           email=email, password=password, user_name=user_name)
@@ -476,7 +477,7 @@ def add_supervisor():
     last_name = request.form.get('last_name')
     position = request.form.get('position')
     user_name = request.form.get('username')
-    password = request.form.get('password')
+    password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
     email = request.form.get('email')
 
     new_supervisor = Supervisor(first_name=first_name, last_name=last_name, position=position,
