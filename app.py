@@ -2,7 +2,6 @@ import os
 import re
 import secrets
 from io import BytesIO
-
 import pandas as pd
 
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
@@ -25,10 +24,10 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
 '''Set up database'''
-HOST = '127.0.0.1'
+HOST = '47.236.81.149'
 PORT = '3306'
-DATABASE = 'demo'
-USERNAME = 'root'
+DATABASE = 'pickr'
+USERNAME = 'main_sql'
 PASSWORD = '20020316'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}'
 db.init_app(app)
