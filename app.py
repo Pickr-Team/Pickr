@@ -24,10 +24,10 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
 '''Set up database'''
-HOST = '47.236.81.149'
+HOST = '127.0.0.1'
 PORT = '3306'
-DATABASE = 'pickr'
-USERNAME = 'main_sql'
+DATABASE = 'demo'
+USERNAME = 'root'
 PASSWORD = '20020316'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}'
 db.init_app(app)
