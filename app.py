@@ -1,6 +1,7 @@
 import os
 import re
 import secrets
+from functools import wraps
 from io import BytesIO
 import pandas as pd
 
@@ -11,6 +12,8 @@ from models.db_instance import db
 from datetime import datetime
 import json
 
+import seeding_scripts.test as test_script
+
 from models.pdf_generator import generate_topic_poster
 from models.type import Type
 from models.note import Note
@@ -20,16 +23,22 @@ from models.selection import Selection
 from models.deadline import Deadline
 from models.student import Student
 
+from config import DevConfig
+from config import TestConfig
+
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
 '''Set up database'''
-HOST = '127.0.0.1'
-PORT = '3306'
-DATABASE = 'demo'
-USERNAME = 'root'
-PASSWORD = '20020316'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}'
+# Read flask environment variable to determine which database to use
+if os.environ.get('FLASK_ENV') == 'test':
+    config = TestConfig
+    port_number = 8000
+else:
+    config = DevConfig
+    port_number = 5001
+
+app.config.from_object(config)
 db.init_app(app)
 
 
@@ -39,6 +48,56 @@ def create_tables():
 
 '''Server start time'''
 now = datetime.now()
+
+
+@app.before_request
+def get_test_params():
+    if os.environ.get('FLASK_ENV') == 'test':
+        test_name = request.args.get('test_name')
+        if test_name:
+            seed_method = getattr(test_script, test_name)
+            seed_method()
+
+
+def require_login(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_name' not in session:
+            # 用户未登录，重定向到登录页面
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def require_supervisor(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_name' not in session or session['user_type'] != 'manager':
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def require_manager(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_name' not in session or session['user_type'] != 'manager':
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def require_student(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_name' not in session or session['user_type'] != 'student':
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 @app.route('/')
@@ -92,6 +151,7 @@ def login():
 
 
 @app.route('/logout')
+@require_login
 def logout():
     session.pop('user_name', None)
     session.pop('user_type', None)
@@ -99,21 +159,20 @@ def logout():
 
 
 @app.route('/student')
+@require_student
 def student():
-    if 'user_name' and 'user_type' in session:
-        student_id = Student.get_id(english_name=session['user_name'])
-        selection = Selection.get_by_student_id(student_id=student_id)
-        supervisors = Supervisor.get_all()
-        types = Type.get_all()
-        error = request.args.get('error')
-        deadlines = Deadline.get_all()
-        return render_template('student.html', name=session['user_name'], selection=selection, supervisors=supervisors,
-                               types=types, deadlines=deadlines, now=datetime.now(), error=error)
-    else:
-        return render_template('login.html')
+    student_id = Student.get_id(english_name=session['user_name'])
+    selection = Selection.get_by_student_id(student_id=student_id)
+    supervisors = Supervisor.get_all()
+    types = Type.get_all()
+    error = request.args.get('error')
+    deadlines = Deadline.get_all()
+    return render_template('student.html', name=session['user_name'], selection=selection, supervisors=supervisors,
+                           types=types, deadlines=deadlines, now=datetime.now(), error=error)
 
 
 @app.route('/change_password')
+@require_login
 def change_password():
     if 'user_name' and 'user_type' in session:
         return render_template('change_password.html')
@@ -900,4 +959,4 @@ def export_student_list():
 
 if __name__ == '__main__':
     create_tables()
-    app.run(debug=True)
+    app.run()

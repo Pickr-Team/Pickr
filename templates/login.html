@@ -30,7 +30,9 @@
 
             <label for="password" class="text-block login_text">Password</label>
             <input id="password" type="password" class="text-field w-input" name="password" required="required"/>
-            <div class="_40px_height"></div>
+            <div class="_20px_height"></div>
+            <p class="paragraph accent" id="error-info"></p>
+            <div class="_20px_height"></div>
             <input type="submit" value="Login" data-wait="Please wait..." class="submit-button w-button"/>
         </form>
     </div>
@@ -51,6 +53,7 @@
                 })
                 .catch(error => {
                     console.error('Error hashing the password:', error);
+                    $('#error-info').text('Error hashing the password: ' + error);
                 });
         });
 
@@ -66,15 +69,16 @@
                     if (response.status === 'success') {
                         window.location.href = response.redirect;
                     } else {
-                        alert('Login failed: ' + response.message);
+                        $('#error-info').text(response.message);
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('An error occurred: ' + error);
+                    $('#error-info').text('An error occurred: ' + error);
                 }
             });
         }
     });
 </script>
+
 </body>
 </html>
