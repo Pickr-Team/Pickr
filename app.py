@@ -7,6 +7,7 @@ import pandas as pd
 
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
 from openpyxl import Workbook
+from sqlalchemy import text
 
 from models.db_instance import db
 from datetime import datetime
@@ -63,7 +64,7 @@ def require_login(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_name' not in session:
-            # 用户未登录，重定向到登录页面
+            print("Not logged in")
             return redirect(url_for('login'))
         return f(*args, **kwargs)
 
@@ -73,7 +74,8 @@ def require_login(f):
 def require_supervisor(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_name' not in session or session['user_type'] != 'manager':
+        if 'user_name' not in session or session['user_type'] != 'supervisor':
+            print("Not logged in - require_supervisor")
             return redirect(url_for('login'))
         return f(*args, **kwargs)
 
@@ -84,6 +86,7 @@ def require_manager(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_name' not in session or session['user_type'] != 'manager':
+            print("Not logged in - require_manager")
             return redirect(url_for('login'))
         return f(*args, **kwargs)
 
@@ -174,13 +177,11 @@ def student():
 @app.route('/change_password')
 @require_login
 def change_password():
-    if 'user_name' and 'user_type' in session:
-        return render_template('change_password.html')
-    else:
-        return render_template('login.html')
+    return render_template('change_password.html')
 
 
 @app.route('/update_password', methods=['POST'])
+@require_login
 def update_password():
     if 'user_name' and 'user_type' in session:
         if request.method == 'POST':
@@ -203,81 +204,77 @@ def update_password():
 
 
 @app.route('/reset_password', methods=['POST'])
+@require_manager
 def reset_password():
-    if 'user_name' and 'user_type' in session:
-        if request.method == 'POST':
-            user_id = request.form['user_id']
-            user_type = request.form['user_type']
-            new_password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
+    if request.method == 'POST':
+        user_id = request.form['user_id']
+        user_type = request.form['user_type']
+        new_password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
 
-            if user_type == 'student':
-                student = Student.query.filter_by(id=user_id).first()
-                student.password = new_password
-                db.session.commit()
-                return jsonify(status='success')
-            elif user_type == 'supervisor':
-                supervisor = Supervisor.query.filter_by(id=user_id).first()
-                supervisor.password = new_password
-                db.session.commit()
-                return jsonify(status='success')
-    else:
-        return render_template('login.html')
+        if user_type == 'student':
+            student = Student.query.filter_by(id=user_id).first()
+            student.password = new_password
+            db.session.commit()
+            return jsonify(status='success')
+        elif user_type == 'supervisor':
+            supervisor = Supervisor.query.filter_by(id=user_id).first()
+            supervisor.password = new_password
+            db.session.commit()
+            return jsonify(status='success')
 
 
 @app.route('/supervisor')
+@require_supervisor
 def supervisor():
-    if 'user_name' and 'user_type' in session:
-        supervisor_id = Supervisor.get_id(user_name=session['user_name'])
-        supervisor = Supervisor.get_by_id(id=supervisor_id)
-        topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
-        not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
-        custom_selections = Selection.get_supervisor_selection_custom(supervisor_id=supervisor_id)
+    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
+    not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
+    custom_selections = Selection.get_supervisor_selection_custom(supervisor_id=supervisor_id)
 
-        total_quta = 0
-        for topic in topics:
-            total_quta += topic.quota
+    total_quta = 0
+    for topic in topics:
+        total_quta += topic.quota
 
-        return render_template('supervisor.html', topics=topics, supervisor=supervisor, total_quta=total_quta,
-                               not_custom_selections=not_custom_selections, custom_selections=custom_selections)
-    else:
-        return render_template('login.html')
+    return render_template('supervisor.html', topics=topics, supervisor=supervisor, total_quta=total_quta,
+                           not_custom_selections=not_custom_selections, custom_selections=custom_selections)
 
 
 @app.route('/manager')
+@require_manager
 def manager():
-    if 'user_name' and 'user_type' in session:
-        supervisor_id = Supervisor.get_id(user_name=session['user_name'])
-        supervisor = Supervisor.get_by_id(id=supervisor_id)
-        pre = request.args.get('pre')
-        students = Student.get_all()
+    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    pre = request.args.get('pre')
+    students = Student.get_all()
 
-        deadline_1 = Deadline.get_first()
-        deadline_2 = Deadline.get_second()
-        supervisors = Supervisor.get_all()
-        custom_selections = Selection.get_all_custom_selections()
-        notes = Note.get_all()
-        types = Type.get_all()
-        topic_num = Topic.get_num()
-        custom_topic_num = Topic.get_num_custom()
-        num_success = Selection.get_num_of_status_3or4()
-        num_waiting = Selection.get_num_of_status_0()
-        num_process = Selection.get_num_of_status_1()
-        num_verify = Selection.get_num_of_status_2()
-        num_fail = Selection.get_num_of_status_5()
-        total_quta = Topic.get_all_quota()
-        static_topic_num = Selection.get_num_of_status_4()
+    deadline_1 = Deadline.get_first()
+    deadline_2 = Deadline.get_second()
+    supervisors = Supervisor.get_all()
+    custom_selections = Selection.get_all_custom_selections()
+    notes = Note.get_all()
+    types = Type.get_all()
+    topic_num = Topic.get_num()
+    custom_topic_num = Topic.get_num_custom()
+    num_success = Selection.get_num_of_status_3or4()
+    num_waiting = Selection.get_num_of_status_0()
+    num_process = Selection.get_num_of_status_1()
+    num_verify = Selection.get_num_of_status_2()
+    num_fail = Selection.get_num_of_status_5()
+    total_quta = Topic.get_all_quota()
+    static_topic_num = Selection.get_num_of_status_4()
 
-        return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
-                               notes=notes, students=students, supervisors=supervisors,
-                               custom_selections=custom_selections, topic_num=topic_num, types=types,
-                               custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
-                               num_process=num_process, num_verify=num_verify, num_fail=num_fail, total_quta=total_quta,
-                               static_topic_num=static_topic_num, pre=pre)
-    else:
-        return render_template('login.html')
+    return render_template('manager.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
+                           notes=notes, students=students, supervisors=supervisors,
+                           custom_selections=custom_selections, topic_num=topic_num, types=types,
+                           custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
+                           num_process=num_process, num_verify=num_verify, num_fail=num_fail, total_quta=total_quta,
+                           static_topic_num=static_topic_num, pre=pre)
 
 
+# Super get all failed students
 @app.route('/fail_students')
+@require_manager
 def fail_students():
     selections = Selection.get_all_status_5()
     students = []
@@ -287,7 +284,9 @@ def fail_students():
     return jsonify(students=[student.to_json() for student in students])
 
 
+# Student submit their selection
 @app.route('/submit')
+@require_student
 def submit():
     student_id = Student.get_id(english_name=session['user_name'])
     selection = Selection.get_by_student_id(student_id=student_id)
@@ -312,7 +311,9 @@ def submit():
         return redirect(url_for('student', error='You have not selected any topic'))
 
 
+# Manager process all the selections
 @app.route('/process')
+@require_manager
 def process():
     selections = Selection.get_all_order_by_submit_time()
     success = 0
@@ -335,7 +336,9 @@ def process():
     return redirect(url_for('manager'))
 
 
+# Manager reset all the selections refresh failed students
 @app.route('/refresh')
+@require_manager
 def refresh():
     selections = Selection.get_all_status_5()
     for selection in selections:
@@ -347,7 +350,9 @@ def refresh():
     return redirect(url_for('manager'))
 
 
+# Manager update deadline
 @app.route('/update_deadline', methods=['POST'])
+@require_manager
 def update_deadline():
     round_num = request.form.get('round_num')
     round_num = int(round_num)
@@ -371,7 +376,9 @@ def update_deadline():
     return json.dumps({'success': True})
 
 
+# Supervisor update deadline
 @app.route('/delete_topic/<int:topic_id>')
+@require_supervisor
 def delete_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     if topic:
@@ -384,7 +391,9 @@ def delete_topic(topic_id):
         return jsonify(success=False, error='Topic does not exist')
 
 
+# Supervisor delete student
 @app.route('/delete_student/<int:student_id>')
+@require_manager
 def delete_student(student_id):
     student = Student.get_by_id(id=student_id)
     selection = Selection.get_by_student_id(student_id=student_id)
@@ -398,7 +407,9 @@ def delete_student(student_id):
         return jsonify(success=False, error='Student does not exist')
 
 
+# Supervisor delete type
 @app.route('/delete_type/<int:type_id>')
+@require_manager
 def delete_type(type_id):
     type_item = Type.get_by_id(id=type_id)
     topics = Topic.get_by_type_id(type_id=type_id)
@@ -412,7 +423,9 @@ def delete_type(type_id):
         return jsonify(success=False, error='Type does not exist')
 
 
+# Manager delete supervisor
 @app.route('/delete_supervisor/<int:supervisor_id>')
+@require_manager
 def delete_supervisor(supervisor_id):
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
@@ -426,7 +439,9 @@ def delete_supervisor(supervisor_id):
         return jsonify(success=False, error='Supervisor does not exist')
 
 
+# Manager delete note
 @app.route('/delete_note/<int:note_id>')
+@require_manager
 def delete_note(note_id):
     note = Note.get_by_id(id=note_id)
     if note:
@@ -436,33 +451,45 @@ def delete_note(note_id):
         return redirect(url_for('error', message='Note does not exist'))
 
 
+# Supervisor create new topic
 @app.route('/new_topic')
+@require_supervisor
 def new_topic():
     types = Type.get_all()
     return render_template('new_topic.html', types=types)
 
 
+# Manager create new note
 @app.route('/new_note')
+@require_manager
 def new_note():
     return render_template('new_note.html')
 
 
+# Manager create new type
 @app.route('/new_type')
+@require_manager
 def new_type():
     return render_template('new_type.html')
 
 
+# Manager create new student
 @app.route('/new_student')
+@require_manager
 def new_student():
     return render_template('new_student.html')
 
 
+# Manager create new supervisor
 @app.route('/new_supervisor')
+@require_manager
 def new_supervisor():
     return render_template('new_supervisor.html')
 
 
+# Supervisor add new topic
 @app.route('/add_topic', methods=['POST'])
+@require_supervisor
 def add_topic():
     supervisor_id = Supervisor.get_id(user_name=session['user_name'])
     topic_name = request.form.get('topic_name')
@@ -495,7 +522,9 @@ def add_topic():
     return redirect(url_for('supervisor'))
 
 
+# Manager add new note
 @app.route('/add_note', methods=['POST'])
+@require_manager
 def add_note():
     title = request.form.get('title')
     content = request.form.get('content')
@@ -505,7 +534,9 @@ def add_note():
     return redirect(url_for('manager'))
 
 
+# Manager add new type
 @app.route('/add_type', methods=['POST'])
+@require_manager
 def add_type():
     name = request.form.get('name')
 
@@ -514,7 +545,9 @@ def add_type():
     return redirect(url_for('manager'))
 
 
+# Manager add new student
 @app.route('/add_student', methods=['POST'])
+@require_manager
 def add_student():
     chinese_name = request.form.get('chinese_name')
     english_name = request.form.get('english_name')
@@ -529,7 +562,9 @@ def add_student():
     return redirect(url_for('manager', pre='student'))
 
 
+# Manager add new supervisor
 @app.route('/add_supervisor', methods=['POST'])
+@require_manager
 def add_supervisor():
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
@@ -544,7 +579,9 @@ def add_supervisor():
     return redirect(url_for('manager', pre='supervisor'))
 
 
+# Manager import students form excel
 @app.route('/import_students', methods=['POST'])
+@require_manager
 def import_students():
     print('import_students')
     file = request.files['file']
@@ -565,7 +602,9 @@ def import_students():
     return redirect(url_for('error', message='No file uploaded'))
 
 
+# Manager import supervisor form excel
 @app.route('/import_supervisors', methods=['POST'])
+@require_manager
 def import_supervisors():
     print('import_supervisors')
     file = request.files['file']
@@ -587,53 +626,69 @@ def import_supervisors():
     return redirect(url_for('error', message='No file uploaded'))
 
 
+# Manager get the student form template
 @app.route('/get_template')
+@require_manager
 def get_template():
     directory = os.path.join(app.root_path, 'static', 'file')
     filename = 'students_example.xlsx'
     return send_from_directory(directory, filename, as_attachment=True)
 
 
+# Manager get the supervisor form template
 @app.route('/get_template_supervisor')
+@require_manager
 def get_template_supervisor():
     directory = os.path.join(app.root_path, 'static', 'file')
     filename = 'supervisor_example.xlsx'
     return send_from_directory(directory, filename, as_attachment=True)
 
 
+# Supervisor edit topic
 @app.route('/edit_topic/<int:topic_id>')
+@require_supervisor
 def edit_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     types = Type.get_all()
     return render_template('edit_topic.html', topic=topic, types=types)
 
 
+# Manager edit note
 @app.route('/edit_note/<int:note_id>')
+@require_manager
 def edit_note(note_id):
     note = Note.get_by_id(id=note_id)
     return render_template('edit_note.html', note=note)
 
 
+# Manager edit student
 @app.route('/edit_student/<int:student_id>')
+@require_manager
 def edit_student(student_id):
     student = Student.get_by_id(id=student_id)
     return render_template('edit_student.html', student=student)
 
 
+# Manager edit supervisor
 @app.route('/edit_supervisor/<int:supervisor_id>')
+@require_manager
 def edit_supervisor(supervisor_id):
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     return render_template('edit_supervisor.html', supervisor=supervisor)
 
 
+# Manager edit type
 @app.route('/edit_type/<int:type_id>')
+@require_manager
 def edit_type(type_id):
     type_item = Type.get_by_id(id=type_id)
     topics = Topic.get_by_type_id(type_id=type_id)
     return render_template('edit_type.html', type=type_item, topics=topics)
 
 
+# Manager edit and check custom selection
 @app.route('/check_custom_selection/<int:selection_id>')
+@require_manager or require_supervisor
 def check_custom_selection(selection_id):
     selection = Selection.get_by_id(selection_id=selection_id)
     supervisors = Supervisor.get_all()
@@ -641,7 +696,9 @@ def check_custom_selection(selection_id):
     return render_template('check_custom_selection.html', selection=selection, supervisors=supervisors, types=types)
 
 
+# Supervisor update topic
 @app.route('/update_topic/<int:topic_id>', methods=['POST'])
+@require_supervisor
 def update_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     print(topic_id)
@@ -680,7 +737,9 @@ def update_topic(topic_id):
     return redirect(url_for('supervisor'))
 
 
+# Manager update note
 @app.route('/update_note/<int:note_id>', methods=['POST'])
+@require_manager
 def update_note(note_id):
     note = Note.get_by_id(id=note_id)
     title = request.form.get('title')
@@ -690,7 +749,9 @@ def update_note(note_id):
     return redirect(url_for('manager'))
 
 
+# Manager update type
 @app.route('/update_type/<int:type_id>', methods=['POST'])
+@require_manager
 def update_type(type_id):
     type_item = Type.get_by_id(id=type_id)
     name = request.form.get('name')
@@ -699,7 +760,9 @@ def update_type(type_id):
     return redirect(url_for('manager'))
 
 
+# Manager update student
 @app.route('/update_student/<int:student_id>', methods=['POST'])
+@require_manager
 def update_student(student_id):
     student = Student.get_by_id(id=student_id)
     chinese_name = request.form.get('chinese_name')
@@ -714,7 +777,9 @@ def update_student(student_id):
     return redirect(url_for('manager', pre='student'))
 
 
+# Manager update supervisor
 @app.route('/update_supervisor/<int:supervisor_id>', methods=['POST'])
+@require_manager
 def update_supervisor(supervisor_id):
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     first_name = request.form.get('first_name')
@@ -741,7 +806,9 @@ def update_supervisor(supervisor_id):
     return redirect(url_for('manager', pre='supervisor'))
 
 
+# Manager update custom selection
 @app.route('/update_custom_selection/<int:selection_id>', methods=['POST'])
+@require_manager
 def update_custom_selection(selection_id):
     selection = Selection.get_by_id(selection_id=selection_id)
     supervisor_id = request.form.get('supervisor')
@@ -763,14 +830,18 @@ def update_custom_selection(selection_id):
     return redirect(url_for('manager', pre='custom_selection'))
 
 
+# Manager get the student form template
 @app.route('/student_status/<int:student_id>')
+@require_manager
 def student_status(student_id):
     selection = Selection.get_by_student_id(student_id=student_id)
     student = Student.get_by_id(id=student_id)
     return render_template('student_status.html', selection=selection, student=student)
 
 
+# Manager get the supervisor form template
 @app.route('/supervisor_status/<int:supervisor_id>')
+@require_manager
 def supervisor_status(supervisor_id):
     topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
     supervisor = Supervisor.get_by_id(id=supervisor_id)
@@ -778,7 +849,9 @@ def supervisor_status(supervisor_id):
     return render_template('supervisor_status.html', topics=topics, supervisor=supervisor)
 
 
+# Generate topic poster
 @app.route('/topic_poster')
+@require_supervisor
 def topic_poster():
     supervisor_id = Supervisor.get_id(user_name=session['user_name'])
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
@@ -793,7 +866,9 @@ def topic_poster():
     })
 
 
+# Student update selection
 @app.route('/update_selection', methods=['POST'])
+@require_student
 def update_selection():
     student_id = Student.get_id(english_name=session['user_name'])
     topic_id = request.form.get('topic_id')
@@ -845,7 +920,9 @@ def update_selection():
         return json.dumps({'success': False, 'error': 'Topic does not exist'})
 
 
+# Student update custom selection
 @app.route('/update_custom_topic', methods=['POST'])
+@require_student
 def update_custom_topic():
     student_id = Student.get_id(english_name=session['user_name'])
     topic_name = request.form.get('topic_name')
@@ -892,6 +969,7 @@ def topic_list():
     topics = Topic.get_all()
     types = Type.get_all()
     supervisors = Supervisor.get_all()
+    print(topics, types, supervisors)
     return render_template('topic_list.html', topics=topics, types=types, supervisors=supervisors)
 
 
@@ -922,7 +1000,9 @@ def topic_detail_custom(topic_id):
     return render_template('topic_detail_custom.html', topic=topic)
 
 
+# Supervisor get the student list
 @app.route('/export_student_list')
+@require_supervisor
 def export_student_list():
     supervisor_id = Supervisor.get_id(user_name=session['user_name'])
     not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
@@ -955,6 +1035,18 @@ def export_student_list():
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         headers={'Content-Disposition': 'attachment;filename=student_list.xlsx'}
     )
+
+
+# Manager reset the hole system
+@app.route('/resetting')
+@require_manager
+def resetting():
+    db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
+    tables = ['selections', 'students', 'types']
+    for table in tables:
+        db.session.execute(text(f'TRUNCATE TABLE {table};'))
+    db.session.commit()
+    return jsonify(success=True)
 
 
 if __name__ == '__main__':

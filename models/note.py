@@ -5,7 +5,7 @@ class Note(db.Model):
     __tablename__ = 'notes'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20))
+    title = db.Column(db.Text)
     content = db.Column(db.Text)
 
     def __init__(self, title, content):

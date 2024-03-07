@@ -258,6 +258,9 @@
                 {% endfor %}
                 <div class="_40px_height"></div>
                 <a href="{{ url_for('new_type') }}" class="submit-button-2 w-button">+ New Type</a>
+                <br>
+                <div class="_40px_height"></div>
+                <a href="#" class="submit-button-2 delete_button w-button" id="reset-system">Reset System</a>
             </div>
             <div data-w-tab="Students" class="w-tab-pane">
                 <div class="_40px_height"></div>
@@ -663,6 +666,26 @@
                     success: function (response) {
                         if (response.success) {
                             element.remove()
+                        } else {
+                            alert(response.error)
+                        }
+                    }
+                })
+            }
+        })
+
+        //reset system
+        $('#reset-system').click(function (e) {
+            e.preventDefault()
+            var confirmed = confirm("Are you sure you want to reset the hole system?");
+
+            if (confirmed) {
+                $.ajax({
+                    url: '/resetting',
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload()
                         } else {
                             alert(response.error)
                         }
