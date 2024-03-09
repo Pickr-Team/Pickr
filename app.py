@@ -280,7 +280,8 @@ def fail_students():
     students = []
     for selection in selections:
         student = Student.get_by_id(id=selection.student_id)
-        students.append(student)
+        if student is not None:
+            students.append(student)
     return jsonify(students=[student.to_json() for student in students])
 
 
