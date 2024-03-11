@@ -13,7 +13,11 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 class TestManagerViewTopics():
     """
-    lorum ipsum
+    This test method tests the manager's ability to view topics
+
+    1. The manager logs in
+    2. The manager views the topics
+    3. The manager logs out
     """
 
     def setup_method(self, method):

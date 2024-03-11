@@ -12,6 +12,14 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class TestStudentCreateCustomTopic():
+    """
+    This test method tests the student's ability to create a custom topic
+
+    1. The student logs in
+    2. The student creates a custom topic
+    3. The student logs out
+    """
+
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
         self.vars = {}

@@ -6,6 +6,14 @@ from selenium.webdriver.common.keys import Keys
 
 
 class TestStudentSelectTopics:
+    """
+    This test method tests the student's ability to select topics
+
+    1. The student logs in
+    2. The student selects the topics and deselect the topics
+    3. The student logs out
+    """
+
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(10)

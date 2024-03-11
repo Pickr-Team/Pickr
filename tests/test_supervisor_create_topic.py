@@ -12,6 +12,14 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class TestSupervisorcreatetopic():
+    """
+    This test method tests the supervisor's ability to create topics
+
+    1. The supervisor logs in
+    2. The supervisor creates a topic
+    3. The supervisor logs out
+    """
+
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
         self.vars = {}

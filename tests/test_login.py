@@ -2,12 +2,20 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-"""
-Test three different users' login and logout
-"""
-
 
 class TestLogin:
+    """
+    Test three different users' login and logout
+
+    1. Open the browser
+    2. Visit the website
+    3. Click the link "My Pickr"
+    4. Enter the username and password
+    5. Click the submit button
+    6. Check the page content
+    7. Click the logout link
+    """
+
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
         self.vars = {}

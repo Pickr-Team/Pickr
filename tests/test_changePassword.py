@@ -12,6 +12,19 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class TestChangePassword:
+    """
+    Test the change password feature
+
+    1. Login
+    2. Click on the username
+    3. Click on the change password link
+    4. Enter the old password
+    5. Enter the new password
+    6. Confirm the new password
+    7. Click on the submit button
+    8. Logout
+    """
+
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
         self.vars = {}

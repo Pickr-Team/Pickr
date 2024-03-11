@@ -12,6 +12,15 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class TestManagerSetDeadline():
+    """
+    This test is for the manager to set the deadline for the selection process
+
+    1. The manager logs in
+    2. The manager sets the deadline for the first round
+    3. The manager sets the deadline for the second round
+    4. The manager logs out
+    """
+
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
         self.vars = {}
