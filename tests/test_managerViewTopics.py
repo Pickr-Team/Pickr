@@ -12,6 +12,10 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class TestManagerViewTopics():
+    """
+    lorum ipsum
+    """
+
     def setup_method(self, method):
         self.driver = webdriver.Chrome()
         self.vars = {}

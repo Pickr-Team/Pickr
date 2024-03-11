@@ -13,7 +13,7 @@ from models.db_instance import db
 from datetime import datetime
 import json
 
-import seeding_scripts.test as test_script
+import tests.seeding as seeding_script
 
 from models.pdf_generator import generate_topic_poster
 from models.type import Type
@@ -56,7 +56,7 @@ def get_test_params():
     if os.environ.get('FLASK_ENV') == 'test':
         test_name = request.args.get('test_name')
         if test_name:
-            seed_method = getattr(test_script, test_name)
+            seed_method = getattr(seeding_script, test_name)
             seed_method()
 
 
