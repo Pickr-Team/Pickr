@@ -17,9 +17,13 @@
   <img src="https://img.shields.io/badge/mysql-00000f.svg?logo=mysql&logoColor=white">
 </div>
 
-## Features
-- Students need to be able to view information of their supervisors and the topic, select topic within a specified period, and view the progress of their project selection or customize their own topic. 
-- Supervisors can add their own topic and description information, set quotas for their projects, view students who have selected them, and export their selection results as a table. 
-- Managers can add students, add teachers, and quotas. 
-- The project needs to set up an algorithm for students’ selections of topics and supervisors: each student can choose three topics and ranks by the order of priority. If their first choice is approved, the following two choices will be nullified, and so on. The submissions of students will be considered by the order of submission time, namely, selections submitted earlier will be considered before those submitted latter. If none of the three choices are available, the student needs to resubmit in the second phase. Project managers can also modify the topic and supervisor choose of students. 
-
+# Overview
+Pickr is a graduation project supervisor and topic selection system designed for the software engineering and computer science majors in the Sino-British cooperative education program at Chengdu University of Technology. Its goal is to simplify the process of selecting thesis topics and advisors for Level6 students, replacing the previous complex procedures, and improving fairness in the process. 
+# User Group
+The system mainly serves three user groups - students, supervisor, and manager. 
+## Supervisor
+Supervisors can create their own topics on their pages and check the selection process result, download the Excel file. Students can search for and find topics of interest in the Topic List page. 
+## Student
+Each student can fill in three topics of their choice or create their own Custom Topic. The students' selections can be saved in the database, and they can submit their choices to the system at a designated time set by the manager. The system will automatically assign supervisor to students based on the time the application was submitted. For students who create Custom Topics, manager will check their custom topics one by one and can make modifications (change supervisor, description…). After all processes are completed, students can see their assigned supervisor and final topic on their personal page.
+## Manager
+The Manager can manage the entire system, including modifying, adding, and deleting supervisors and students. They can view detailed information about supervisors (topic selection status, topics created) and students (topic selection status, results). The Manager can also handle students' custom topics (assigning supervisors, modifying information), sets submission deadlines, and configures notifications.
