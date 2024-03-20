@@ -9,9 +9,10 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium_test import SeleniumTest
 
 
-class TestStudentCreateCustomTopic():
+class TestStudentCreateCustomTopic(SeleniumTest):
     """
     This test method tests the student's ability to create a custom topic
 
@@ -79,4 +80,5 @@ class TestStudentCreateCustomTopic():
         time.sleep(1)
         self.driver.find_element(By.ID, "customFormSubmit").click()
         time.sleep(2)
-        self.driver.find_element(By.CSS_SELECTOR, ".small_link:nth-child(3) > em").click()
+        self.driver.execute_script("window.scrollTo(0,0)")
+        self.driver.find_element(By.XPATH, "//em[contains(.,\'Logout↗\')]").click()

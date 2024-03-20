@@ -3,9 +3,10 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium_test import SeleniumTest
 
 
-class TestStudentSelectTopics:
+class TestStudentSelectTopics(SeleniumTest):
     """
     This test method tests the student's ability to select topics
 

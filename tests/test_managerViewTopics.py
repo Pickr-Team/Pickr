@@ -10,8 +10,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from selenium_test import SeleniumTest
 
-class TestManagerViewTopics():
+
+class TestManagerViewTopics(SeleniumTest):
     """
     This test method tests the manager's ability to view topics
 

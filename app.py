@@ -24,8 +24,7 @@ from models.selection import Selection
 from models.deadline import Deadline
 from models.student import Student
 
-from config import DevConfig
-from config import TestConfig
+from config import *
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -34,10 +33,10 @@ app.secret_key = secrets.token_hex(16)
 # Read flask environment variable to determine which database to use
 if os.environ.get('FLASK_ENV') == 'test':
     config = TestConfig
-    port_number = 8000
+elif os.environ.get('FLASK_ENV') == 'production':
+    config = ProdConfig
 else:
     config = DevConfig
-    port_number = 5001
 
 app.config.from_object(config)
 db.init_app(app)
@@ -114,6 +113,18 @@ def homepage():
 def error():
     message = request.args.get('message')
     return render_template('error.html', message=message)
+
+
+# Catch 404 error
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html', message='404 NOT FOUND'), 404
+
+
+# Catch 500 error
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('error.html', message='Internal server error'), 500
 
 
 @app.route('/my_pickr')
@@ -365,7 +376,6 @@ def update_deadline():
 
     if round_num == 1:
         deadline = Deadline.get_first()
-        print(deadline)
     elif round_num == 2:
         deadline = Deadline.get_second()
 
@@ -702,7 +712,6 @@ def check_custom_selection(selection_id):
 @require_supervisor
 def update_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
-    print(topic_id)
     topic_name = request.form.get('topic_name')
     type_id = request.form.get('type')
     position = request.form.get('position')
@@ -734,7 +743,6 @@ def update_topic(topic_id):
 
     topic.update(name=topic_name, supervisor_id=topic.supervisor_id, quota=position, is_custom=False, type_id=type_id,
                  description=description, required_skills=required_skills, reference=reference)
-    print('find')
     return redirect(url_for('supervisor'))
 
 
@@ -970,7 +978,6 @@ def topic_list():
     topics = Topic.get_all()
     types = Type.get_all()
     supervisors = Supervisor.get_all()
-    print(topics, types, supervisors)
     return render_template('topic_list.html', topics=topics, types=types, supervisors=supervisors)
 
 

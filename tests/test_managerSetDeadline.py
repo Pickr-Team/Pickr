@@ -9,9 +9,10 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium_test import SeleniumTest
 
 
-class TestManagerSetDeadline():
+class TestManagerSetDeadline(SeleniumTest):
     """
     This test is for the manager to set the deadline for the selection process
 

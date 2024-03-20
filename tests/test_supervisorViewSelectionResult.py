@@ -9,9 +9,10 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium_test import SeleniumTest
 
 
-class TestSupervisorViewSelectionResult():
+class TestSupervisorViewSelectionResult(SeleniumTest):
     """
     This test method tests the supervisor's ability to view selection results
 

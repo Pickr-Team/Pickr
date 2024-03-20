@@ -9,9 +9,10 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium_test import SeleniumTest
 
 
-class TestManagerSetNotesTypes():
+class TestManagerSetNotesTypes(SeleniumTest):
     """
     This test method tests the manager's ability to set notes types
 

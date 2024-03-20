@@ -10,8 +10,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from selenium_test import SeleniumTest
 
-class TestStudentsbrowsetopicsfilterorsearch():
+
+class TestTopicList(SeleniumTest):
     """
     This test method tests the user's ability to browse topics, filter or search for topics
 
@@ -26,7 +28,7 @@ class TestStudentsbrowsetopicsfilterorsearch():
     def teardown_method(self, method):
         self.driver.quit()
 
-    def test_studentsbrowsetopicsfilterorsearch(self):
+    def test_topic_list(self):
         self.driver.get("http://127.0.0.1:8000?test_name=view_topics")
         self.driver.set_window_size(1760, 1000)
         self.driver.find_element(By.XPATH, "//em[contains(.,\'Topic List↗\')]").click()

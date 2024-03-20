@@ -1,9 +1,11 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium_test import SeleniumTest
 
 
-class TestLogin:
+# Remove inheritance from SeleniumTest when running this file stand-alone
+class TestLogin(SeleniumTest):
     """
     Test three different users' login and logout
 
