@@ -102,6 +102,16 @@ def require_student(f):
     return decorated_function
 
 
+def require_supervisor_and_manager(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_name' not in session or session['user_type'] != 'supervisor' or session['user_type'] != 'manager':
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
 @app.route('/')
 def homepage():
     num_of_topics = Topic.get_num()
@@ -699,7 +709,7 @@ def edit_type(type_id):
 
 # Manager edit and check custom selection
 @app.route('/check_custom_selection/<int:selection_id>')
-@require_manager or require_supervisor
+@require_supervisor_and_manager
 def check_custom_selection(selection_id):
     selection = Selection.get_by_id(selection_id=selection_id)
     supervisors = Supervisor.get_all()
