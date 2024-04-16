@@ -15,4 +15,4 @@ class DevConfig:
 class ProdConfig:
     Testing = False
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://flask:{os.environ.get('FLASK_DV_PASSWORD')}@localhost/studentprojectmanager"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://flask:2024flask@localhost/studentprojectmanager"
