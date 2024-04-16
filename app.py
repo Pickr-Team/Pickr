@@ -7,7 +7,6 @@ import pandas as pd
 
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory, \
     Blueprint
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from openpyxl import Workbook
 from sqlalchemy import text
 
@@ -115,7 +114,7 @@ def require_supervisor_and_manager(f):
     return decorated_function
 
 
-@main.route('/')
+@app.route('/')
 def homepage():
     num_of_topics = Topic.get_num()
     num_of_supervisors = Supervisor.get_num()
