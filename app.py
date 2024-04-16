@@ -29,7 +29,7 @@ from config import *
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 # bp = Blueprint('my_blueprint', __name__, url_prefix='/studentprojectmanager')
-app.config['APPLICATION_ROOT'] = '/studentprojectmanager'
+# app.config['APPLICATION_ROOT'] = '/studentprojectmanager'
 
 '''Set up database'''
 # Read flask environment variable to determine which database to use
