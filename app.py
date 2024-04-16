@@ -5,7 +5,8 @@ from functools import wraps
 from io import BytesIO
 import pandas as pd
 
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory, Blueprint
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from openpyxl import Workbook
 from sqlalchemy import text
 
@@ -28,8 +29,6 @@ from config import *
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
-bp = Blueprint('my_blueprint', __name__, url_prefix='/studentprojectmanager')
-# app.config['APPLICATION_ROOT'] = '/studentprojectmanager'
 
 '''Set up database'''
 # Read flask environment variable to determine which database to use
@@ -1069,6 +1068,16 @@ def resetting():
     return jsonify(success=True)
 
 
+def create_prefixed_app():
+    # 创建一个新的 Flask 应用作为前缀处理器
+    prefixed_app = Flask(__name__)
+    # 使用 DispatcherMiddleware 来重定向所有请求到带前缀的应用
+    prefixed_app.wsgi_app = DispatcherMiddleware(Flask('dummy_app'), {
+        '/studentprojectmanager': app.wsgi_app
+    })
+    return prefixed_app
+
+
 if __name__ == '__main__':
-    create_tables()
-    app.run()
+    prefixed_app = create_prefixed_app()
+    prefixed_app.run()
