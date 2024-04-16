@@ -114,7 +114,7 @@ def require_supervisor_and_manager(f):
     return decorated_function
 
 
-@app.route('/')
+@main.route('/')
 def homepage():
     num_of_topics = Topic.get_num()
     num_of_supervisors = Supervisor.get_num()
