@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="../static/image/icon.png" type="image/png">
+    <link rel="icon" href="{{ url_for('static',filename='image/icon.png') }}" type="image/png">
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://lib.baomitu.com/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="../static/js/star.js"></script>
+    <script src="{{ url_for('static', filename='js/star.js') }}"></script>
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
@@ -35,7 +35,7 @@
     </div>
     <div class="paragraph i _10_head">
         PROJECT START FROM - Nov,7 2023
-        <div>
+        <div class="social-icons">
             <a href="mailto:zchenxing2002@gmail.com" class="w-inline-block">
                 <img src="{{ url_for('static',filename='image/email_icon.svg') }}" loading="lazy" width="20"
                      alt="Send Email" class="footer-icon"/>
@@ -50,7 +50,6 @@
                      class="footer-icon"/>
             </a>
         </div>
-
     </div>
 </section>
 </body>
@@ -63,6 +62,12 @@
 
     .footer-icon {
         margin-left: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .social-icons {
+            display: none;
+        }
     }
 </style>
 </html>
