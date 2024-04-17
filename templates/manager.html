@@ -552,7 +552,7 @@
             // Reset form
             function resetForm(roundNumber) {
                 $.ajax({
-                    url: '/update_deadline',
+                    url: '{{ url_for('update_deadline') }}',
                     method: 'POST',
                     data: {round_num: roundNumber, reset: 'true'},
                     success: function (result) {
@@ -567,7 +567,7 @@
 
             // submit form
             $.ajax({
-                url: '/update_deadline',
+                url: '{{ url_for('update_deadline') }}',
                 method: 'POST',
                 data: {
                     submit_time: submit_time,
@@ -590,12 +590,13 @@
             e.preventDefault()
             var noteID = $(this).data('note-id');
             var element = $(this).closest('.quick-stack-2')
-
             var confirmed = confirm("Are you sure you want to delete this topic?");
+            var baseUrl = "{{ url_for('delete_note', note_id = '0') }}";
 
             if (confirmed) {
+                var fullUrl = baseUrl.replace('/0', '/' + noteID);
                 $.ajax({
-                    url: '/delete_note/' + noteID,
+                    url: fullUrl,
                     method: 'GET',
                     success: function (result) {
                         element.remove()
@@ -612,9 +613,12 @@
 
             var confirmed = confirm("Are you sure you want to delete this student?");
 
+            var baseUrl = "{{ url_for('delete_student', student_id = '0') }}";
+
             if (confirmed) {
+                var fullUrl = baseUrl.replace('/0', '/' + studentID);
                 $.ajax({
-                    url: '/delete_student/' + studentID,
+                    url: fullUrl,
                     method: 'GET',
                     success: function (response) {
                         if (response.success) {
@@ -635,9 +639,12 @@
 
             var confirmed = confirm("Are you sure you want to delete this type?");
 
+            var baseUrl = "{{ url_for('delete_type', type_id = '0') }}";
+
             if (confirmed) {
+                var fullUrl = baseUrl.replace('/0', '/' + typeID);
                 $.ajax({
-                    url: '/delete_type/' + typeID,
+                    url: fullUrl,
                     method: 'GET',
                     success: function (response) {
                         if (response.success) {
@@ -658,9 +665,12 @@
 
             var confirmed = confirm("Are you sure you want to delete this supervisor?");
 
+            var baseUrl = "{{ url_for('delete_supervisor', supervisor_id = '0') }}";
+
             if (confirmed) {
+                var fullUrl = baseUrl.replace('/0', '/' + supervisorID);
                 $.ajax({
-                    url: '/delete_supervisor/' + supervisorID,
+                    url: fullUrl,
                     method: 'GET',
                     success: function (response) {
                         if (response.success) {
@@ -680,7 +690,7 @@
 
             if (confirmed) {
                 $.ajax({
-                    url: '/resetting',
+                    url: '{{ url_for('resetting') }}',
                     method: 'GET',
                     success: function (response) {
                         if (response.success) {

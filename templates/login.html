@@ -60,7 +60,7 @@
         function sendData(user_name, password_hash) {
             $.ajax({
                 type: "POST",
-                url: "/login",
+                url: "{{ url_for('login') }}",
                 data: {
                     user_name: user_name,
                     password_hash: password_hash

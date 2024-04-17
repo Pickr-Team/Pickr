@@ -190,7 +190,7 @@
                     var search_query = $(this).val();
                     if ($.trim(search_query).length > 0) {
                         $.ajax({
-                            url: '/topic_search',
+                            url: '{{ url_for('search_topic') }}',
                             data: {'search_query': search_query},
                             type: 'GET',
                             success: function (response) {

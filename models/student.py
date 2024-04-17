@@ -24,11 +24,10 @@ class Student(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, chinese_name, english_name, email, password, user_name, class_number):
+    def update(self, chinese_name, english_name, email, user_name, class_number):
         self.chinese_name = chinese_name
         self.english_name = english_name
         self.email = email
-        self.password = password
         self.user_name = user_name
         self.class_number = class_number
         db.session.commit()

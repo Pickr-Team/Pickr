@@ -464,7 +464,7 @@
                 // reset selection
                 function resetSelection(formId, choiceNumber) {
                     $.ajax({
-                        url: '/update_selection',
+                        url: '{{ url_for('update_selection') }}',
                         method: 'POST',
                         data: {choice_number: choiceNumber, reset: 'true'},
                         success: function (response) {
@@ -480,7 +480,7 @@
 
                 // submit
                 $.ajax({
-                    url: '/update_selection',
+                    url: '{{ url_for('update_selection') }}',
                     method: 'POST',
                     data: {topic_id: topicId, choice_number: choiceNumber},
                     success: function (response) {
@@ -523,7 +523,7 @@
                 function resetCustomTopic() {
                     console.log('reset')
                     $.ajax({
-                        url: '/update_custom_topic',
+                        url: '{{ url_for('update_custom_topic') }}',
                         method: 'POST',
                         data: {reset: 'true'},
                         success: function (response) {
@@ -542,7 +542,7 @@
 
                 // submit
                 $.ajax({
-                    url: '/update_custom_topic',
+                    url: '{{ url_for('update_custom_topic') }}',
                     method: 'POST',
                     data: {
                         supervisor_id: supervisorId,

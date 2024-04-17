@@ -28,12 +28,11 @@ class Supervisor(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self, first_name, last_name, position, user_name, password, email):
+    def update(self, first_name, last_name, position, user_name, email):
         self.first_name = first_name
         self.last_name = last_name
         self.position = position
         self.user_name = user_name
-        self.password = password
         self.email = email
         db.session.commit()
 

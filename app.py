@@ -789,11 +789,9 @@ def update_student(student_id):
     english_name = request.form.get('english_name')
     class_number = request.form.get('class_number')
     email = request.form.get('email')
-    password = request.form.get('password')
     user_name = request.form.get('username')
 
-    student.update(chinese_name=chinese_name, english_name=english_name, class_number=class_number, email=email,
-                   password=password, user_name=user_name)
+    student.update(chinese_name=chinese_name, english_name=english_name, class_number=class_number, email=email, user_name=user_name)
     return redirect(url_for('manager', pre='student'))
 
 
@@ -805,9 +803,10 @@ def update_supervisor(supervisor_id):
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
     position = request.form.get('position')
-    user_name = request.form.get('user_name')
-    password = request.form.get('password')
+    user_name = request.form.get('username')
     email = request.form.get('email')
+
+    print(first_name, last_name, position, user_name, email)
 
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
 
@@ -822,7 +821,7 @@ def update_supervisor(supervisor_id):
                                supervisor=supervisor)
 
     supervisor.update(first_name=first_name, last_name=last_name, position=position,
-                      user_name=user_name, password=password, email=email)
+                      user_name=user_name, email=email)
     return redirect(url_for('manager', pre='supervisor'))
 
 
