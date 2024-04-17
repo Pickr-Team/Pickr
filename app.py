@@ -28,7 +28,6 @@ from models.student import Student
 from config import *
 
 app = Flask(__name__)
-main = Blueprint('main', __name__, url_prefix='/studentprojectmanager')
 app.secret_key = secrets.token_hex(16)
 
 '''Set up database'''
@@ -114,7 +113,7 @@ def require_supervisor_and_manager(f):
     return decorated_function
 
 
-@main.route('/')
+@app.route('/')
 def homepage():
     num_of_topics = Topic.get_num()
     num_of_supervisors = Supervisor.get_num()
@@ -1068,8 +1067,6 @@ def resetting():
     db.session.commit()
     return jsonify(success=True)
 
-
-app.register_blueprint(main)
 
 if __name__ == '__main__':
     create_tables()
