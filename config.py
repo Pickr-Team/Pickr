@@ -16,3 +16,4 @@ class ProdConfig:
     Testing = False
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://flask:2024flask@localhost/studentprojectmanager"
+    APPLICATION_ROOT = '/studentprojectmanager'

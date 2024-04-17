@@ -5,8 +5,7 @@ from functools import wraps
 from io import BytesIO
 import pandas as pd
 
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory, \
-    Blueprint
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify, Response, send_from_directory
 from openpyxl import Workbook
 from sqlalchemy import text
 
@@ -27,18 +26,19 @@ from models.student import Student
 
 from config import *
 
-app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
-
 '''Set up database'''
 # Read flask environment variable to determine which database to use
-if os.environ.get('FLASK_ENV') == 'test':
-    config = TestConfig
-elif os.environ.get('FLASK_ENV') == 'production':
+if os.environ.get('FLASK_ENV') == 'production':
+    app = Flask(__name__, static_url_path='/studentprojectmanager/static')
     config = ProdConfig
+elif os.environ.get('FLASK_ENV') == 'test':
+    app = Flask(__name__)
+    config = TestConfig
 else:
+    app = Flask(__name__)
     config = DevConfig
 
+app.secret_key = secrets.token_hex(16)
 app.config.from_object(config)
 db.init_app(app)
 
