@@ -45,13 +45,14 @@
         <div class="w-layout-cell cell-4">
             <div class="w-layout-hflex flex-block-7">
                 {% for supervisor in supervisors %}
-                    <a href="#" id="{{ supervisor.id }}" data-id="{{ supervisor.id }}"
+                    {% if supervisor.is_admin!=true %}
+                        <a href="#" id="{{ supervisor.id }}" data-id="{{ supervisor.id }}"
                        class="small_link span_40px_back supervisor_link">{{ supervisor.first_name }} {{ supervisor.last_name }}</a>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
     </div>
-
     <!--Search-->
     <div id="w-node-_6d4d9fb8-d384-6491-34c1-e695e63ceb13-cef70243"
          class="w-layout-layout topic_filter_item wf-layout-layout">
