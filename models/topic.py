@@ -10,7 +10,7 @@ class Topic(db.Model):
     __tablename__ = 'topics'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
+    name = db.Column(db.String(100))
     supervisor_id = db.Column(db.Integer, db.ForeignKey('supervisors.id'))
     supervisor = db.relationship('Supervisor', backref=db.backref('topics', lazy=True))
     quota = db.Column(db.Integer)
