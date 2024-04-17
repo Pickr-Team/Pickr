@@ -686,7 +686,7 @@
         //reset system
         $('#reset-system').click(function (e) {
             e.preventDefault()
-            var confirmed = confirm("Are you sure you want to reset the hole system?");
+            var confirmed = confirm("Are you sure you want to reset the system? This operation will clean all SELECTIONS and STUDENTS data.");
 
             if (confirmed) {
                 $.ajax({

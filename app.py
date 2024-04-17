@@ -1060,7 +1060,7 @@ def export_student_list():
 @require_manager
 def resetting():
     db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
-    tables = ['selections', 'students', 'types']
+    tables = ['selections', 'students']
     for table in tables:
         db.session.execute(text(f'TRUNCATE TABLE {table};'))
     db.session.commit()
