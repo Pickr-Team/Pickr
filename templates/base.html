@@ -20,7 +20,7 @@
 <section class="head">
     <a href="{{ url_for('homepage') }}" aria-current="page" class="w-inline-block w--current">
         <img src="{{ url_for('static',filename='image/head_logo.svg') }}" loading="lazy" width="155" alt=""
-             class="image"/>
+             class="image logo"/>
     </a>
     <a href="{{ url_for('my_pickr') }}" class="login">My Pickr<em>↗</em></a>
 </section>
@@ -64,9 +64,22 @@
         margin-left: 10px;
     }
 
+    .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     @media (max-width: 768px) {
         .social-icons {
             display: none;
+        }
+        .logo {
+            width: 120px;
+        }
+
+        .login {
+            font-size: 25px;
         }
     }
 </style>
