@@ -23,7 +23,8 @@
         <h1 class="first_title">Hi,{{ name }}!</h1>
         <div class="_20px_height"></div>
         <a href="{{ url_for('logout') }}" class="small_link accent"><em>Logout↗</em></a>
-        <a href="{{ url_for('change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change Password↗</em></a>
+        <a href="{{ url_for('change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
+            Password↗</em></a>
         <div class="_20px_height"></div>
         <p class="paragraph">In this page,you can full the application form and check your topic apply result.</p>
     </section>
@@ -422,6 +423,14 @@
 
         // Display existing selection
         $(document).ready(function () {
+
+            //Prevent injection of topic description
+            if ('{{ selection.custom_description | default('', true) | tojson }}' === '') {
+                var custom_description = '';
+            } else {
+                var custom_description = {{ selection.custom_description | default('', true) | tojson }};
+            }
+
             if ('{{ selection.if_custom }}' === 'False') {
                 if ('{{ selection.first_topic_name }}') {
                     $('#choose1_form .text-field_topic').val('{{ selection.first_topic_name }}').prop('disabled', true).addClass('disabled-color');
@@ -440,7 +449,7 @@
                     $('#customTopicDiv #custom_topic_name').val('{{ selection.first_topic_name }}').prop('disabled', true).addClass('disabled-color');
                     $('#supervisor_id').val('{{ selection.custom_supervisor_id }}').prop('disabled', true).addClass('disabled-color');
                     $('#type_id').val('{{ selection.custom_type_id }}').prop('disabled', true).addClass('disabled-color');
-                    $('#customTopicDiv #field-2').val('{{ selection.custom_description }}').prop('disabled', true).addClass('disabled-color');
+                    $('#customTopicDiv #field-2').val(custom_description).prop('disabled', true).addClass('disabled-color');
                     $('#customFormSubmit').val('Reset');
                 }
             }
@@ -566,7 +575,7 @@
                                 $('#customTopicDiv #custom_topic_name').val('{{ selection.first_topic_name }}');
                                 $('#supervisor_id').val('{{ selection.custom_supervisor_id }}');
                                 $('#type_id').val('{{ selection.custom_type_id }}');
-                                $('#customTopicDiv #field-2').val('{{ selection.custom_description }}');
+                                $('#customTopicDiv #field-2').val(custom_description);
                                 $('#customFormSubmit').val('Reset');
                                 location.reload();
                             }
