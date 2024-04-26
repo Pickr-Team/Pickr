@@ -32,7 +32,7 @@ def generate_topic_poster(supervisor, topics):
 
     for i in range(len(topics)):
         if i < 3:
-            c.setFont("DankMono", 20)
+            c.setFont("DankMono", 15)
             c.setFillColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
             c.drawString(50, 190 + i * seed, topics[i].name)
 
@@ -85,11 +85,10 @@ def generate_topic_poster(supervisor, topics):
                 c.showPage()
                 c.setFillColorRGB(51 / 255, 51 / 255, 51 / 255)
                 c.rect(0, 0, 595, 842, fill=1)
-                # 放图片
                 c.drawImage('static/image/logo_footer.png', 440, 780, 104, 30)
 
             page_index = (i - 3) % 3
-            c.setFont("DankMono", 20)
+            c.setFont("DankMono", 15)
             c.setFillColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)
             c.drawString(50, 100 + page_index * seed, topics[i].name)
 

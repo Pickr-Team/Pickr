@@ -15,8 +15,9 @@
             <form action="{{ url_for('add_topic') }}" id="new_topic_form" method="POST">
 
                 <label for="topic_name" class="text-block _10button_spac">Topic name</label>
-                <input id="topic_name" name="topic_name" type="text" class="text-field creatnew w-input" maxlength="256"
-                       value="{{ topic_name or '' }}" required="required"/>
+                <input id="topic_name" name="topic_name" type="text" class="text-field creatnew w-input" maxlength="50"
+                       value="{{ topic_name or '' }}" required="required" oninput="updateCounter()">
+                <span id="counter" style="padding-left: 10px; color: white">0 / 50</span>
 
                 <label for="topic_type" class="text-block _10button_spac">Topic type</label>
                 <select id="topic_type" name="type" required="required" class="text-field creatnew w-select">
@@ -48,5 +49,18 @@
         </div>
         <div class="_80px_height"></div>
     </section>
+    <script>
+        // Update the counter when the input changes
+        function updateCounter() {
+            var input = document.getElementById('topic_name');
+            var counter = document.getElementById('counter');
+            counter.textContent = input.value.length + " / 50";
+        }
+
+        // Update the counter when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            updateCounter();
+        });
+    </script>
     </body>
 {% endblock %}
