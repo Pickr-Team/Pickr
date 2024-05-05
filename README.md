@@ -19,11 +19,8 @@
 
 # Overview
 Pickr is a graduation project supervisor and topic selection system designed for the software engineering and computer science majors in the Sino-British cooperative education program at Chengdu University of Technology. Its goal is to simplify the process of selecting thesis topics and advisors for Level6 students, replacing the previous complex procedures, and improving fairness in the process. 
-# User Group
-The system mainly serves three user groups - students, supervisor, and manager. 
-## Supervisor
-Supervisors can create their own topics on their pages and check the selection process result, download the Excel file. Students can search for and find topics of interest in the Topic List page. 
-## Student
-Each student can fill in three topics of their choice or create their own Custom Topic. The students' selections can be saved in the database, and they can submit their choices to the system at a designated time set by the manager. The system will automatically assign supervisor to students based on the time the application was submitted. For students who create Custom Topics, manager will check their custom topics one by one and can make modifications (change supervisor, description…). After all processes are completed, students can see their assigned supervisor and final topic on their personal page.
-## Manager
-The Manager can manage the entire system, including modifying, adding, and deleting supervisors and students. They can view detailed information about supervisors (topic selection status, topics created) and students (topic selection status, results). The Manager can also handle students' custom topics (assigning supervisors, modifying information), sets submission deadlines, and configures notifications.
+
+# Relevant Info
+Pickr Webiste: https://student.zy.cdut.edu.cn/studentprojectmanager/
+
+Pickr Support Document: https://chesterzhao.github.io/Pickr-Support/
