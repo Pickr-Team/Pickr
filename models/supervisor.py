@@ -40,6 +40,10 @@ class Supervisor(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    @property
+    def has_topics(self):
+        return db.session.query(Topic.id).filter_by(supervisor_id=self.id).first() is not None
+
     @classmethod
     def get_all(cls):
         return cls.query.all()

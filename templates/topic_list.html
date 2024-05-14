@@ -29,8 +29,10 @@
         <div class="w-layout-cell cell-3">
             <div class="w-layout-hflex flex-block-7">
                 {% for type in types %}
-                    <a href="#" id="{{ type.id }}" data-id="{{ type.id }}"
-                       class="small_link span_40px_back type_link">{{ type.name }}</a>
+                    {% if type.has_topics %}
+                        <a href="#" id="{{ type.id }}" data-id="{{ type.id }}"
+                           class="small_link span_40px_back type_link">{{ type.name }}</a>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -45,9 +47,9 @@
         <div class="w-layout-cell cell-4">
             <div class="w-layout-hflex flex-block-7">
                 {% for supervisor in supervisors %}
-                    {% if supervisor.is_admin!=true %}
+                    {% if supervisor.is_admin!=true and supervisor.has_topics %}
                         <a href="#" id="{{ supervisor.id }}" data-id="{{ supervisor.id }}"
-                       class="small_link span_40px_back supervisor_link">{{ supervisor.first_name }} {{ supervisor.last_name }}</a>
+                           class="small_link span_40px_back supervisor_link">{{ supervisor.first_name }} {{ supervisor.last_name }}</a>
                     {% endif %}
                 {% endfor %}
             </div>
@@ -66,8 +68,8 @@
                       data-wf-element-id="3a626929-daeb-5c21-659b-ac833b7617b9">
                     <input type="text" class="text-field topic_list w-input" maxlength="256" name="name"
                            data-name="Name" placeholder="Topic ID or Topic Name" id="name"/>
-{#                    <input id="reset" type="submit" value="Reset" data-wait="Please wait..."#}
-{#                           class="submit-button w-button"/>#}
+                    {#                    <input id="reset" type="submit" value="Reset" data-wait="Please wait..."#}
+                    {#                           class="submit-button w-button"/>#}
                 </form>
             </div>
         </div>

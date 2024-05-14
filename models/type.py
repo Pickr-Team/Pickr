@@ -1,4 +1,5 @@
 from .db_instance import db
+from .topic import Topic
 
 
 class Type(db.Model):
@@ -21,6 +22,10 @@ class Type(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    @property
+    def has_topics(self):
+        return db.session.query(Topic.id).filter_by(type_id=self.id, is_custom=False).first() is not None
 
     @classmethod
     def get_all(cls):

@@ -137,7 +137,6 @@ class Topic(db.Model):
     def get_type_name(self):
         return self.type.name
 
-    # 获取所有非自定义课题的quta总数
     @classmethod
     def get_all_quota(cls):
         return cls.query.filter(cls.is_custom == False).with_entities(func.sum(cls.quota)).scalar()
