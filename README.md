@@ -23,4 +23,4 @@ Pickr is a graduation project supervisor and topic selection system designed for
 # Relevant Info
 Pickr Webiste: https://student.zy.cdut.edu.cn/studentprojectmanager/
 
-Pickr Support Document: https://chesterzhao.github.io/Pickr-Support/
+Pickr Support Document: https://pickr-team.github.io/Pickr-Support/
