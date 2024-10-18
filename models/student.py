@@ -1,9 +1,8 @@
-from .db_instance import db
+from exts import db
 
 
 class Student(db.Model):
     __tablename__ = 'students'
-
     id = db.Column(db.Integer, primary_key=True)
     chinese_name = db.Column(db.String(20))
     english_name = db.Column(db.String(20))

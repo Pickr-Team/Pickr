@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static',filename='image/icon.png') }}" type="image/png">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <script src="https://lib.baomitu.com/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star.css') }}">
+    <script src="{{ url_for('static', filename='js/star.js') }}"></script>
+    <title>Pickr | Login</title>
+</head>
+<body class="body-2">
+<canvas id='c'></canvas>
+<div class="w-layout-blockcontainer container-4 w-container"><h1 class="second_title center accent">Welcome to
+    Pickr</h1>
+    <div class="_20px_height"></div>
+    <div class="text-block center">The user name &amp; password is as same as your student website</div>
+
+    <div class="form-block w-form">
+        <form id="login_form" class="form">
+            <div class="_20px_height"></div>
+
+            {% if message %}
+                <p id="login-message"><strong>{{ message }}</strong></p>
+            {% endif %}
+
+            <label for="user_name" class="text-block login_text">User name</label>
+            <input id="user_name" type="text" class="text-field w-input" name="user_name" required="required"/>
+
+            <label for="password" class="text-block login_text">Password</label>
+            <input id="password" type="password" class="text-field w-input" name="password" required="required"/>
+            <div class="_20px_height"></div>
+            <p class="paragraph accent" id="error-info"></p>
+            <div class="_20px_height"></div>
+            <input type="submit" value="Login" data-wait="Please wait..." class="submit-button w-button"/>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#login_form").on('submit', function (event) {
+            event.preventDefault();
+
+            const user_name = $('input[name="user_name"]').val();
+            const password = $('input[name="password"]').val();
+
+            window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
+                .then(hashBuffer => {
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    sendData(user_name, hashHex);
+                })
+                .catch(error => {
+                    console.error('Error hashing the password:', error);
+                    $('#error-info').text('Error hashing the password: ' + error);
+                });
+        });
+
+        function sendData(user_name, password_hash) {
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for('base.login') }}",
+                data: {
+                    user_name: user_name,
+                    password_hash: password_hash
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        window.location.href = response.redirect;
+                    } else {
+                        $('#error-info').text(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#error-info').text('An error occurred: ' + error);
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

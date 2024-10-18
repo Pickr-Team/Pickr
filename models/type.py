@@ -1,10 +1,9 @@
-from .db_instance import db
+from exts import db
 from .topic import Topic
 
 
 class Type(db.Model):
     __tablename__ = 'types'
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
 

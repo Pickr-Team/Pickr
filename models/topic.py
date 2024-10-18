@@ -1,14 +1,11 @@
-from sqlalchemy import case, func
-
-from .db_instance import db
+from sqlalchemy import or_, func
+from exts import db
 from .selection import Selection
 import re
-from sqlalchemy import or_
 
 
 class Topic(db.Model):
     __tablename__ = 'topics'
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     supervisor_id = db.Column(db.Integer, db.ForeignKey('supervisors.id'))

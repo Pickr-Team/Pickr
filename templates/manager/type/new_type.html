@@ -1,0 +1,24 @@
+{% extends 'base-temp.html' %}
+
+{% block title %}Pickr | New Type{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder"><h1 class="first_title">Creat new Type</h1></section>
+    <section>
+        <div class="_20px_height"></div>
+        <div class="w-form">
+            <form action="{{ url_for('manager.add_type') }}" id="type-form" method="POST">
+
+                <label for="name" class="text-block _10button_spac">Type name</label>
+                <input type="text" class="text-field creatnew w-input" name="name" placeholder="" id="name"/>
+
+                <input type="submit" value="Creat New" data-wait="Please wait..." class="submit-button _20head_spacing w-button"/>
+            </form>
+        </div>
+        <div class="_80px_height"></div>
+    </section>
+    </body>
+{% endblock %}
+
+

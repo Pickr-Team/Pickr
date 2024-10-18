@@ -1,6 +1,5 @@
 from sqlalchemy import func
-
-from .db_instance import db
+from exts import db
 from .topic import Topic
 
 

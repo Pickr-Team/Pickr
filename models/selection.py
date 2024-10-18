@@ -1,9 +1,8 @@
-from .db_instance import db
+from exts import db
 
 
 class Selection(db.Model):
     __tablename__ = 'selections'
-
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
     student = db.relationship('Student', foreign_keys=[student_id])

@@ -8,6 +8,7 @@ et-xmlfile==1.1.0
 exceptiongroup==1.2.0
 Flask==3.0.0
 Flask-Assets==2.1.0
+Flask-Migrate==4.0.7
 Flask-SQLAlchemy==3.1.1
 h11==0.14.0
 idna==3.7
@@ -45,3 +46,4 @@ webassets==2.0
 Werkzeug==3.0.3
 wsproto==1.2.0
 zipp==3.17.0
+cryptography==2.9.2
