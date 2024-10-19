@@ -89,7 +89,7 @@ def update_custom_topic():
         _id = selection.first_topic_id
         selection.first_topic_id = None
         Topic.get_by_id(id=_id).delete()
-        db.session.commit()  # 这里不应该有关于db的代码，建议应该在student model中添加reset方法
+        db.session.commit()
         return json.dumps({'success': True, 'reset': True})
 
     new_topic = Topic(quota=1, is_custom=True, required_skills='Null', reference='Null', name=topic_name,

@@ -76,13 +76,13 @@ def process():
         for priority in ['first', 'second', 'third']:
             selection_successful = False
             if not selection.topic_is_full(priority):
-                selection.update_status(status=4)
+                selection.update_status(status=4)  # 4:success(Supervisor's Topic)
                 selection.update_final_topic_id(topic_id=getattr(selection, f'{priority}_topic_id'))
                 success += 1
                 selection_successful = True
                 break
         if not selection_successful:
-            selection.update_status(status=5)
+            selection.update_status(status=5)  # 5:fail
             fail += 1
     print("Success count: {}".format(success))
     print("Fail count: {}".format(fail))
@@ -90,7 +90,7 @@ def process():
     return redirect(url_for('manager.index'))
 
 
-# Manager reset all the selections refresh failed students
+# Manager reset all the failed selections
 @bp.route('/refresh')
 @require_manager
 def refresh():
@@ -206,18 +206,16 @@ def update_supervisor(supervisor_id):
     user_name = request.form.get('username')
     email = request.form.get('email')
 
-    print(first_name, last_name, position, user_name, email)
-
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
 
-    total_quta = 0
+    total_quota = 0
     for topic in topics:
-        total_quta += topic.quota
+        total_quota += topic.quota
 
-    if total_quta > int(position):
+    if total_quota > int(position):
         return render_template('manager/supervisor/edit_supervisor.html',
                                message='Can not save your modify, excess quota, supervisor already have ' + str(
-                                   total_quta) + ' quta.',
+                                   total_quota) + ' quta.',
                                supervisor=supervisor)
 
     supervisor.update(first_name=first_name, last_name=last_name, position=position,
@@ -447,7 +445,7 @@ def delete_supervisor(supervisor_id):
         return jsonify(success=False, error='Supervisor does not exist')
 
 
-# Manager reset the hole system
+# Manager reset the selections and students
 @bp.route('/resetting')
 @require_manager
 def resetting():
@@ -490,11 +488,10 @@ def add_student():
     class_number = request.form.get('class_number')
     email = request.form.get('email')
     user_name = request.form.get('username')
-    password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
-
-    new_student = Student(chinese_name=chinese_name, english_name=english_name, class_number=class_number,
+    password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92' # 123456
+    _new_student = Student(chinese_name=chinese_name, english_name=english_name, class_number=class_number,
                           email=email, password=password, user_name=user_name)
-    new_student.add()
+    _new_student.add()
     return redirect(url_for('manager.index', pre='student'))
 
 
@@ -528,7 +525,7 @@ def update_custom_selection(selection_id):
 
     if status == '3':
         selection.final_topic_id = selection.first_topic_id
-    elif status == '2':
+    elif status == '2':  # 2 - waiting for verify(custom Topic)
         selection.final_topic_id = None
 
     selection.update_status(status=status)

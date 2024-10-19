@@ -80,7 +80,7 @@ def require_login(f):
 def logout():
     session.pop('user_name', None)
     session.pop('user_type', None)
-    return redirect(url_for('base.home'))
+    return redirect(url_for('base.login'))
 
 
 @bp.route('/change_password', methods=['GET', 'POST'])

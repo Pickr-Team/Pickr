@@ -54,7 +54,6 @@ def new_topic():
     return render_template('supervisor/topic/new_topic.html', types=types)
 
 
-# TODO 弄清楚new_topic和add_topic有什么不同
 # Supervisor add new topic
 @bp.route('/add_topic', methods=['POST'])
 @require_supervisor
@@ -71,11 +70,11 @@ def add_topic():
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     types = Type.get_all()
 
-    total_quta = 0
+    total_quota = 0
     for topic_in in topics:
-        total_quta += topic_in.quota
+        total_quota += topic_in.quota
 
-    if total_quta + int(position) > supervisor.position:
+    if total_quota + int(position) > supervisor.position:
         return render_template('supervisor/topic/new_topic.html',
                                message='Excess quota, you only have ' + str(supervisor.position) + ' positions.',
                                types=types, topic_name=topic_name, type_id=type_id, position=position,
@@ -130,11 +129,11 @@ def update_topic(topic_id):
     types = Type.get_all()
     selected_num = topic.get_selected_num_final()
 
-    total_quta = 0
+    total_quota = 0
     for topic_in in topics:
-        total_quta += topic_in.quota
+        total_quota += topic_in.quota
 
-    if total_quta + int(position) - topic.quota > supervisor.position:
+    if total_quota + int(position) - topic.quota > supervisor.position:
         return render_template('supervisor/topic/edit_topic.html',
                                message='Can not save your modify, excess quota, you only have ' + str(
                                    supervisor.position) + ' positions.',

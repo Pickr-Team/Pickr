@@ -940,7 +940,7 @@
                     studentDataElement.innerHTML += `<h2 class="second_title accent">Fail Students</h2><div class="_20px_height"></div>`;
                     data.students.forEach(student => {
                         studentDataElement.innerHTML += `
-                            <div class="text-block">${student.english_name}(${student.chinese_name}) - ${student.class_number} <a href="/student_status/${student.id}"class="small_link accent" style="display: inline !important; margin-left: 40px">Detail↗</a></div>
+                            <div class="text-block">${student.english_name}(${student.chinese_name}) - ${student.class_number} <a href="/manager/student_status/${student.id}"class="small_link accent" style="display: inline !important; margin-left: 40px">Detail↗</a></div>
                             <div class="_20px_height"></div>`;
                     });
                 })

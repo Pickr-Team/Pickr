@@ -31,7 +31,7 @@
         </div>
         <section class="_20header_section" id="topic-section">
             {% for topic in topics %}
-                    <a href="{{ url_for('topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
+                    <a href="{{ url_for('base.topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
                        data-topic-id="{{ topic.id }}"
                        data-type-id="{{ topic.type_id }}" data-supervisor-id="{{ topic.supervisor_id }}">
                         <div class="w-layout-hflex flex-block-5">
