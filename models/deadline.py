@@ -1,9 +1,8 @@
-from .db_instance import db
+from exts import db
 
 
 class Deadline(db.Model):
     __tablename__ = 'deadlines'
-
     id = db.Column(db.Integer, primary_key=True)
     submit_time = db.Column(db.String(20))
     result_time = db.Column(db.String(20))

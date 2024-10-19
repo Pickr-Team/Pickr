@@ -1,0 +1,72 @@
+{% extends 'base-temp.html' %}
+
+{% block title %}Pickr | {{ selection.first_topic_name }}{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder"><h1 class="first_title">{{ selection.first_topic_name }}</h1></section>
+    <section>
+        <h1 class="third_title accent">Basic info</h1>
+        <div class="_40px_header"></div>
+        <form action="{{ url_for('manager.update_custom_selection', selection_id = selection.id) }}" id="new_topic_form" method="POST">
+
+            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                 class="w-layout-layout course_list_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block"><em>◇</em> Topic Name</div>
+                </div>
+                <input id="name" name="name" value="{{ selection.first_topic_name }}"
+                       class="text-field creatnew w-input" required="required"/>
+            </div>
+
+            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                 class="w-layout-layout course_list_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block"><em>◇</em> Selected Supervisor</div>
+                </div>
+                <select id="supervisor" name="supervisor" required="required" class="text-field creatnew w-select">
+                    <option value="">Select one...</option>
+                    {% for supervisor in supervisors %}
+                        {% if supervisor.id == selection.custom_supervisor_id %}
+                            <option value="{{ supervisor.id }}"
+                                    selected>{{ supervisor.first_name }} {{ supervisor.last_name }} ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})</option>
+                        {% elif supervisor.is_admin == 0 %}
+                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }} {{ supervisor.last_name }} ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="w-node-_4b3765c4-aa80-156f-7bee-22f97672b60c-12a95ea8"
+                 class="w-layout-layout course_list_item wf-layout-layout">
+                <div class="w-layout-cell">
+                    <div class="text-block"><em>◇</em> Type</div>
+                </div>
+                <select id="type" name="type" required="required" class="text-field creatnew w-select">
+                    <option value="">Select one...</option>
+                    {% for type in types %}
+                        {% if type.id == selection.custom_type_id %}
+                            <option value="{{ type.id }}" selected>{{ type.name }}</option>
+                        {% else %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <h1 class="third_title accent">Topic Describe</h1>
+            <textarea id="description" name="description" maxlength="5000" class="text-field text-area w-input"
+                      required="required">{{ selection.custom_description }}</textarea>
+
+            <h1 class="third_title accent">Modify Status</h1>
+            <select id="status" name="status" required="required" class="text-field creatnew w-select">
+                <option value="">Select one...</option>
+                <option value="2">Waiting for Verify</option>
+                <option value="3">Passed Verify</option>
+            </select>
+            <input type="submit" value="Save" data-wait="Please wait..."
+                   class="submit-button _20head_spacing w-button"/>
+        </form>
+    </section>
+    </body>
+{% endblock %}

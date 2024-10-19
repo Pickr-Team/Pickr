@@ -1,0 +1,188 @@
+{% extends 'base-temp.html' %}
+
+{% block title %}Pickr | Supervisor{% endblock %}
+
+{% block content %}
+    <body>
+    <section class="page_hearder">
+        <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
+        <div class="_20px_height"></div>
+        <a href="{{ url_for('base.logout') }}" class="small_link accent"><em>Logout↗</em></a>
+        <a href="{{ url_for('base.change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
+            Password↗</em></a>
+        <div class="_20px_height"></div>
+        <p class="paragraph-3">In this page,you can create your topic and check your applications.</p></section>
+    <section>
+        <div data-current="Applications" class="w-tabs">
+            <address class="tabs-menu w-tab-menu">
+                <a data-w-tab="Topics" class="tab_link long_tab_link w-inline-block w-tab-link">
+                    <div>Topics</div>
+                </a>
+                <a data-w-tab="Applications" class="tab_link long_tab_link w-inline-block w-tab-link">
+                    <div>Applications</div>
+                </a>
+            </address>
+            <div class="w-tab-content">
+
+                {#Topics Section#}
+                <div data-w-tab="Topics" class="w-tab-pane">
+                    <div class="_40px_height"></div>
+                    <h2 class="third_title-2 accent">Your Topics</h2>
+                    <div class="text-block-2 phone_button">Position:
+                        <span id="total-quota">{{ total_quta }}</span>/{{ supervisor.position }}
+                    </div>
+                    <div class="_40px_height"></div>
+                    {% for topic in topics %}
+                        {% if topic.is_custom == 0 %}
+                            <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c28-06e36864"
+                                 class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout">
+                                <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c29-06e36864"
+                                     class="w-layout-cell cell-11">
+                                    <div class="text-block-2"><em class="italic-text-3">{{ topic.name }}</em></div>
+                                </div>
+                                <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c2d-06e36864"
+                                     class="w-layout-cell cell-8">
+                                    <div class="text-block-2 italic-text _20_leading">
+                                        <em>{{ topic.get_selected_num_final() }}/<em
+                                                id="quota">{{ topic.quota }}</em></em></div>
+                                </div>
+                                <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c31-06e36864"
+                                     class="w-layout-cell cell-10">
+                                    <div class="text-block-2 phone_button phone_leading">
+                                        PK{{ "%04d"|format(topic.id) }}</div>
+                                </div>
+                                <div id="w-node-_343ab568-d4a9-892d-c91d-a760dbd94c34-06e36864"
+                                     class="w-layout-cell cell-12">
+                                    <a href="{{ url_for('supervisor.edit_topic', topic_id = topic.id) }}"
+                                       class="submit-button-2 w-button">Edit</a>
+                                    <div class="div-block-4"></div>
+                                    <a href="#" class="submit-button-2 delete_button w-button delete-topic"
+                                       data-topic-id="{{ topic.id }}">Delete</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="_40px_height"></div>
+                    <a href="{{ url_for('supervisor.new_topic') }}" class="submit-button-2 phone w-button"><em>+</em> New Topic</a>
+                    <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button-2 phone w-button"><em>→</em> Generate
+                        Poster</a>
+                </div>
+
+                {#Applications Section#}
+                <div data-w-tab="Applications" class="w-tab-pane w--tab-active">
+                    <div class="_40px_height"></div>
+                    <h2 class="third_title-2 accent">Your Topics</h2>
+                    <div class="text-block-2 phone_button">
+                        {{ supervisor.get_total_final_selections() }} Students in your team
+                    </div>
+                    <div class="_40px_height"></div>
+                    {% for not_custom_selection in not_custom_selections %}
+                        <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc5-06e36864"
+                             class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc6-06e36864"
+                                 class="w-layout-cell cell-11">
+                                <div class="text-block-2">{{ not_custom_selection.final_topic_name }}</div>
+                            </div>
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cca-06e36864"
+                                 class="w-layout-cell cell-8">
+                                <div class="text-block-2 _20_leading">
+                                    {{ not_custom_selection.submit_time }}
+                                </div>
+                            </div>
+                            <div id="w-node-_0c60fc55-54be-aa12-927a-9a84a0a6b64c-06e36864"
+                                 class="w-layout-cell cell-10">
+                                <div class="text-block-2 _20_leading">
+                                    {{ not_custom_selection.final_topic_student_english_name }}({{ not_custom_selection.final_topic_student_chinese_name }})
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="_20px_height"></div>
+                    <h2 class="third_title-2 accent">Custom Topics</h2>
+                    {% for custom_selection in custom_selections %}
+                        <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc5-06e36864"
+                             class="w-layout-layout supervisor_result_item-2 wf-layout-layout">
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cc6-06e36864"
+                                 class="w-layout-cell cell-11">
+                                <a class="small_link accent"
+                                   href="{{ url_for('topic.topic_detail_custom', topic_id=custom_selection.final_topic_id) }}">
+                                    {{ custom_selection.final_topic_name }}↗
+                                </a>
+                            </div>
+                            <div id="w-node-_4bbf146a-34a9-d23a-f84c-f5f9d0167cca-06e36864"
+                                 class="w-layout-cell cell-8">
+                                <div class="text-block-2 _20_leading">
+                                    {{ custom_selection.submit_time }}
+                                </div>
+                            </div>
+                            <div id="w-node-_0c60fc55-54be-aa12-927a-9a84a0a6b64c-06e36864"
+                                 class="w-layout-cell cell-10">
+                                <div class="text-block-2 _20_leading">
+                                    {{ custom_selection.final_topic_student_english_name }}({{ custom_selection.final_topic_student_chinese_name }})
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="_40px_height"><a href="{{ url_for('supervisor.export_student_list') }}"
+                                                 class="submit-button-2 phone w-button"><em>→</em> Export</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="_80px_height"></div>
+    </section>
+    <script>
+        $(document).ready(function () {
+            $('.tab_link').click(function (e) {
+                e.preventDefault();
+
+                var tabId = $(this).attr('data-w-tab');
+
+                $('.tab_link').removeClass('w--current');
+                $(this).addClass('w--current');
+
+                $('.w-tab-pane').fadeOut(100);
+
+                $('.w-tab-pane[data-w-tab="' + tabId + '"]').fadeIn(300);
+            });
+
+            $('.tab_link').first().click();
+        });
+
+        $('.delete-topic').click(function (e) {
+            e.preventDefault();
+            var topicId = $(this).data('topic-id');
+            var element = $(this).closest('.supervisor_result_item-2');
+            var quota = parseInt(element.find('#quota').text());
+            console.log(quota)
+
+            var confirmed = confirm("Are you sure you want to delete this topic?");
+
+            var baseUrl = "{{ url_for('supervisor.delete_topic', topic_id = '0') }}";
+
+            if (confirmed) {
+                var fullUrl = baseUrl.replace('/0', '/' + topicId);
+                $.ajax({
+                    url: fullUrl,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            element.remove();
+                            var totalQuotaElement = $('#total-quota');
+                            var currentTotalQuota = parseInt(totalQuotaElement.text());
+                            console.log(currentTotalQuota);
+                            totalQuotaElement.text(currentTotalQuota - quota);
+                            console.log(currentTotalQuota - quota)
+                        } else {
+                            alert(response.error);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Deletion failed: " + error);
+                    }
+                });
+            }
+        });
+    </script>
+    </body>
+{% endblock %}

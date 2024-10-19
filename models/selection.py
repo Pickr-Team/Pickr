@@ -1,9 +1,8 @@
-from .db_instance import db
+from exts import db
 
 
 class Selection(db.Model):
     __tablename__ = 'selections'
-
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
     student = db.relationship('Student', foreign_keys=[student_id])
@@ -17,6 +16,14 @@ class Selection(db.Model):
     second_topic = db.relationship('Topic', foreign_keys=[second_topic_id])
     third_topic = db.relationship('Topic', foreign_keys=[third_topic_id])
     final_topic = db.relationship('Topic', foreign_keys=[final_topic_id])
+
+    # status
+    # 0 - waiting for submit
+    # 1 - waiting for process(Supervisor’s Topic)
+    # 2 - waiting for verify(custom Topic)
+    # 3 - success(custom Topic)
+    # 4 – success(Supervisor’s Topic)
+    # 5 – fail
 
     def __init__(self, student_id):
         self.student_id = student_id
