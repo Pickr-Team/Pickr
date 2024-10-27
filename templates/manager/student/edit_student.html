@@ -9,25 +9,33 @@
     <section>
         <div class="_20px_height"></div>
         <div class="w-form">
-            <form action="{{ url_for('manager.update_student', student_id = student.id) }}" id="new_student_form" method="POST">
+            <form action="{{ url_for('manager.update_student', student_id = student.id) }}" id="new_student_form"
+                  method="POST">
                 <label for="chinese_name" class="text-block _10button_spac">Chinese Name</label>
                 <input type="text" class="text-field creatnew w-input" name="chinese_name" id="chinese_name"
                        value="{{ student.chinese_name }}"/>
+                <span style="display: none;color: red" id="c-alert">Please input Chinese name</span>
                 <label for="english_name" class="text-block _10button_spac">English Name</label>
                 <input type="text" class="text-field creatnew w-input" name="english_name" id="english_name"
                        value="{{ student.english_name }}"/>
+                <span style="display: none;color: red" id="eng-alert">Please input English name</span>
                 <label for="class_number" class="text-block _10button_spac">Class Number</label>
                 <input type="text" class="text-field creatnew w-input" name="class_number" id="class_number"
                        value="{{ student.class_number }}"/>
+                <span style="display: none;color: red" id="n-alert">Please input class number</span>
                 <label for="email" class="text-block _10button_spac">E-mail</label>
                 <input type="text" class="text-field creatnew w-input" name="email" id="email"
                        value="{{ student.email }}"/>
+                <span style="display: none;color: red" id="e-alert">Please input email</span>
                 <label for="username" class="text-block _10button_spac">Username</label>
                 <input type="text" class="text-field creatnew w-input" name="username" id="username"
                        value="{{ student.user_name }}"/>
-                <input type="submit" value="Save Edit" data-wait="Please wait..."
+                <span style="display: none;color: red" id="u-alert">Please input username</span>
+                <div>
+                    <input type="submit" value="Save Edit" data-wait="Please wait..."
                        class="submit-button _20head_spacing w-button"/>
-                <a class="submit-button-2 delete_button w-button" id="reset">Reset Password</a>
+                    <a class="submit-button-2 delete_button w-button" id="reset">Reset Password</a>
+                </div>
             </form>
         </div>
         <div class="_80px_height"></div>
@@ -47,6 +55,40 @@
                             alert("This student's password has been reset to 123456.");
                         }
                     });
+                }
+            });
+
+            $('#new_student_form').on('submit', function (event) {
+                const cName = $('#chinese_name').val().trim();
+                const eName = $('#english_name').val().trim();
+                const num = $('#class_number').val().trim();
+                const email = $('#email').val().trim();
+                const username = $('#username').val().trim();
+                $('#c-alert, #eng-alert, #n-alert, #e-alert, #u-alert').hide();
+                let isValid = true;
+                if (cName === '') {
+                    $('#c-alert').show();
+                    isValid = false;
+                }
+                if (eName === '') {
+                    $('#eng-alert').show();
+                    isValid = false;
+                }
+                // Assuming position should be a number and between 1 and 20
+                if (num === '') {
+                    $('#n-alert').show();
+                    isValid = false;
+                }
+                if (email === '') {
+                    $('#e-alert').show();
+                    isValid = false;
+                }
+                if (username === '') {
+                    $('#u-alert').show();
+                    isValid = false;
+                }
+                if (!isValid) {
+                    event.preventDefault();
                 }
             });
         });
