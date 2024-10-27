@@ -12,19 +12,70 @@
             <form action="{{ url_for('manager.add_supervisor') }}" id="new_supervisor_form" method="POST">
                 <label for="first_name" class="text-block _10button_spac">First Name</label>
                 <input type="text" class="text-field creatnew w-input" name="first_name" id="first_name"/>
+                <span style="display: none;color: red" id="f-alert">Please input first name</span>
                 <label for="last_name" class="text-block _10button_spac">Last Name</label>
                 <input type="text" class="text-field creatnew w-input" name="last_name" id="last_name"/>
+                <span style="display: none;color: red" id="l-alert">Please input last name</span>
                 <label for="position" class="text-block _10button_spac">Position</label>
                 <input type="number" class="text-field creatnew w-input" name="position" id="position"/>
+                <span style="display: none;color: red" id="p-alert">Position should be 1 to 20</span>
                 <label for="email" class="text-block _10button_spac">E-mail</label>
                 <input type="text" class="text-field creatnew w-input" name="email" id="email"/>
+                <span style="display: none;color: red" id="e-alert">Please input email</span>
                 <label for="username" class="text-block _10button_spac">Username</label>
                 <input type="text" class="text-field creatnew w-input" name="username" id="username"/>
-                <input type="submit" value="+ Add" data-wait="Please wait..." class="submit-button _20head_spacing w-button"/>
+                <span style="display: none;color: red" id="u-alert">Please input username</span>
+                <input style="display: block" type="submit" value="+ Add" data-wait="Please wait..." class="submit-button _20head_spacing w-button"/>
             </form>
         </div>
         <div class="_80px_height"></div>
     </section>
+
+    <script>
+        $(document).ready(function () {
+            $('#new_supervisor_form').on('submit', function (event) {
+                const firstName = $('#first_name').val().trim();
+                const lastName = $('#last_name').val().trim();
+                const position = $('#position').val().trim();
+                const email = $('#email').val().trim();
+                const username = $('#username').val().trim();
+
+                $('#f-alert, #l-alert, #p-alert, #e-alert, #u-alert').hide();
+
+                let isValid = true;
+
+                if (firstName === '') {
+                    $('#f-alert').show();
+                    isValid = false;
+                }
+
+                if (lastName === '') {
+                    $('#l-alert').show();
+                    isValid = false;
+                }
+
+                // Assuming position should be a number and between 1 and 20
+                if (isNaN(position) || position < 1 || position > 20) {
+                    $('#p-alert').show();
+                    isValid = false;
+                }
+
+                if (email === '') {
+                    $('#e-alert').show();
+                    isValid = false;
+                }
+
+                if (username === '') {
+                    $('#u-alert').show();
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
     </body>
 {% endblock %}
 
