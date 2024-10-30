@@ -4,17 +4,17 @@ import os
 class TestConfig:
     TESTING = True
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:root@127.0.0.1:3306/pickr"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:root@127.0.0.1:3306/pickr_test"
 
 
 class DevConfig:
-    Testing = False
+    TESTING = False
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:root@127.0.0.1:3306/pickr"
 
 
 class ProdConfig:
-    Testing = False
+    TESTING = False
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://flask:2024flask@localhost/studentprojectmanager"
     APPLICATION_ROOT = '/studentprojectmanager'
