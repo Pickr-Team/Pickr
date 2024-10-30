@@ -5,11 +5,9 @@
     <module name="Pickr" />
     <option name="target" value="$PROJECT_DIR$/app.py" />
     <option name="targetType" value="PATH" />
-    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
-    <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
-    <option name="SDK_NAME" value="Python 3.8 (Pickr)" />
+    <option name="SDK_HOME" value="C:\Users\20854\AppData\Local\Programs\Python\Python38\python.exe" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
