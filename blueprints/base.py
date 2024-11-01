@@ -52,10 +52,12 @@ def login():
         supervisor = Supervisor.query.filter_by(user_name=user_name).first()
         if student and student.password == password_hash:
             session['user_name'] = student.english_name
+            session['user_id'] = student.id
             session['user_type'] = 'student'
             return jsonify(status='success', redirect=url_for('student.index'))
         elif supervisor and supervisor.password == password_hash:
             session['user_name'] = supervisor.user_name
+            session['user_id'] = supervisor.id
             session['user_type'] = 'supervisor' if not supervisor.if_admin() else 'manager'
             redirect_url = url_for('manager.index') if supervisor.if_admin() else url_for('supervisor.index')
             return jsonify(status='success', redirect=redirect_url)
@@ -70,8 +72,9 @@ def require_login(f):
     def decorated_function(*args, **kwargs):
         if 'user_name' not in session:
             print("Not logged in")
-            return redirect(url_for('login'))
+            return redirect(url_for('base.login'))
         return f(*args, **kwargs)
+
     return decorated_function
 
 
@@ -79,6 +82,7 @@ def require_login(f):
 @require_login
 def logout():
     session.pop('user_name', None)
+    session.pop('user_id', None)
     session.pop('user_type', None)
     return redirect(url_for('base.login'))
 
@@ -87,7 +91,24 @@ def logout():
 @require_login
 def change_password():
     if request.method == 'POST':
-        return jsonify(status='fail', message='修改密码功能尚在开发中')
+        new_password_hash = request.form['new_password_hash']
+        old_password_hash = request.form['old_password_hash']
+        user_id = session['user_id']
+        user_type = session['user_type']
+        if user_type == 'student':
+            stu = Student.get_by_id(user_id)
+            if stu.password != old_password_hash:
+                return jsonify(status='fail', message='The old password is incorrect, change failed')
+            else:
+                stu.update_pwd(new_password_hash)
+                return jsonify(status='success', message='Change successfully! Please login again', redirect=url_for('base.login'))
+        else:
+            supervisor = Supervisor.get_by_id(user_id)
+            if supervisor.password != old_password_hash:
+                return jsonify(status='fail', message='The old password is incorrect, change failed')
+            else:
+                supervisor.update_pwd(new_password_hash)
+                return jsonify(status='success', message='Change successfully! Please login again', redirect=url_for('base.login'))
     else:
         return render_template('base/change_password.html')
 
@@ -128,4 +149,3 @@ def topic_detail(topic_id):
 def topic_detail_custom(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     return render_template('base/topic_detail_custom.html', topic=topic)
-

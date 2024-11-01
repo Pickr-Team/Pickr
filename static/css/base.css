@@ -2312,7 +2312,7 @@ a {
 
 .system-info_block {
     align-items: flex-end;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     margin-right: 40px;
     position: absolute;
     top: auto;
@@ -3188,7 +3188,15 @@ a {
     padding-right: 20vw;
 }
 
-@media screen and (max-width: 1150px) {
+@media screen and (max-width: 1250px) {
+    .big_wite_heeding {
+        margin-top: 40px;
+        font-size: 78px;
+        line-height: 60px;
+    }
+}
+
+@media screen and (max-width: 1100px) {
     .system-info_block {
         display: none;
     }
@@ -3197,14 +3205,14 @@ a {
 @media screen and (max-width: 991px) {
     .big_wite_heeding {
         margin-top: 40px;
-        font-size: 60px;
+        font-size: 68px;
     }
 }
 
 @media screen and (max-width: 767px) {
     .big_wite_heeding {
         margin-top: 20px;
-        font-size: 40px;
+        font-size: 60px;
     }
 }
 
@@ -3217,6 +3225,7 @@ a {
     .big_wite_heeding {
         margin-top: 6px;
         font-size: 40px;
+        line-height: initial;
     }
 
     .link {
