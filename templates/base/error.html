@@ -3,6 +3,31 @@
 {% block title %}Pickr | ERROR{% endblock %}
 
 {% block content %}
+    <style>
+        .heading-2 {
+            color: var(--wite);
+        }
+        .heading-2.oops {
+            padding-left: 20vw;
+            padding-right: 20vw;
+        }
+        .biggest_title {
+            color: #fff;
+            overflow-wrap: break-word;
+            margin-top: 64px;
+            padding-top: 66px;
+            padding-bottom: 83px;
+            font-family: Dank Mono, sans-serif;
+            font-size: 190px;
+        }
+        .biggest_title.accent {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .container {
+            padding-top: 0;
+        }
+    </style>
     <body>
     <canvas id='c'></canvas>
     <section class="section">
