@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 
 from models.selection import Selection
 from models.student import Student
-from models.db_instance import db
+from exts import db
 from models.supervisor import Supervisor
 from models.topic import Topic
 from models.type import Type
