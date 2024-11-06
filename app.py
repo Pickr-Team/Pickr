@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from exts import db
-# import data model(even though it's dark don't move them)
+# import data model
 from models.student import Student
 from models.supervisor import Supervisor
 from models.selection import Selection
@@ -47,13 +47,13 @@ app.register_blueprint(supervisor_bp)
 # Catch 404 error
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('error.html', message='404 NOT FOUND'), 404
+    return render_template('base/error.html', message='404 NOT FOUND'), 404
 
 
 # Catch 500 error
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('error.html', message='Internal server error'), 500
+    return render_template('base/error.html', message='Internal server error'), 500
 
 
 if __name__ == '__main__':

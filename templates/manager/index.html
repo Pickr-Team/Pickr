@@ -2,69 +2,12 @@
 
 {% block title %}Pickr | Manager{% endblock %}
 
+{% block link_style %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/manager.css') }}">
+{% endblock %}
+
 {% block content %}
     <body>
-    <style>
-        .deadline_field {
-            background-color: black !important;
-        }
-
-        .disabled-color {
-            background-color: #a8a8a8 !important;
-            color: #000000 !important;
-        }
-
-        .hidden {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        .visible {
-            opacity: 1;
-            transition: opacity 0.5s;
-        }
-
-        .disabled {
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0, 0, 0); /* Fallback color */
-            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-        }
-
-        .modal-content {
-            background-color: #000000;
-            margin: 20% auto; /* 15% from the top and centered */
-            padding: 20px;
-            border: 1px solid #e16c63;
-            width: 40%; /* Could be more or less, depending on screen size */
-        }
-
-        .close {
-            color: #ffffff;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #e16c63;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
     <section class="page_hearder">
         <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
         <div class="_20px_height"></div>
@@ -94,7 +37,7 @@
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Apply Overview</h2>
                 <div class="_20px_height"></div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Student number</div>
@@ -103,7 +46,7 @@
                         <div class="text-block">{{ students|length }} ({{ num_success }} success)</div>
                     </div>
                 </div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Waiting for submit</div>
@@ -112,7 +55,7 @@
                         <div class="text-block">{{ num_waiting }}</div>
                     </div>
                 </div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Waiting for system process</div>
@@ -121,7 +64,7 @@
                         <div class="text-block">{{ num_process }}</div>
                     </div>
                 </div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Waiting for verify</div>
@@ -130,7 +73,7 @@
                         <div class="text-block">{{ num_verify }}</div>
                     </div>
                 </div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Fail</div>
@@ -154,7 +97,7 @@
                 <div class="_20px_height"></div>
                 <h2 class="third_title-2 accent">Supervisor & Topic Overview</h2>
                 <div class="_20px_height"></div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Supervisor number</div>
@@ -163,7 +106,7 @@
                         <div class="text-block">{{ supervisors|length }}</div>
                     </div>
                 </div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Supervisor's Topic number</div>
@@ -172,7 +115,7 @@
                         <div class="text-block">{{ topic_num }}</div>
                     </div>
                 </div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Supervisors Position</div>
@@ -181,7 +124,7 @@
                         <div class="text-block">{{ static_topic_num }} / {{ total_quta }}</div>
                     </div>
                 </div>
-                <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+                <div id="w-node-global-01"
                      class="w-layout-layout course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Custom Topic number</div>
@@ -224,13 +167,14 @@
                 <div class="_20px_height"></div>
                 <h2 class="third_title-2 accent">Notes Setting</h2>
                 {% for note in notes %}
-                    <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda1-53bceb80"
+                    <div id="w-node-manager-01"
                          class="w-layout-layout quick-stack-2 wf-layout-layout">
-                        <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda2-53bceb80" class="w-layout-cell cell-11">
+                        <div class="w-layout-cell cell-11">
                             <div class="text-block-2"><em class="italic-text-3">{{ note.title }}</em></div>
                         </div>
-                        <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda6-53bceb80" class="w-layout-cell cell-17"><a
-                                href="{{ url_for('manager.edit_note', note_id = note.id) }}" class="submit-button-2 w-button">Edit</a>
+                        <div class="w-layout-cell cell-17"><a
+                                href="{{ url_for('manager.edit_note', note_id = note.id) }}"
+                                class="submit-button-2 w-button">Edit</a>
                             <div class="div-block-4"></div>
                             <a href="#" class="submit-button-2 delete_button w-button delete-note"
                                data-note-id="{{ note.id }}">Delete</a></div>
@@ -242,12 +186,12 @@
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Types Setting</h2>
                 {% for type in types %}
-                    <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda1-53bceb80"
+                    <div id="w-node-manager-01"
                          class="w-layout-layout quick-stack-2 wf-layout-layout">
-                        <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda2-53bceb80" class="w-layout-cell cell-11">
+                        <div class="w-layout-cell cell-11">
                             <div class="text-block-2"><em class="italic-text-3">{{ type.name }}</em></div>
                         </div>
-                        <div id="w-node-_99c83fca-437f-01a5-7b54-1b23caf7dda6-53bceb80" class="w-layout-cell cell-17">
+                        <div class="w-layout-cell cell-17">
                             <a href="{{ url_for('manager.edit_type', type_id = type.id) }}"
                                class="submit-button-2 w-button edit-type">Edit</a>
                             <div class="div-block-4"></div>
@@ -284,23 +228,23 @@
                 <div id="no-results-message" class="hidden third_title accent not_found">No student found, try again.
                 </div>
                 {% for student in students %}
-                    <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5623-53bceb80"
+                    <div id="w-node-manager-02"
                          class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout student-item">
-                        <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5624-53bceb80" class="w-layout-cell cell-11">
+                        <div class="w-layout-cell cell-11">
                             <div class="text-block-2">
                                 <em class="italic-text-3"
                                     id="student-name">{{ student.english_name }}({{ student.chinese_name }})</em>
                             </div>
                         </div>
-                        <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c5628-53bceb80" class="w-layout-cell cell-13">
+                        <div class="w-layout-cell cell-13">
                             <div class="text-block-2 italic-text _20_leading" id="student-class-number">
                                 <em>{{ student.class_number }}</em></div>
                         </div>
-                        <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562c-53bceb80" class="w-layout-cell cell-14">
+                        <div class="w-layout-cell cell-14">
                             <div class="text-block-2 phone_button phone_leading"
                                  id="student-username">{{ student.user_name }}</div>
                         </div>
-                        <div id="w-node-_1c9ceedb-8466-6e76-89c8-b19d402c562f-53bceb80" class="w-layout-cell cell-12">
+                        <div class="w-layout-cell cell-12">
                             <a href="{{ url_for('manager.student_status', student_id = student.id) }}"
                                class="submit-button-2 w-button">Status</a>
                             <div class="div-block-4"></div>
@@ -314,7 +258,8 @@
                 {% endfor %}
                 <div class="_40px_height"></div>
                 <a href="{{ url_for('manager.new_student') }}" class="submit-button-2 w-button">+ Add Student</a>
-                <a href="{{ url_for('manager.get_template_student') }}" class="submit-button-2 w-button">↓ Get Excel Template</a>
+                <a href="{{ url_for('manager.get_template_student') }}" class="submit-button-2 w-button">↓ Get Excel
+                    Template</a>
                 <form id="student-import" action="{{ url_for('manager.import_students') }}" method="POST"
                       enctype="multipart/form-data" style="display: inline;">
                     <label for="file-upload-student" class="submit-button-2 w-button">
@@ -343,30 +288,27 @@
                     <div class="_20px_height"></div>
                     <div class="_20px_height"></div>
                 </div>
-                <div id="no-results-message-supervisor" class="hidden third_title accent not_found">No supervisor found, try again.
+                <div id="no-results-message-supervisor" class="hidden third_title accent not_found">No supervisor found,
+                    try again.
                 </div>
                 {% for supervisor in supervisors %}
                     {% if supervisor.is_admin == 0 %}
-                        <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752842-53bceb80"
+                        <div id="w-node-manager-03"
                              class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout supervisor-item">
-                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752843-53bceb80"
-                                 class="w-layout-cell cell-11">
+                            <div class="w-layout-cell cell-11">
                                 <div class="text-block-2 supervisor-name">
                                     {{ supervisor.first_name }} {{ supervisor.last_name }}
                                 </div>
                             </div>
-                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd2752847-53bceb80"
-                                 class="w-layout-cell cell-13">
+                            <div class="w-layout-cell cell-13">
                                 <div class="text-block-2 italic-text _20_leading">
                                     {{ supervisor.get_total_final_selections() }}/{{ supervisor.position }}
                                 </div>
                             </div>
-                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284b-53bceb80"
-                                 class="w-layout-cell cell-14">
+                            <div class="w-layout-cell cell-14">
                                 <div class="text-block-2 phone_button phone_leading">{{ supervisor.email }}</div>
                             </div>
-                            <div id="w-node-_6d84c423-57bf-d7b5-c431-31abd275284e-53bceb80"
-                                 class="w-layout-cell cell-12">
+                            <div class="w-layout-cell cell-12">
                                 <a href="{{ url_for('manager.supervisor_status', supervisor_id = supervisor.id) }}"
                                    class="submit-button-2 w-button">Detail</a>
                                 <div class="div-block-4"></div>
@@ -416,27 +358,23 @@
 
                     {% if custom_selections %}
                         {% for custom_selection in custom_selections %}
-                            <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21021-53bceb80"
+                            <div id="w-node-manager-04"
                                  class="w-layout-layout supervisor_result_item-2 _5row wf-layout-layout topic-item">
-                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21022-53bceb80"
-                                     class="w-layout-cell cell-11">
+                                <div class="w-layout-cell cell-11">
                                     <div class="text-block-2">
                                         <em class="italic-text-3"
                                             id="topic-name">{{ custom_selection.first_topic_name }}</em>
                                     </div>
                                 </div>
-                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff21026-53bceb80"
-                                     class="w-layout-cell cell-8">
+                                <div class="w-layout-cell cell-8">
                                     <div class="text-block-2 phone_button phone_leading"
                                          id="student-name">{{ custom_selection.english_name }}</div>
                                 </div>
-                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102a-53bceb80"
-                                     class="w-layout-cell cell-16">
+                                <div class="w-layout-cell cell-16">
                                     <div class="text-block-2 phone_button phone_leading"
                                          id="supervisor-name">{{ custom_selection.first_topic_supervisor_name }}</div>
                                 </div>
-                                <div id="w-node-_61d034f8-4fc7-8217-b3c7-ce0caff2102d-53bceb80"
-                                     class="w-layout-cell cell-12">
+                                <div class="w-layout-cell cell-12">
                                     <div class="div-block-4"></div>
                                     <div class="text-block-2 phone_button phone_leading">
                                         {% if custom_selection.status == 2 %}
@@ -446,8 +384,7 @@
                                         {% endif %}
                                     </div>
                                 </div>
-                                <div id="w-node-_14f71255-086f-cc72-20b2-b7d625be6b97-53bceb80"
-                                     class="w-layout-cell cell-15">
+                                <div class="w-layout-cell cell-15">
                                     <a href="{{ url_for('manager.check_custom_selection', selection_id = custom_selection.id) }}"
                                        class="submit-button-2 w-button">Check</a>
                                 </div>

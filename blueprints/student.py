@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect, url_for, request, render_template
+from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify
 from functools import wraps
 from models.student import Student
 from models.supervisor import Supervisor

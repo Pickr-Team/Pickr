@@ -95,20 +95,22 @@ def change_password():
         old_password_hash = request.form['old_password_hash']
         user_id = session['user_id']
         user_type = session['user_type']
+
+        user = None
         if user_type == 'student':
-            stu = Student.get_by_id(user_id)
-            if stu.password != old_password_hash:
-                return jsonify(status='fail', message='The old password is incorrect, change failed')
-            else:
-                stu.update_pwd(new_password_hash)
-                return jsonify(status='success', message='Change successfully! Please login again', redirect=url_for('base.login'))
+            user = Student.get_by_id(user_id)
+        elif user_type == 'supervisor':
+            user = Supervisor.get_by_id(user_id)
+
+        if user and user.password == old_password_hash:
+            user.update_pwd(new_password_hash)
+            session.pop('user_name', None)
+            session.pop('user_id', None)
+            session.pop('user_type', None)
+            return jsonify(status='success', message='Change successfully! Please login again!',
+                           redirect=url_for('base.login'))
         else:
-            supervisor = Supervisor.get_by_id(user_id)
-            if supervisor.password != old_password_hash:
-                return jsonify(status='fail', message='The old password is incorrect, change failed')
-            else:
-                supervisor.update_pwd(new_password_hash)
-                return jsonify(status='success', message='Change successfully! Please login again', redirect=url_for('base.login'))
+            return jsonify(status='fail', message='The old password is incorrect, change failed')
     else:
         return render_template('base/change_password.html')
 
@@ -116,7 +118,7 @@ def change_password():
 @bp.route('/error')
 def error():
     message = request.args.get('message')
-    return render_template('error.html', message=message)
+    return render_template('base/error.html', message=message)
 
 
 @bp.route('/list')

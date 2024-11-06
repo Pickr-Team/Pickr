@@ -3,9 +3,17 @@
 {% block title %}Pickr | Tutorial{% endblock %}
 
 {% block content %}
+    <style>
+        #w-node-tutorial-01,
+        #w-node-tutorial-02 {
+            grid-template-rows: auto;
+            grid-template-columns: .25fr 1fr;
+        }
+    </style>
     <body>
     <section class="page_hearder"><h1 class="first_title">Topic Apply for {{ year }}</h1>
-        <p class="paragraph">Please carefully read the tutorial page and follow the appropriate steps to complete your application when applying for access.</p>
+        <p class="paragraph">Please carefully read the tutorial page and follow the appropriate steps to complete your
+            application when applying for access.</p>
     </section>
     <section>
         <div class="_40px_height"></div>
@@ -15,7 +23,7 @@
 
         {% for deadline in deadlines %}
             <h2 class="third_title accent">{{ deadline.note }}</h2>
-            <div id="w-node-c7c75e64-fdc4-6588-8594-5cb2b4e48d3f-81e348b7"
+            <div id="w-node-tutorial-01"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em class="italic-text-3">◇ Submit application</em></div>
@@ -24,7 +32,7 @@
                     <div class="text-block italic-text"><em class="italic-text">{{ deadline.submit_time }}</em></div>
                 </div>
             </div>
-            <div id="w-node-cc3a90ba-95d1-38e0-0aa7-e8eab74f8467-81e348b7"
+            <div id="w-node-tutorial-02"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em class="italic-text-2">◇ Result announce</em></div>

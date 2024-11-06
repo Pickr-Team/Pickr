@@ -43,11 +43,13 @@ html {
 body {
     min-height: 100%;
     color: #333;
-    background-color: #fff;
+    background-color: #000;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Dank Mono, Arial, sans-serif;
     font-size: 14px;
     line-height: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
 }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
@@ -84,14 +86,6 @@ abbr[title] {
 b, strong {
     font-weight: bold;
 }
-
-/*
-dfn {
-    font-style: italic;
-}
-*/
-
-
 
 mark {
     color: #000;
@@ -192,24 +186,9 @@ input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webki
     -webkit-appearance: none;
 }
 
-/*fieldset {
-    border: 1px solid silver;
-    margin: 0 2px;
-    padding: .35em .625em .75em;
-}*/
-
-/*legend {
-    border: 0;
-    padding: 0;
-}*/
-
 textarea {
     overflow: auto;
 }
-
-/*optgroup {
-    font-weight: bold;
-}*/
 
 table {
     border-collapse: collapse;
@@ -220,64 +199,10 @@ td, th {
     padding: 0;
 }
 
-/*
-[class^="w-icon-"], [class*="w-icon-"] {
-    speak: none;
-    font-variant: normal;
-    text-transform: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    font-family: webflow-icons !important;
-}
-*/
-
-/*.w-icon-slider-right:before {
-    content: "";
-}
-
-.w-icon-slider-left:before {
-    content: "";
-}
-
-.w-icon-nav-menu:before {
-    content: "";
-}
-
-.w-icon-arrow-down:before, .w-icon-dropdown-toggle:before {
-    content: "";
-}
-
-.w-icon-file-upload-remove:before {
-    content: "";
-}
-
-.w-icon-file-upload-icon:before {
-    content: "";
-}*/
-
-
 img {
     max-width: 100%;
     vertical-align: middle;
     display: inline-block;
-}
-
-/*
-html.w-mod-touch * {
-    background-attachment: scroll !important;
-}*/
-
-/*
-.w-block {
-    display: block;
-}*/
-
-h1 {
-    margin: .67em 0;
-    font-size: 2em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -286,7 +211,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
+    color: #fff;
     margin-top: 20px;
+    font-family: Dank Mono, sans-serif;
     font-size: 38px;
     line-height: 44px;
 }
@@ -344,25 +271,9 @@ label {
     display: block;
 }
 
-body {
-    color: #333;
-    background-color: #000;
-    padding-left: 40px;
-    padding-right: 40px;
-    font-family: Dank Mono, sans-serif;
-    font-size: 14px;
-    line-height: 20px;
-}
 
-h1 {
-    color: #fff;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-family: Dank Mono, sans-serif;
-    font-size: 38px;
-    font-weight: 700;
-    line-height: 44px;
-}
+
+
 
 p {
     color: var(--wite);

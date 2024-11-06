@@ -2,20 +2,11 @@
 
 {% block title %}Pickr | Student{% endblock %}
 
-{% block content %}
-    <style>
-        .disabled-color {
-            background-color: #a8a8a8 !important;
-            color: #000000;
-        }
+{% block link_style %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/student.css') }}">
+{% endblock %}
 
-        .submit-button.disabled {
-            border-color: #666666;
-            color: #666666;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-    </style>
+{% block content %}
     <body>
 
 
@@ -149,7 +140,7 @@
         {% if selection.status == 1 %}
             <div class="_40px_height"></div>
             <h2 class="third_title accent">Result</h2>
-            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+            <div id="w-node-student-01"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block italic-text">
@@ -163,7 +154,7 @@
                     </div>
                 </div>
             </div>
-            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+            <div id="w-node-student-01"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block italic-text">
@@ -177,7 +168,7 @@
                     </div>
                 </div>
             </div>
-            <div id="w-node-a0356be8-a343-2772-d9df-42385edb7f34-6e227e00"
+            <div id="w-node-student-02"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block">
@@ -201,7 +192,7 @@
         {% if selection.status == 3 %}
             <div class="_40px_height"></div>
             <h2 class="third_title accent">Result</h2>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block italic-text">
@@ -214,7 +205,7 @@
                     </div>
                 </div>
             </div>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block italic-text">
@@ -232,7 +223,7 @@
             <div class="text-block back_space">{{ selection.custom_description }}</div>
             <div class="_20px_height"></div>
             <h2 class="third_title accent">Your supervisor Info</h2>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Name</div>
@@ -241,7 +232,7 @@
                     <div class="text-block italic-text">{{ selection.final_topic_supervisor_name }}</div>
                 </div>
             </div>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Supervisor E-mail</div>
@@ -255,7 +246,7 @@
         {% if selection.status == 4 %}
             <div class="_40px_height"></div>
             <h2 class="third_title accent">Result</h2>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block italic-text">
@@ -274,7 +265,7 @@
                     </div>
                 </div>
             </div>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block italic-text">
@@ -293,7 +284,7 @@
                     </div>
                 </div>
             </div>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block">
@@ -314,7 +305,7 @@
             </div>
             <div class="_20px_height"></div>
             <h2 class="third_title accent">Your Topic</h2>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Supervisor</div>
@@ -323,7 +314,7 @@
                     <div class="text-block italic-text">{{ selection.final_topic_supervisor_name }}</div>
                 </div>
             </div>
-            <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+            <div id="w-node-global-01"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Supervisor E-mail</div>
@@ -332,7 +323,7 @@
                     <div class="text-block italic-text">{{ selection.final_topic_supervisor_email }}</div>
                 </div>
             </div>
-            <div id="w-node-_4b3765c4-aa80-156f-7bee-22f97672b60c-12a95ea8"
+            <div id="w-node-global-02"
                  class="w-layout-layout course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Type</div>
@@ -348,7 +339,7 @@
             <h2 class="third_title accent">You have failed in this round, please waiting for last round.</h2>
             <h2 class="third_title accent">You can view your previous selections here:</h2>
             <div class="_40px_height"></div>
-            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+            <div id="w-node-student-01"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block">
@@ -361,7 +352,7 @@
                     </div>
                 </div>
             </div>
-            <div id="w-node-c01e4d8c-185e-4dae-307e-7a9c367196a1-6e227e00"
+            <div id="w-node-student-01"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block">
@@ -374,7 +365,7 @@
                     </div>
                 </div>
             </div>
-            <div id="w-node-a0356be8-a343-2772-d9df-42385edb7f34-6e227e00"
+            <div id="w-node-student-02"
                  class="w-layout-layout tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block">

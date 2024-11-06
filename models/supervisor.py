@@ -35,6 +35,10 @@ class Supervisor(db.Model):
         self.email = email
         db.session.commit()
 
+    def update_pwd(self, pwd):
+        self.password = pwd
+        db.session.commit()
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()

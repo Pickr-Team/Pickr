@@ -6,9 +6,16 @@
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <script src="https://lib.baomitu.com/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/media.css') }}" media="screen">
     <script src="{{ url_for('static', filename='js/star.js') }}"></script>
     <title>Pickr | Login</title>
+    <style>
+        canvas {
+            position: absolute;
+            z-index: -1
+        }
+    </style>
 </head>
 <body class="body-2">
 <canvas id='c'></canvas>

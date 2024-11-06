@@ -7,10 +7,12 @@
     <script src="https://lib.baomitu.com/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="{{ url_for('static', filename='js/star.js') }}"></script>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/star.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/media.css') }}" media="screen">
+
+    {% block link_style %}{% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
     <style>{% block style %}{% endblock %}</style>

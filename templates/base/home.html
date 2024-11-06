@@ -2,6 +2,10 @@
 
 {% block title %}Pickr | Home{% endblock %}
 
+{% block link_style %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/home.css') }}">
+{% endblock %}
+
 {% block content %}
     <body class="body">
     <section class="section" style="background: transparent">

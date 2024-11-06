@@ -3,11 +3,18 @@
 {% block title %}Pickr | {{ topic.name }}{% endblock %}
 
 {% block content %}
+    <style>
+        #w-node-topic-detail-02,
+        #w-node-topic-detail-01 {
+            grid-template-rows: auto;
+            grid-template-columns: .25fr 1fr;
+        }
+    </style>
     <body>
     <section class="page_hearder"><h1 class="first_title">{{ topic.name }}</h1></section>
     <section>
         <h1 class="third_title accent">Basic info</h1>
-        <div id="w-node-dee0e41c-a026-7fcd-983f-4910eb77808f-12a95ea8"
+        <div id="w-node-global-01"
              class="w-layout-layout course_list_item wf-layout-layout">
             <div class="w-layout-cell">
                 <div class="text-block"><em>◇</em> Tutor</div>
@@ -16,7 +23,7 @@
                 <div class="text-block italic-text">{{ topic.get_supervisor_name() }}</div>
             </div>
         </div>
-        <div id="w-node-_4b3765c4-aa80-156f-7bee-22f97672b60c-12a95ea8"
+        <div id="w-node-global-02"
              class="w-layout-layout course_list_item wf-layout-layout">
             <div class="w-layout-cell">
                 <div class="text-block"><em>◇</em> Type</div>
@@ -25,7 +32,7 @@
                 <div class="text-block italic-text">{{ topic.get_type_name() }}</div>
             </div>
         </div>
-        <div id="w-node-d48b4f43-d5f3-7438-e3be-126c9accc039-12a95ea8"
+        <div id="w-node-topic-detail-02"
              class="w-layout-layout course_list_item wf-layout-layout">
             <div class="w-layout-cell">
                 <div class="text-block"><em>◇</em> Position</div>
@@ -36,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div id="w-node-b809cfbf-c057-ac68-7c82-f2081e795906-12a95ea8"
+        <div id="w-node-topic-detail-01"
              class="w-layout-layout course_list_item wf-layout-layout">
             <div class="w-layout-cell cell">
                 <div class="text-block"><em>◇</em> Topic ID</div>
