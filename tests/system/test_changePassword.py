@@ -42,7 +42,7 @@ class TestChangePassword(SeleniumTest):
         time.sleep(1)
         self.driver.find_element(By.ID, "user_name").click()
         time.sleep(1)
-        self.driver.find_element(By.ID, "user_name").send_keys("202018020317")
+        self.driver.find_element(By.ID, "user_name").send_keys("202118020103")
         time.sleep(1)
         self.driver.find_element(By.ID, "password").click()
         time.sleep(1)
