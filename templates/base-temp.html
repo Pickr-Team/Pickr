@@ -4,36 +4,55 @@
     <meta charset="UTF-8">
     <link rel="icon" href="{{ url_for('static',filename='image/icon.png') }}" type="image/png">
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
+
+    <script src="{{ url_for('static',filename='js/third-party/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/utils.js') }}"></script>
     <script src="https://lib.baomitu.com/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/third-party/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/media.css') }}" media="screen">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/utils.css') }}">
 
     {% block link_style %}{% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
     <style>{% block style %}{% endblock %}</style>
     <script>{% block script %}{% endblock %}</script>
+
+    {% block link_script %}{% endblock %}
 </head>
 <body>
-<header class="head">
-    <a href="{{ url_for('base.home') }}" aria-current="page" class="w-inline-block w--current">
-        <img src="{{ url_for('static',filename='image/head_logo.svg') }}" loading="lazy" width="155" alt=""
-             class="image logo"/>
-    </a>
-    <a href="{{ url_for('base.my_pickr') }}" class="login">My Pickr<em>↗</em></a>
-</header>
 
-{% block content %}{% endblock %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert" id="my-alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-<footer class="footer">
+
+
+    <header class="head">
+        <a href="{{ url_for('base.home') }}" aria-current="page" class="w-inline-block w--current">
+            <img src="{{ url_for('static',filename='image/head_logo.svg') }}" loading="lazy" width="155" alt=""
+                 class="image logo"/>
+        </a>
+        <a href="{{ url_for('base.my_pickr') }}" class="login">My Pickr<em>↗</em></a>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
     <div class="fourth_title">Pickr - CDUT &amp; OBU Collaborative Education Topic Management System</div>
     <div class="text-block accent flex-container">
         Developed by Chengxin Zhao
-
     </div>
     <div class="paragraph i _10_head">
         PROJECT START FROM - Nov,7 2023
@@ -54,6 +73,10 @@
         </div>
     </div>
 </footer>
+
+     <script>
+        customAlert()
+     </script>
 
 
 </body>

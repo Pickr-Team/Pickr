@@ -1,5 +1,5 @@
 # base and basic functions
-from flask import Blueprint, render_template, session, request, url_for, redirect, jsonify
+from flask import Blueprint, render_template, session, request, url_for, redirect, jsonify, flash
 from models.supervisor import Supervisor
 from models.student import Student
 from models.topic import Topic
@@ -99,7 +99,7 @@ def change_password():
         user = None
         if user_type == 'student':
             user = Student.get_by_id(user_id)
-        elif user_type == 'supervisor':
+        else:
             user = Supervisor.get_by_id(user_id)
 
         if user and user.password == old_password_hash:
@@ -107,8 +107,8 @@ def change_password():
             session.pop('user_name', None)
             session.pop('user_id', None)
             session.pop('user_type', None)
-            return jsonify(status='success', message='Change successfully! Please login again!',
-                           redirect=url_for('base.login'))
+            flash('Change successfully! Please login again!', category='success')
+            return jsonify(status='success', redirect=url_for('base.login'))
         else:
             return jsonify(status='fail', message='The old password is incorrect, change failed')
     else:
