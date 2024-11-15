@@ -31,7 +31,7 @@ class TestLogin(SeleniumTest):
         self.driver.set_window_size(1800, 1043)
 
         self.driver.find_element(By.LINK_TEXT, "My Pickr↗").click()
-        self.driver.find_element(By.ID, "user_name").send_keys("202018020317")
+        self.driver.find_element(By.ID, "user_name").send_keys("202118020103")
         self.driver.find_element(By.ID, "password").send_keys("123456")
         self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
         time.sleep(2)

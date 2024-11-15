@@ -18,17 +18,20 @@
     </section>
     <div data-current="System" data-easing="ease" data-duration-in="300" data-duration-out="100" class="w-tabs">
         <address class="tabs-menu w-tab-menu">
-            <a data-w-tab="System" class="tab_link w-inline-block w-tab-link w--current">
+            <a data-w-tab="System" class="tab_link w-inline-block w-tab-link w--current" onclick="sessionStorage.setItem('pre','system')">
                 <div>System</div>
             </a>
-            <a data-w-tab="Students" class="tab_link w-inline-block w-tab-link">
+            <a data-w-tab="Students" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','student')">
                 <div>Students</div>
             </a>
-            <a data-w-tab="Supervisor" class="tab_link w-inline-block w-tab-link">
+            <a data-w-tab="Supervisor" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','supervisor')">
                 <div>Supervisors</div>
             </a>
-            <a data-w-tab="Topics" class="tab_link w-inline-block w-tab-link">
-                <div>Custom Topics</div>
+            <a data-w-tab="SupTopics" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','supTopic')">
+                <div>Supervisor Topics</div>
+            </a>
+            <a data-w-tab="Topics" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','stuTopic')">
+                <div>Student Topics</div>
             </a>
         </address>
 
@@ -332,6 +335,9 @@
                     </label>
                 </form>
             </div>
+            <div data-w-tab="SupTopics" class="w-tab-pane">
+                {% include 'manager/components/supervisor_table.html' %}
+            </div>
             <div data-w-tab="Topics" class="w-tab-pane">
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Custom Topics</h2>
@@ -350,7 +356,7 @@
                     </form>
                 </div>
                 <div class="_20px_height">
-                    <div id="no-results-message-topic" class="hidden third_title accent not_found">No supervisor
+                    <div id="no-results-message-topic" class="hidden third_title accent not_found">No Topics
                         found,
                         try again.
                         <div class="_20px_height"></div>
@@ -402,26 +408,24 @@
     <script>
         // Tab switch
         $(document).ready(function () {
-            var pre = '{{ pre }}'
-            console.log(pre)
+            const _pre = sessionStorage.getItem('pre') || ''
+            {#var pre = '{{ pre }}'#}
             $('.tab_link').click(function (e) {
                 e.preventDefault();
-
                 var tabEntry = $(this).attr('data-w-tab');
-
                 $('.tab_link').removeClass('w--current');
                 $(this).addClass('w--current');
-
                 $('.w-tab-pane').fadeOut(100);
-
                 $('.w-tab-pane[data-w-tab="' + tabEntry + '"]').fadeIn(300)
             });
-            if (pre === 'student') {
+            if (_pre === 'student') {
                 $('.tab_link[data-w-tab="Students"]').click();
-            } else if (pre === 'supervisor') {
+            } else if (_pre === 'supervisor') {
                 $('.tab_link[data-w-tab="Supervisor"]').click();
-            } else if (pre === 'custom_selection') {
+            } else if (_pre === 'stuTopic') {
                 $('.tab_link[data-w-tab="Topics"]').click();
+            } else if (_pre === 'supTopic') {
+                $('.tab_link[data-w-tab="SupTopics"]').click();
             } else {
                 $('.tab_link').first().click();
             }
@@ -834,10 +838,9 @@
 
             // Search Function
             $('#search-topic').submit(function (e) {
-                console.log('search')
+                console.log('topic....')
                 e.preventDefault();
                 var searchTerm = $('input[name="search-topic"]').val().toLowerCase();
-                console.log(searchTerm)
                 visibleTopics = topics.filter(function () {
                     var topic = $(this);
                     var name = topic.find('#topic-name').text().toLowerCase();
@@ -890,6 +893,10 @@
                 modal.style.display = "none";
             }
         }
+
+
+
+
 
     </script>
     </body>

@@ -48,7 +48,7 @@ class Supervisor(db.Model):
         return db.session.query(Topic.id).filter_by(supervisor_id=self.id).first() is not None
 
     @classmethod
-    def get_all(cls):
+    def get_all(cls) -> object:
         return cls.query.all()
 
     @classmethod

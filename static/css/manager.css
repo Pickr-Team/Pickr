@@ -53,12 +53,20 @@
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-.modal-content {
+/*.modal-content {
     background-color: #000000;
-    margin: 20% auto; /* 15% from the top and centered */
+    margin: 20% auto; !* 15% from the top and centered *!
     padding: 20px;
     border: 1px solid #e16c63;
-    width: 40%; /* Could be more or less, depending on screen size */
+    width: 40%; !* Could be more or less, depending on screen size *!
+}*/
+
+.modal-content h1 {
+    color: black;
+}
+
+.modal-backdrop.show {
+    display: none;
 }
 
 .close {
@@ -89,4 +97,71 @@
 #w-node-manager-04 {
     grid-template-rows: auto;
     grid-template-columns: 1.25fr 1fr 1fr 1fr 1fr;
+}
+
+#w-node-global-01 {
+    grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 1000px) {
+    #w-node-manager-02,
+    #w-node-manager-03 {
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 479px) {
+    #w-node-manager-02,
+    #w-node-manager-03,
+    #w-node-manager-04 {
+        grid-template-rows: auto;
+        grid-template-columns: .5fr 1fr;
+        grid-column-gap: unset;
+    }
+
+    #w-node-manager-03 .wf-layout-layout,
+    #w-node-manager-02 .wf-layout-layout{
+        grid-column-gap: unset;
+    }
+
+    #w-node-manager-03 .cell-14,
+    #w-node-manager-02 .cell-14 {
+        display: none;
+    }
+
+    .search-form {
+        flex-wrap: wrap;
+    }
+
+    .search-form .text-field.topic_list.manage {
+        max-width: unset;
+        min-width: unset;
+    }
+
+    .search-form > input[type=text] {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    #w-node-manager-04 .cell-16 {
+        display: none;
+    }
+
+    .text-block-2.phone_button {
+        margin-bottom: 0;
+    }
+
+    #w-node-global-01 {
+        grid-template-columns: 4fr 2fr;
+    }
+
+    .student_submit_form {
+        display: block;
+    }
+
+    .student_submit_form .deadline_field {
+        margin-bottom: 10px;
+    }
+
 }

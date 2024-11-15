@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, send_from_directory
+from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, send_from_directory, flash
 from functools import wraps
 from models.student import Student
 from models.supervisor import Supervisor
@@ -49,6 +49,7 @@ def index():
     types = Type.get_all()
     topic_num = Topic.get_num()
     custom_topic_num = Topic.get_num_custom()
+    topics = Topic.get_all()
     num_success = Selection.get_num_of_status_3or4()
     num_waiting = Selection.get_num_of_status_0()
     num_process = Selection.get_num_of_status_1()
@@ -62,7 +63,7 @@ def index():
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
                            custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
                            num_process=num_process, num_verify=num_verify, num_fail=num_fail, total_quta=total_quta,
-                           static_topic_num=static_topic_num, pre=pre)
+                           static_topic_num=static_topic_num, pre=pre, topics=topics)
 
 
 # Manager process all the selections
@@ -281,6 +282,13 @@ def get_template_supervisor():
     return get_temp('supervisor_example.xlsx')
 
 
+# Manager get the topics form template
+@bp.route('/get_template_topic')
+@require_manager
+def get_template_topic():
+    return get_temp('topic_example.xlsx')
+
+
 # Manager import students form excel
 @bp.route('/import_students', methods=['POST'])
 @require_manager
@@ -319,7 +327,6 @@ def add_note():
 @bp.route('/import_supervisors', methods=['POST'])
 @require_manager
 def import_supervisors():
-    print('import_supervisors')
     file = request.files['file']
     if file:
         df = pd.read_excel(file)
@@ -336,6 +343,30 @@ def import_supervisors():
             db.session.add(_new_supervisor)
         db.session.commit()
         return redirect(url_for('manager.index', pre='supervisor'))
+    return redirect(url_for('base.error', message='No file uploaded'))
+
+
+# Manager import topics form excel
+@bp.route('/import_topics', methods=['POST'])
+@require_manager
+def import_topics():
+    file = request.files['file']
+    if file:
+        df = pd.read_excel(file)
+        for _index, row in df.iterrows():
+            _new_topic = Topic(
+                name=row['name'],
+                supervisor_id=row['supervisor_id'],
+                quota=row['quota'],
+                is_custom=row['is_custom'],
+                type_id=row['type_id'],
+                description=row['description'],
+                required_skills=row['required_skills'],
+                reference=row['reference']
+            )
+            db.session.add(_new_topic)
+        db.session.commit()
+        return redirect(url_for('manager.index', pre='supTopic'))
     return redirect(url_for('base.error', message='No file uploaded'))
 
 
@@ -413,6 +444,22 @@ def delete_student(student_id):
         return jsonify(success=False, error='Student does not exist')
 
 
+@bp.route('/delete_topic/<int:topic_id>')
+@require_manager
+def delete_topic(topic_id):
+    topic = Topic.get_by_id(id=topic_id)
+    if topic:
+        if topic.get_selected_num_final() > 0:
+            return jsonify(success=False, message='Can not delete this topic, students have selected this topic.')
+        elif topic.get_selected_num() > 0:
+            return jsonify(success=False, message='Can not delete this topic, students have selected this topic.')
+        else:
+            topic.delete()
+            return jsonify(success=True, message='Delete Successfully')
+    else:
+        return jsonify(success=False, message='Topic does not exist')
+
+
 # Manager delete type
 @bp.route('/delete_type/<int:type_id>')
 @require_manager
@@ -488,9 +535,9 @@ def add_student():
     class_number = request.form.get('class_number')
     email = request.form.get('email')
     user_name = request.form.get('username')
-    password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92' # 123456
+    password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'  # 123456
     _new_student = Student(chinese_name=chinese_name, english_name=english_name, class_number=class_number,
-                          email=email, password=password, user_name=user_name)
+                           email=email, password=password, user_name=user_name)
     _new_student.add()
     return redirect(url_for('manager.index', pre='student'))
 
@@ -507,7 +554,7 @@ def add_supervisor():
     email = request.form.get('email')
 
     _new_supervisor = Supervisor(first_name=first_name, last_name=last_name, position=position,
-                                user_name=user_name, password=password, email=email, is_admin=False)
+                                 user_name=user_name, password=password, email=email, is_admin=False)
     _new_supervisor.add()
     return redirect(url_for('manager.index', pre='supervisor'))
 
@@ -534,3 +581,15 @@ def update_custom_selection(selection_id):
     selection.update_first_topic_description(description=description)
     selection.update_first_topic_type_id(type_id=type_id)
     return redirect(url_for('manager.index', pre='custom_selection'))
+
+
+@bp.route('/topic_detail/<int:topic_id>', methods=['GET', 'POST'])
+@require_manager
+def topic_detail(topic_id):
+    topic = Topic.get_by_id(topic_id)
+    types = Type.get_all()
+    supervisors = Supervisor.get_all()
+    if request.method == 'GET':
+        return render_template('manager/topic/topic_detail.html', topic=topic, types=types, supervisors=supervisors)
+    else:
+        pass

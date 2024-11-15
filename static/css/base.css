@@ -23,7 +23,7 @@
 
 :root {
     --wite: white;
-    --accent: #e16c63;
+    --accent: #ff7167;
     --gray: #8b8b8b;
     --red: #ff1200;
     --transparent: rgba(0, 0, 0, 0);
@@ -75,9 +75,28 @@ a {
     text-decoration: underline;
 }
 
-a:active, a:hover {
-    outline: 0;
+a,a:hover,a:active,a:visited,a:link,a:focus{
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
+    outline:none;
+    background: none;
+    text-decoration: none;
 }
+
+a.login:hover, a.login:active, a.login:visited, a.login:link, a.login:focus {
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
+    outline:none;
+    background: none;
+    text-decoration: none;
+    color: white;
+}
+a.tab_link:hover {
+    border: 1px solid var(--accent);
+    background-color: var(--transparent);
+    color: var(--accent);
+}
+
 
 abbr[title] {
     border-bottom: 1px dotted;

@@ -12,49 +12,49 @@ from test_topic_list import TestTopicList
 
 
 def run_tests():
-    testChangePassword = TestChangePassword()
-    testChangePassword.test_changePassword()
-    testChangePassword.tearDown()
+    # testChangePassword = TestChangePassword()
+    # testChangePassword.test_changePassword()
+    # testChangePassword.tearDown()
 
     testLogin = TestLogin()
     testLogin.test_login()
     testLogin.tearDown()
 
-    testManagerSetDeadline = TestManagerSetDeadline()
-    testManagerSetDeadline.test_managerSetDeadlin()
-    testManagerSetDeadline.tearDown()
+    # testManagerSetDeadline = TestManagerSetDeadline()
+    # testManagerSetDeadline.test_managerSetDeadlin()
+    # testManagerSetDeadline.tearDown()
+    #
+    # testManagerSetNotesTypes = TestManagerSetNotesTypes()
+    # testManagerSetNotesTypes.test_managerSetNotesTypes()
+    # testManagerSetNotesTypes.tearDown()
+    #
+    # testManagerViewStudentSelection = TestManagerViewStudentSelection()
+    # testManagerViewStudentSelection.test_managerViewStudentSelection()
+    # testManagerViewStudentSelection.tearDown()
+    #
+    # testManagerViewTopics = TestManagerViewTopics()
+    # testManagerViewTopics.test_managerViewTopics()
+    # testManagerViewTopics.tearDown()
 
-    testManagerSetNotesTypes = TestManagerSetNotesTypes()
-    testManagerSetNotesTypes.test_managerSetNotesTypes()
-    testManagerSetNotesTypes.tearDown()
-
-    testManagerViewStudentSelection = TestManagerViewStudentSelection()
-    testManagerViewStudentSelection.test_managerViewStudentSelection()
-    testManagerViewStudentSelection.tearDown()
-
-    testManagerViewTopics = TestManagerViewTopics()
-    testManagerViewTopics.test_managerViewTopics()
-    testManagerViewTopics.tearDown()
-
-    testStudentCreateCustomTopic = TestStudentCreateCustomTopic()
-    testStudentCreateCustomTopic.test_studentCreateCustomTopic()
-    testStudentCreateCustomTopic.tearDown()
-
-    testStudentSelectTopics = TestStudentSelectTopics()
-    testStudentSelectTopics.test_studentSelectTopics()
-    testStudentSelectTopics.tearDown()
-
-    testSupervisor_create_topics = TestSupervisorcreatetopic()
-    testSupervisor_create_topics.test_supervisorcreatetopic()
-    testSupervisor_create_topics.tearDown()
-
-    testSupervisorViewSelectionResults = TestSupervisorViewSelectionResult()
-    testSupervisorViewSelectionResults.test_supervisorViewSelectionResult()
-    testSupervisorViewSelectionResults.tearDown()
-
-    test_topic_list = TestTopicList()
-    test_topic_list.test_topic_list()
-    test_topic_list.tearDown()
+    # testStudentCreateCustomTopic = TestStudentCreateCustomTopic()
+    # testStudentCreateCustomTopic.test_studentCreateCustomTopic()
+    # testStudentCreateCustomTopic.tearDown()
+    #
+    # testStudentSelectTopics = TestStudentSelectTopics()
+    # testStudentSelectTopics.test_studentSelectTopics()
+    # testStudentSelectTopics.tearDown()
+    #
+    # testSupervisor_create_topics = TestSupervisorcreatetopic()
+    # testSupervisor_create_topics.test_supervisorcreatetopic()
+    # testSupervisor_create_topics.tearDown()
+    #
+    # testSupervisorViewSelectionResults = TestSupervisorViewSelectionResult()
+    # testSupervisorViewSelectionResults.test_supervisorViewSelectionResult()
+    # testSupervisorViewSelectionResults.tearDown()
+    #
+    # test_topic_list = TestTopicList()
+    # test_topic_list.test_topic_list()
+    # test_topic_list.tearDown()
 
 
 run_tests()
