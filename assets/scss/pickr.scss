@@ -1,0 +1,52 @@
+.pickr-btn {
+  padding: 10px;
+  border: white 1px solid;
+  background-color: transparent;
+  transition: all 0.3s;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background-color: white;
+    color: black;
+  }
+}
+
+.del-btn {
+  background-color: red;
+  color: white;
+  &:hover {
+    background-color: red;
+    color: white;
+  }
+}
+
+.pickr-table-input {
+  width: 30vw;
+  height: 6vh;
+  margin-right: 10px;
+  margin-left: 2px;
+}
+
+.table {
+  color: white;
+  text-align: center;
+  thead tr th {
+    font-size: 20px;
+  }
+  &>:not(caption)>*>*{
+    border-bottom-width: 0.5px;
+    padding: 1.25rem .5rem;
+  }
+}
+
+@media (max-width: 479px)  {
+  .table {
+    thead tr th {
+      font-size: 16px;
+    }
+  }
+
+  .pickr-btn {
+    padding: 5px;
+  }
+}

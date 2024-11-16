@@ -1,4 +1,5 @@
 {% extends 'base-temp.html' %}
+{% from 'macro/pickr_table.html' import pickr_table %}
 
 {% block title %}Pickr | Manager{% endblock %}
 
@@ -17,20 +18,25 @@
         <div class="_20px_height"></div>
     </section>
     <div data-current="System" data-easing="ease" data-duration-in="300" data-duration-out="100" class="w-tabs">
-        <address class="tabs-menu w-tab-menu">
-            <a data-w-tab="System" class="tab_link w-inline-block w-tab-link w--current" onclick="sessionStorage.setItem('pre','system')">
+        <address style="display: flex;overflow-x: auto">
+            <a data-w-tab="System" class="tab_link w-inline-block w-tab-link w--current"
+               onclick="sessionStorage.setItem('pre','system')">
                 <div>System</div>
             </a>
-            <a data-w-tab="Students" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','student')">
+            <a data-w-tab="Students" class="tab_link w-inline-block w-tab-link"
+               onclick="sessionStorage.setItem('pre','student')">
                 <div>Students</div>
             </a>
-            <a data-w-tab="Supervisor" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','supervisor')">
+            <a data-w-tab="Supervisor" class="tab_link w-inline-block w-tab-link"
+               onclick="sessionStorage.setItem('pre','supervisor')">
                 <div>Supervisors</div>
             </a>
-            <a data-w-tab="SupTopics" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','supTopic')">
+            <a data-w-tab="SupTopics" class="tab_link w-inline-block w-tab-link"
+               onclick="sessionStorage.setItem('pre','supTopic')">
                 <div>Supervisor Topics</div>
             </a>
-            <a data-w-tab="Topics" class="tab_link w-inline-block w-tab-link" onclick="sessionStorage.setItem('pre','stuTopic')">
+            <a data-w-tab="Topics" class="tab_link w-inline-block w-tab-link"
+               onclick="sessionStorage.setItem('pre','stuTopic')">
                 <div>Student Topics</div>
             </a>
         </address>
@@ -210,197 +216,16 @@
                 <a href="#" class="submit-button-2 delete_button w-button" id="reset-system">Reset System</a>
             </div>
             <div data-w-tab="Students" class="w-tab-pane">
-                <div class="_40px_height"></div>
-                <h2 class="third_title-2 accent">Students</h2>
-                <div class="form-block-2 w-form">
-                    <div class="_20px_height"></div>
-                    <form id="search-student" method="GET" class="form-2">
-                        <input type="text" class="text-field topic_list manage w-input" name="search-student"
-                               placeholder="Student ID, Class number or name" id="search-student"/>
-                        <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
-                        <div class="div-block-4"></div>
-                        <a class="submit-button-2 w-button" id="pre-page"><</a>
-                        <div class="div-block-4"></div>
-                        <div id="page-number" class="page-info accent"> 1 / X</div>
-                        <div class="div-block-4"></div>
-                        <a class="submit-button-2 w-button" id="last-page">></a>
-                        <div class="_80px_height"></div>
-                    </form>
-                </div>
-                <div class="_20px_height"></div>
-                <div id="no-results-message" class="hidden third_title accent not_found">No student found, try again.
-                </div>
-                {% for student in students %}
-                    <div id="w-node-manager-02"
-                         class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout student-item">
-                        <div class="w-layout-cell cell-11">
-                            <div class="text-block-2">
-                                <em class="italic-text-3"
-                                    id="student-name">{{ student.english_name }}({{ student.chinese_name }})</em>
-                            </div>
-                        </div>
-                        <div class="w-layout-cell cell-13">
-                            <div class="text-block-2 italic-text _20_leading" id="student-class-number">
-                                <em>{{ student.class_number }}</em></div>
-                        </div>
-                        <div class="w-layout-cell cell-14">
-                            <div class="text-block-2 phone_button phone_leading"
-                                 id="student-username">{{ student.user_name }}</div>
-                        </div>
-                        <div class="w-layout-cell cell-12">
-                            <a href="{{ url_for('manager.student_status', student_id = student.id) }}"
-                               class="submit-button-2 w-button">Status</a>
-                            <div class="div-block-4"></div>
-                            <a href="{{ url_for('manager.edit_student', student_id = student.id) }}"
-                               class="submit-button-2 w-button">Edit</a>
-                            <div class="div-block-4"></div>
-                            <a href="#" data-student-id="{{ student.id }}"
-                               class="submit-button-2 delete_button w-button delete-student">Delete</a>
-                        </div>
-                    </div>
-                {% endfor %}
-                <div class="_40px_height"></div>
-                <a href="{{ url_for('manager.new_student') }}" class="submit-button-2 w-button">+ Add Student</a>
-                <a href="{{ url_for('manager.get_template_student') }}" class="submit-button-2 w-button">↓ Get Excel
-                    Template</a>
-                <form id="student-import" action="{{ url_for('manager.import_students') }}" method="POST"
-                      enctype="multipart/form-data" style="display: inline;">
-                    <label for="file-upload-student" class="submit-button-2 w-button">
-                        ↑ Import From Excel
-                        <input id="file-upload-student" type="file" name="file" accept=".xlsx, .xls"
-                               onchange="this.form.submit()" style="display: none;">
-                    </label>
-                </form>
+                {{ pickr_table('Students', students, 'student','Student name, Class number') }}
             </div>
             <div data-w-tab="Supervisor" class="w-tab-pane">
-                <div class="_40px_height"></div>
-                <h2 class="third_title-2 accent">Supervisors</h2>
-                <div class="_20px_height"></div>
-                <div class="form-block-2 w-form">
-                    <form id="search-supervisor" method="GET" class="form-2">
-                        <input type="text" class="text-field topic_list manage w-input" name="search-supervisor"
-                               placeholder="Supervisor name, ID" id="search-supervisor"/>
-                        <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
-                        <div class="div-block-4"></div>
-                        <a class="submit-button-2 w-button" id="pre-page-supervisor"><</a>
-                        <div class="div-block-4"></div>
-                        <div id="page-number-supervisor" class="page-info accent"> 1 / X</div>
-                        <div class="div-block-4"></div>
-                        <a class="submit-button-2 w-button" id="last-page-supervisor">></a>
-                    </form>
-                    <div class="_20px_height"></div>
-                    <div class="_20px_height"></div>
-                </div>
-                <div id="no-results-message-supervisor" class="hidden third_title accent not_found">No supervisor found,
-                    try again.
-                </div>
-                {% for supervisor in supervisors %}
-                    {% if supervisor.is_admin == 0 %}
-                        <div id="w-node-manager-03"
-                             class="w-layout-layout supervisor_result_item-2 supervisor_topic wf-layout-layout supervisor-item">
-                            <div class="w-layout-cell cell-11">
-                                <div class="text-block-2 supervisor-name">
-                                    {{ supervisor.first_name }} {{ supervisor.last_name }}
-                                </div>
-                            </div>
-                            <div class="w-layout-cell cell-13">
-                                <div class="text-block-2 italic-text _20_leading">
-                                    {{ supervisor.get_total_final_selections() }}/{{ supervisor.position }}
-                                </div>
-                            </div>
-                            <div class="w-layout-cell cell-14">
-                                <div class="text-block-2 phone_button phone_leading">{{ supervisor.email }}</div>
-                            </div>
-                            <div class="w-layout-cell cell-12">
-                                <a href="{{ url_for('manager.supervisor_status', supervisor_id = supervisor.id) }}"
-                                   class="submit-button-2 w-button">Detail</a>
-                                <div class="div-block-4"></div>
-                                <a href="{{ url_for('manager.edit_supervisor', supervisor_id = supervisor.id) }}"
-                                   class="submit-button-2 w-button">Edit</a>
-                                <div class="div-block-4"></div>
-                                <a href="#" data-supervisor-id="{{ supervisor.id }}"
-                                   class="submit-button-2 delete_button w-button delete-supervisor">Delete</a></div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-                <div class="_40px_height"></div>
-                <a href="{{ url_for('manager.new_supervisor') }}" class="submit-button-2 w-button">+ Add Supervisor</a>
-                <a href="{{ url_for('manager.get_template_supervisor') }}" class="submit-button-2 w-button">↓ Get Excel
-                    Template</a>
-                <form id="supervisor-import" action="{{ url_for('manager.import_supervisors') }}" method="POST"
-                      enctype="multipart/form-data" style="display: inline;">
-                    <label for="file-upload-supervisor" class="submit-button-2 w-button">↑ Import From Excel
-                        <input id="file-upload-supervisor" type="file" name="file" accept=".xlsx, .xls"
-                               onchange="this.form.submit()" style="display: none;">
-                    </label>
-                </form>
+                {{ pickr_table('Supervisors', supervisors, 'supervisor','Supervisor name, ID') }}
             </div>
             <div data-w-tab="SupTopics" class="w-tab-pane">
-                {% include 'manager/components/supervisor_table.html' %}
+                {{ pickr_table('Supervisor Topics', topics, 'supTopic', 'Topic title, Student name, Supervisor name') }}
             </div>
             <div data-w-tab="Topics" class="w-tab-pane">
-                <div class="_40px_height"></div>
-                <h2 class="third_title-2 accent">Custom Topics</h2>
-                <div class="_20px_height"></div>
-                <div class="form-block-2 w-form">
-                    <form id="search-topic" name="search-topic" method="GET" class="form-2">
-                        <input type="text" class="text-field topic_list manage w-input" name="search-topic"
-                               placeholder="Topic name, Student name, Supervisor name" id="search-topic"/>
-                        <input type="submit" value="Search" data-wait="Please wait..." class="submit-button w-button"/>
-                        <div class="div-block-4"></div>
-                        <a class="submit-button-2 w-button" id="pre-page-topic"><</a>
-                        <div class="div-block-4"></div>
-                        <div id="page-number-topic" class="page-info accent"> 1 / X</div>
-                        <div class="div-block-4"></div>
-                        <a class="submit-button-2 w-button" id="last-page-topic">></a>
-                    </form>
-                </div>
-                <div class="_20px_height">
-                    <div id="no-results-message-topic" class="hidden third_title accent not_found">No Topics
-                        found,
-                        try again.
-                        <div class="_20px_height"></div>
-                    </div>
-
-                    {% if custom_selections %}
-                        {% for custom_selection in custom_selections %}
-                            <div id="w-node-manager-04"
-                                 class="w-layout-layout supervisor_result_item-2 _5row wf-layout-layout topic-item">
-                                <div class="w-layout-cell cell-11">
-                                    <div class="text-block-2">
-                                        <em class="italic-text-3"
-                                            id="topic-name">{{ custom_selection.first_topic_name }}</em>
-                                    </div>
-                                </div>
-                                <div class="w-layout-cell cell-8">
-                                    <div class="text-block-2 phone_button phone_leading"
-                                         id="student-name">{{ custom_selection.english_name }}</div>
-                                </div>
-                                <div class="w-layout-cell cell-16">
-                                    <div class="text-block-2 phone_button phone_leading"
-                                         id="supervisor-name">{{ custom_selection.first_topic_supervisor_name }}</div>
-                                </div>
-                                <div class="w-layout-cell cell-12">
-                                    <div class="div-block-4"></div>
-                                    <div class="text-block-2 phone_button phone_leading">
-                                        {% if custom_selection.status == 2 %}
-                                            <div style="color: red">Waiting for Verify</div>
-                                        {% else %}
-                                            <div style="color: green">Verified</div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="w-layout-cell cell-15">
-                                    <a href="{{ url_for('manager.check_custom_selection', selection_id = custom_selection.id) }}"
-                                       class="submit-button-2 w-button">Check</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="third_title accent ">No topic found, try again.</div>
-                        <div class="_20px_height"></div>
-                    {% endif %}
-                </div>
+                {{ pickr_table('Student Topics', custom_selections, 'topic', 'Topic title, Student name, Supervisor name') }}
             </div>
         </div>
     </div>
@@ -526,52 +351,6 @@
             })
         })
 
-        // Delete note
-        $('.delete-note').click(function (e) {
-            e.preventDefault()
-            var noteID = $(this).data('note-id');
-            var element = $(this).closest('.quick-stack-2')
-            var confirmed = confirm("Are you sure you want to delete this topic?");
-            var baseUrl = "{{ url_for('manager.delete_note', note_id = '0') }}";
-
-            if (confirmed) {
-                var fullUrl = baseUrl.replace('/0', '/' + noteID);
-                $.ajax({
-                    url: fullUrl,
-                    method: 'GET',
-                    success: function (result) {
-                        element.remove()
-                    }
-                })
-            }
-        })
-
-        // Delete student
-        $('.delete-student').click(function (e) {
-            e.preventDefault()
-            var studentID = $(this).data('student-id');
-            var element = $(this).closest('.supervisor_result_item-2')
-
-            var confirmed = confirm("Are you sure you want to delete this student?");
-
-            var baseUrl = "{{ url_for('manager.delete_student', student_id = '0') }}";
-
-            if (confirmed) {
-                var fullUrl = baseUrl.replace('/0', '/' + studentID);
-                $.ajax({
-                    url: fullUrl,
-                    method: 'GET',
-                    success: function (response) {
-                        if (response.success) {
-                            element.remove()
-                        } else {
-                            alert(response.error)
-                        }
-                    }
-                })
-            }
-        })
-
         // Delete type
         $('.delete-type').click(function (e) {
             e.preventDefault()
@@ -598,31 +377,25 @@
             }
         })
 
-        //delete supervisor
-        $('.delete-supervisor').click(function (e) {
+        // delete note
+        $('.delete-note').click(function (e) {
             e.preventDefault()
-            var supervisorID = $(this).data('supervisor-id');
-            var element = $(this).closest('.supervisor_result_item-2')
-
-            var confirmed = confirm("Are you sure you want to delete this supervisor?");
-
-            var baseUrl = "{{ url_for('manager.delete_supervisor', supervisor_id = '0') }}";
-
+            var noteID = $(this).data('note-id');
+            var element = $(this).closest('.quick-stack-2')
+            var confirmed = confirm("Are you sure you want to delete this topic?");
+            var baseUrl = "{{ url_for('manager.delete_note', note_id = '0') }}";
             if (confirmed) {
-                var fullUrl = baseUrl.replace('/0', '/' + supervisorID);
+                var fullUrl = baseUrl.replace('/0', '/' + noteID);
                 $.ajax({
                     url: fullUrl,
                     method: 'GET',
-                    success: function (response) {
-                        if (response.success) {
-                            element.remove()
-                        } else {
-                            alert(response.error)
-                        }
+                    success: function (result) {
+                        element.remove()
                     }
                 })
             }
         })
+
 
         //reset system
         $('#reset-system').click(function (e) {
@@ -644,217 +417,103 @@
             }
         })
 
-        // Pagination and Search for student list
-        $(document).ready(function () {
-            var pageSize = 5;
-            var currentPage = 1;
-            var students = $('.student-item');
-            var visibleStudents = students;
-            var pageCount = updatePageCount();
+        function pagination(type) {
+            const pageSize = 10;
+            let currentPage = 1;
+            const $table = $(`#table-${type}`)
+            const tbody = document.querySelector(`#tbody-${type}`)
+            let data = tbody.getElementsByTagName('tr');
+            let originalData = data;
+            let visibleData = data;
+            let pageCount = updatePageCount();
+
 
             function updatePageCount() {
-                // Update the page count
-                return Math.ceil(visibleStudents.length / pageSize);
+                return Math.ceil(visibleData.length / pageSize);
             }
 
             function updateButtons() {
-                // Update the buttons
-                $('#pre-page').toggleClass('disabled', currentPage === 1);
-                $('#last-page').toggleClass('disabled', currentPage === pageCount);
-                $('#page-number').text(currentPage + ' / ' + pageCount);
+                $(`#pre-page-${type}`).toggleClass('disabled', currentPage === 1);
+                $(`#last-page-${type}`).toggleClass('disabled', currentPage === pageCount);
+                $(`#page-number-${type}`).text(currentPage + ' / ' + pageCount);
             }
 
+            // Used to show or hide the "No results found" message
             function toggleNoResultsMessage(show) {
-                // Used to show or hide the "No results found" message
                 if (show) {
-                    $('#no-results-message').removeClass('hidden');
+                    $table.hide()
+                    $(`#no-results-message-${type}`).removeClass('hidden');
                 } else {
-                    $('#no-results-message').addClass('hidden');
+                    $table.show()
+                    $(`#no-results-message-${type}`).addClass('hidden');
                 }
             }
 
+            // Render the current page
             function renderPage() {
-                // Render the current page
-                students.addClass('hidden').removeClass('visible');
-                var start = (currentPage - 1) * pageSize;
-                visibleStudents.slice(start, start + pageSize).removeClass('hidden').addClass('visible');
+                Array.from(data).forEach((row, index) => {
+                    row.style.display = 'none';
+                })
+                const start = (currentPage - 1) * pageSize
+                const end = Math.min(start + pageSize, data.length);
+                Array.from(visibleData).forEach((row, index) => {
+                    row.style.display = (index >= start && index < end) ? '' : 'none';
+                });
                 updateButtons();
-                toggleNoResultsMessage(visibleStudents.length === 0);
+                toggleNoResultsMessage(visibleData.length === 0);
             }
 
-            $('#pre-page').click(function () {
+            $(`#pre-page-${type}`).click(function () {
                 if (currentPage > 1) {
                     currentPage--;
                     renderPage();
                 }
             });
 
-            $('#last-page').click(function () {
+            $(`#last-page-${type}`).click(function () {
                 if (currentPage < pageCount) {
                     currentPage++;
                     renderPage();
                 }
             });
 
-            // Search Function
-            $('#search-student').submit(function (e) {
+            $(`#search-input-${type}`).click(function (e) {
                 e.preventDefault();
-                var searchTerm = $('input[name="search-student"]').val().toLowerCase();
-                visibleStudents = students.filter(function () {
-                    var student = $(this);
-                    var name = student.find('#student-name').text().toLowerCase();
-                    var classNum = student.find('#student-class-number').text().toLowerCase();
-                    var userName = student.find('#student-username').text().toLowerCase();
-                    return !searchTerm || name.includes(searchTerm) || classNum.includes(searchTerm) || userName.includes(searchTerm);
-                });
+                const searchKey = $(`input[name="search-${type}"]`).val().toLowerCase();
+                visibleData = Array.from(data).filter(function (value, index) {
+                    const td = value.querySelector(`#td-1-${type}`).innerText.trim()
+                    const td2 = value.querySelector(`#td-2-${type}`).innerText.trim()
+                    const td3 = value.querySelector(`#td-3-${type}`).innerText.trim()
+                    if (type === 'student' || type === 'topic') {
+                        return !searchKey || td.includes(searchKey) || td2.includes(searchKey) || td3.includes(searchKey);
+                    } else {
+                        return !searchKey || td.includes(searchKey)
+                    }
+                })
                 currentPage = 1;
                 pageCount = updatePageCount();
-                renderPage();
+                renderPage()
+            });
+
+            $(`#reset-input-${type}`).click(function (e) {
+                e.preventDefault();
+                $(`input[name="search-${type}"]`).val('')
+                visibleData = originalData;
+                currentPage = 1;
+                pageCount = updatePageCount();
+                renderPage()
             });
 
             renderPage();
-        });
+        }
 
-        // Pagination and Search for supervisor list
         $(document).ready(function () {
-            var pageSize = 5;
-            var currentPage = 1;
-            var supervisors = $('.supervisor-item');
-            var visibleSupervisors = supervisors;
-            var pageCount = updatePageCount();
+            pagination('student')
+            pagination('supervisor')
+            pagination('topic')
+            pagination('supTopic')
 
-            function updatePageCount() {
-                // Update the page count
-                return Math.ceil(visibleSupervisors.length / pageSize);
-            }
-
-            function updateButtons() {
-                // Update the buttons
-                $('#pre-page-supervisor').toggleClass('disabled', currentPage === 1);
-                $('#last-page-supervisor').toggleClass('disabled', currentPage === pageCount);
-                $('#page-number-supervisor').text(currentPage + ' / ' + pageCount);
-            }
-
-            function toggleNoResultsMessage(show) {
-                // Used to show or hide the "No results found" message
-                if (show) {
-                    $('#no-results-message-supervisor').removeClass('hidden');
-                } else {
-                    $('#no-results-message-supervisor').addClass('hidden');
-                }
-            }
-
-            function renderPage() {
-                // Render the current page
-                supervisors.addClass('hidden').removeClass('visible');
-                var start = (currentPage - 1) * pageSize;
-                visibleSupervisors.slice(start, start + pageSize).removeClass('hidden').addClass('visible');
-                updateButtons();
-                toggleNoResultsMessage(visibleSupervisors.length === 0);
-            }
-
-            $('#pre-page-supervisor').click(function () {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderPage();
-                }
-            });
-
-            $('#last-page-supervisor').click(function () {
-                if (currentPage < pageCount) {
-                    currentPage++;
-                    renderPage();
-                }
-            });
-
-            // Search Function
-            $('#search-supervisor').submit(function (e) {
-                e.preventDefault();
-                var searchTerm = $('input[name="search-supervisor"]').val().toLowerCase();
-                visibleSupervisors = supervisors.filter(function () {
-                    var supervisor = $(this);
-                    var name = supervisor.find('.supervisor-name').text().toLowerCase();
-                    return !searchTerm || name.includes(searchTerm);
-                });
-                currentPage = 1;
-                pageCount = updatePageCount();
-                renderPage();
-            });
-
-            renderPage();
-        });
-
-        // Pagination and Search for topic list
-        $(document).ready(function () {
-            var pageSize = 10;
-            var currentPage = 1;
-            var topics = $('.topic-item');
-            var visibleTopics = topics;
-            var pageCount = updatePageCount();
-
-            function updatePageCount() {
-                // Update the page count
-                return Math.ceil(visibleTopics.length / pageSize);
-            }
-
-            function updateButtons() {
-                // Update the buttons
-                $('#pre-page-topic').toggleClass('disabled', currentPage === 1);
-                $('#last-page-topic').toggleClass('disabled', currentPage === pageCount);
-                $('#page-number-topic').text(currentPage + ' / ' + pageCount);
-            }
-
-            function toggleNoResultsMessage(show) {
-                // Used to show or hide the "No results found" message
-                if (show) {
-                    $('#no-results-message-topic').removeClass('hidden');
-                } else {
-                    $('#no-results-message-topic').addClass('hidden');
-                }
-            }
-
-            function renderPage() {
-                // Render the current page
-                topics.addClass('hidden').removeClass('visible');
-                var start = (currentPage - 1) * pageSize;
-                visibleTopics.slice(start, start + pageSize).removeClass('hidden').addClass('visible');
-                updateButtons();
-                toggleNoResultsMessage(visibleTopics.length === 0);
-            }
-
-            $('#pre-page-topic').click(function () {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderPage();
-                }
-            });
-
-            $('#last-page-topic').click(function () {
-                if (currentPage < pageCount) {
-                    currentPage++;
-                    renderPage();
-                }
-            });
-
-            // Search Function
-            $('#search-topic').submit(function (e) {
-                console.log('topic....')
-                e.preventDefault();
-                var searchTerm = $('input[name="search-topic"]').val().toLowerCase();
-                visibleTopics = topics.filter(function () {
-                    var topic = $(this);
-                    var name = topic.find('#topic-name').text().toLowerCase();
-                    var studentName = topic.find('#student-name').text().toLowerCase();
-                    var supervisorName = topic.find('#supervisor-name').text().toLowerCase();
-                    return !searchTerm || name.includes(searchTerm) || studentName.includes(searchTerm) || supervisorName.includes(searchTerm);
-                });
-                currentPage = 1;
-                pageCount = updatePageCount();
-                renderPage();
-            });
-
-            renderPage();
-        });
+        })
 
         var modal = document.getElementById("modal");
         var span = document.getElementsByClassName("close")[0];
@@ -893,9 +552,6 @@
                 modal.style.display = "none";
             }
         }
-
-
-
 
 
     </script>

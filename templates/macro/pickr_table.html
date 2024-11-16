@@ -1,0 +1,150 @@
+{% macro pickr_table(title, data, type, placeholder) %}
+    <h2 class="third_title-2 accent">{{ title }}</h2>
+    <div class="_20px_height"></div>
+    <form style="display: flex; align-items: center">
+        <input name="search-{{ type }}" type="text" class="pickr-table-input" placeholder="{{ placeholder }}"/>
+        <input id="search-input-{{ type }}" type="submit" value="Search" data-wait="Please wait..." class="pickr-btn"
+               style="line-height: unset"/>
+        <button id="reset-input-{{ type }}" class="pickr-btn">Reset</button>
+        <a class="pickr-btn" id="pre-page-{{ type }}" style="margin: 0 10px"><</a>
+        <div id="page-number-{{ type }}" style="color: white"> 1 / X</div>
+        <a class="pickr-btn" id="last-page-{{ type }}" style="margin-left: 10px">></a>
+    </form>
+    <div class="_20px_height">
+        {% if data %}
+            <div class="table-responsive">
+                <table id="table-{{ type }}" class="table align-middle" style="color: white;">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">
+                            {% if type == "topic" or type == 'supTopic' %}
+                                Title
+                            {% else %}
+                                Name
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if type == "topic" %}
+                                Student
+                            {% elif type == "supervisor" %}
+                                Position
+                            {% elif type == "student" %}
+                                Class
+                            {% elif type == 'supTopic' %}
+                                Supervisor
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if type == "topic" %}
+                                Supervisor
+                            {% elif type == "supervisor" %}
+                                Email
+                            {% elif type == "student" %}
+                                Username
+                            {% elif type == 'supTopic' %}
+                                FinalSelected/TotalSelected/Quota
+                            {% endif %}
+                        </th>
+                        {% if type == "topic" %}
+                            <th>
+                                Status
+                            </th>
+                        {% endif %}
+                        <th scope="col">Corporation</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody-{{ type }}">
+
+                    <div id="no-results-message-{{ type }}" class="hidden"
+                         style="color: white;font-size: 20px;height: 30px;line-height: 30px">
+                        No {{ type }} found, try again.
+                    </div>
+
+                    {% for d in data %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td id="td-1-{{ type }}">
+                                {% if type == "topic" %}
+                                    {{ d.first_topic_name }}
+                                {% elif type == "supervisor" %}
+                                    {{ d.first_name }} {{ d.last_name }}
+                                {% elif type == "student" %}
+                                    {{ d.english_name }}({{ d.chinese_name }})
+                                {% elif type == "supTopic" %}
+                                    {{ d.name }}
+                                {% endif %}
+                            </td>
+                            <td id="td-2-{{ type }}">
+                                {% if type == "topic" %}
+                                    {{ d.english_name }}
+                                {% elif type == "supervisor" %}
+                                    {{ d.get_total_final_selections() }}/{{ d.position }}
+                                {% elif type == "student" %}
+                                    {{ d.class_number }}
+                                {% elif type == "supTopic" %}
+                                    {{ d.supervisor.first_name }} {{ d.supervisor.last_name }}
+                                {% endif %}
+                            </td>
+                            <td id="td-3-{{ type }}">
+                                {% if type == "topic" %}
+                                    {{ d.first_topic_supervisor_name }}
+                                {% elif type == "supervisor" %}
+                                    {{ d.email }}
+                                {% elif type == "student" %}
+                                    {{ d.user_name }}
+                                {% elif type == "supTopic" %}
+                                    {{ d.get_selected_num_final() }}/{{ d.get_selected_num_total() }}/{{ d.quota }}
+                                {% endif %}
+                            </td>
+                            {% if type == "topic" %}
+                                <td>
+                                    {% if d.status == 2 %}
+                                        <span style="color: red">Waiting for Verify</span>
+                                    {% else %}
+                                        <span>Verified</span>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                            <td>
+                                <div style="display: flex;justify-content:center">
+                                    <a href="{{ url_for('manager.detail', _type=type, id=d.id) }}" class="pickr-btn">
+                                        {% if type == 'topic' %}
+                                            Check
+                                        {% else %}
+                                            Detail
+                                        {% endif %}
+                                    </a>
+                                    {% if type != 'topic' %}
+                                        <a href="{{ url_for('manager.edit', _type=type, id=d.id) }}" class="pickr-btn">Edit</a>
+                                        <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
+                                                onclick="del('{{ type }}',{{ d.id }})">Delete
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="third_title accent ">There's no {{ type }} yet.</div>
+        {% endif %}
+        <div class="_40px_height"></div>
+        {% if type != 'topic' %}
+            <a href="{{ url_for('manager.go_to_new_page',_type=type) }}" class="submit-button-2 w-button">+
+                Add {{ title }}</a>
+            <a href="{{ url_for('manager.get_temp', _type=type) }}" class="submit-button-2 w-button">↓ Get Excel
+                Template</a>
+            <form action="{{ url_for('manager.import_file', _type=type) }}" method="POST"
+                  enctype="multipart/form-data" style="display: inline;">
+                <label for="file-upload" class="submit-button-2 w-button" style="font-weight: normal">↑ Import From
+                    Excel
+                    <input id="file-upload" type="file" name="file" accept=".xlsx, .xls"
+                           onchange="this.form.submit()" style="display: none;">
+                </label>
+            </form>
+        {% endif %}
+    </div>
+{% endmacro %}

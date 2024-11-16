@@ -112,18 +112,18 @@ def new_type():
     return render_template('manager/type/new_type.html')
 
 
-# Manager create new student
-@bp.route('/new_student')
+@bp.route('/new/<string:_type>')
 @require_manager
-def new_student():
-    return render_template('manager/student/new_student.html')
-
-
-# Manager create new supervisor
-@bp.route('/new_supervisor')
-@require_manager
-def new_supervisor():
-    return render_template('manager/supervisor/new_supervisor.html')
+def go_to_new_page(_type):
+    if _type == 'student':
+        return render_template('manager/student/new_student.html')
+    elif _type == 'supervisor':
+        return render_template('manager/supervisor/new_supervisor.html')
+    elif _type == 'supTopic':
+        types = Type.get_all()
+        return render_template('supervisor/topic/new_topic.html', types=types)
+    else:
+        return ''
 
 
 # Manager edit note
@@ -132,22 +132,6 @@ def new_supervisor():
 def edit_note(note_id):
     note = Note.get_by_id(id=note_id)
     return render_template('manager/note/edit_note.html', note=note)
-
-
-# Manager edit student
-@bp.route('/edit_student/<int:student_id>')
-@require_manager
-def edit_student(student_id):
-    student = Student.get_by_id(id=student_id)
-    return render_template('manager/student/edit_student.html', student=student)
-
-
-# Manager edit supervisor
-@bp.route('/edit_supervisor/<int:supervisor_id>')
-@require_manager
-def edit_supervisor(supervisor_id):
-    supervisor = Supervisor.get_by_id(id=supervisor_id)
-    return render_template('manager/supervisor/edit_supervisor.html', supervisor=supervisor)
 
 
 # Manager edit type
@@ -251,64 +235,66 @@ def new_note():
     return render_template('manager/note/new_note.html')
 
 
-# Manager get the student form template
-@bp.route('/student_status/<int:student_id>')
+@bp.route('/get_temp/<string:_type>')
 @require_manager
-def student_status(student_id):
-    selection = Selection.get_by_student_id(student_id=student_id)
-    student = Student.get_by_id(id=student_id)
-    return render_template('manager/student/student_status.html', selection=selection, student=student)
-
-
-def get_temp(filename):
+def get_temp(_type):
     current_file_path = os.path.abspath(__file__)
     current_directory = os.path.dirname(current_file_path)
     root_directory = os.path.dirname(current_directory)
     directory_path = os.path.join(root_directory, 'static', 'file')
+    filename = _type + '_example.xlsx'
     return send_from_directory(directory_path, filename, as_attachment=True)
 
 
-# Manager get the students form template
-@bp.route('/get_template_student')
+@bp.route('/import/<string:_type>', methods=['POST'])
 @require_manager
-def get_template_student():
-    return get_temp('students_example.xlsx')
-
-
-# Manager get the supervisors form template
-@bp.route('/get_template_supervisor')
-@require_manager
-def get_template_supervisor():
-    return get_temp('supervisor_example.xlsx')
-
-
-# Manager get the topics form template
-@bp.route('/get_template_topic')
-@require_manager
-def get_template_topic():
-    return get_temp('topic_example.xlsx')
-
-
-# Manager import students form excel
-@bp.route('/import_students', methods=['POST'])
-@require_manager
-def import_students():
+def import_file(_type):
     file = request.files['file']
     if file:
         df = pd.read_excel(file)
-        for _index, row in df.iterrows():
-            _new_student = Student(
-                chinese_name=row['chinese_name'],
-                english_name=row['english_name'],
-                class_number=row['class_number'],
-                email=row['email'],
-                password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-                user_name=row['user_name']
-            )
-            db.session.add(_new_student)
-        db.session.commit()
+        if _type == 'student':
+            for _index, row in df.iterrows():
+                _new_student = Student(
+                    chinese_name=row['chinese_name'],
+                    english_name=row['english_name'],
+                    class_number=row['class_number'],
+                    email=row['email'],
+                    password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
+                    user_name=row['user_name']
+                )
+                db.session.add(_new_student)
+            db.session.commit()
+        elif _type == 'supervisor':
+            for _index, row in df.iterrows():
+                _new_supervisor = Supervisor(
+                    first_name=row['first_name'],
+                    last_name=row['last_name'],
+                    position=row['position'],
+                    user_name=row['user_name'],
+                    password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
+                    email=row['email'],
+                    is_admin=False
+                )
+                db.session.add(_new_supervisor)
+            db.session.commit()
+        elif _type == 'supTopic':
+            # TODO
+            for _index, row in df.iterrows():
+                _new_topic = Topic(
+                    name=row['name'],
+                    supervisor_id=row['supervisor_id'],
+                    quota=row['quota'],
+                    is_custom=row['is_custom'],
+                    type_id=row['type_id'],
+                    description=row['description'],
+                    required_skills=row['required_skills'],
+                    reference=row['reference']
+                )
+                db.session.add(_new_topic)
+            db.session.commit()
         return redirect(url_for('manager.index', pre='student'))
-    return redirect(url_for('base.error', message='No file uploaded'))
+    else:
+        return redirect(url_for('base.error', message='No file uploaded'))
 
 
 # Manager add new note
@@ -323,72 +309,28 @@ def add_note():
     return redirect(url_for('manager.index'))
 
 
-# Manager import supervisor form excel
-@bp.route('/import_supervisors', methods=['POST'])
+@bp.route('/detail/<string:_type>/<int:id>')
 @require_manager
-def import_supervisors():
-    file = request.files['file']
-    if file:
-        df = pd.read_excel(file)
-        for _index, row in df.iterrows():
-            _new_supervisor = Supervisor(
-                first_name=row['first_name'],
-                last_name=row['last_name'],
-                position=row['position'],
-                user_name=row['user_name'],
-                password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-                email=row['email'],
-                is_admin=False
-            )
-            db.session.add(_new_supervisor)
-        db.session.commit()
-        return redirect(url_for('manager.index', pre='supervisor'))
-    return redirect(url_for('base.error', message='No file uploaded'))
-
-
-# Manager import topics form excel
-@bp.route('/import_topics', methods=['POST'])
-@require_manager
-def import_topics():
-    file = request.files['file']
-    if file:
-        df = pd.read_excel(file)
-        for _index, row in df.iterrows():
-            _new_topic = Topic(
-                name=row['name'],
-                supervisor_id=row['supervisor_id'],
-                quota=row['quota'],
-                is_custom=row['is_custom'],
-                type_id=row['type_id'],
-                description=row['description'],
-                required_skills=row['required_skills'],
-                reference=row['reference']
-            )
-            db.session.add(_new_topic)
-        db.session.commit()
-        return redirect(url_for('manager.index', pre='supTopic'))
-    return redirect(url_for('base.error', message='No file uploaded'))
-
-
-# Manager get the supervisor form template
-@bp.route('/supervisor_status/<int:supervisor_id>')
-@require_manager
-def supervisor_status(supervisor_id):
-    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
-    supervisor = Supervisor.get_by_id(id=supervisor_id)
-
-    return render_template('manager/supervisor/supervisor_status.html', topics=topics, supervisor=supervisor)
-
-
-# Manager edit and check custom selection
-@bp.route('/check_custom_selection/<int:selection_id>')
-@require_manager
-def check_custom_selection(selection_id):
-    selection = Selection.get_by_id(selection_id=selection_id)
-    supervisors = Supervisor.get_all()
-    types = Type.get_all()
-    return render_template('manager/selection/check_custom_selection.html', selection=selection,
-                           supervisors=supervisors, types=types)
+def detail(_type, id):
+    if _type == 'supervisor':
+        topics = Topic.get_by_supervisor_id(supervisor_id=id)
+        supervisor = Supervisor.get_by_id(id=id)
+        return render_template('manager/supervisor/supervisor_status.html', topics=topics, supervisor=supervisor)
+    elif _type == 'student':
+        selection = Selection.get_by_student_id(student_id=id)
+        student = Student.get_by_id(id=id)
+        return render_template('manager/student/student_status.html', selection=selection, student=student)
+    elif _type == 'topic':
+        selection = Selection.get_by_id(selection_id=id)
+        supervisors = Supervisor.get_all()
+        types = Type.get_all()
+        return render_template('manager/selection/check_custom_selection.html', selection=selection,
+                               supervisors=supervisors, types=types)
+    elif _type == 'supTopic':
+        topic = Topic.get_by_id(id=id)
+        return render_template('base/topic_detail.html', topic=topic)
+    else:
+        return ''
 
 
 # Manager update deadline
@@ -428,36 +370,43 @@ def delete_note(note_id):
         return redirect(url_for('base.error', message='Note does not exist'))
 
 
-# Manager delete student
-@bp.route('/delete_student/<int:student_id>')
+@bp.route('/delete/<string:_type>/<int:_id>')
 @require_manager
-def delete_student(student_id):
-    student = Student.get_by_id(id=student_id)
-    selection = Selection.get_by_student_id(student_id=student_id)
-    if student:
-        if selection is None:
-            student.delete()
-            return jsonify(success=True)
+def delete(_type, _id):
+    if _type == 'student':
+        student = Student.get_by_id(id=_id)
+        selection = Selection.get_by_student_id(student_id=_id)
+        if student:
+            if selection is None:
+                student.delete()
+                return jsonify(success=True, message='Delete Successfully')
+            else:
+                return jsonify(success=False, message='Can not delete this student, student has selected topics.')
         else:
-            return jsonify(success=False, error='Can not delete this student, student has selected topics.')
-    else:
-        return jsonify(success=False, error='Student does not exist')
-
-
-@bp.route('/delete_topic/<int:topic_id>')
-@require_manager
-def delete_topic(topic_id):
-    topic = Topic.get_by_id(id=topic_id)
-    if topic:
-        if topic.get_selected_num_final() > 0:
-            return jsonify(success=False, message='Can not delete this topic, students have selected this topic.')
-        elif topic.get_selected_num() > 0:
-            return jsonify(success=False, message='Can not delete this topic, students have selected this topic.')
+            return jsonify(success=False, message='Student does not exist')
+    elif _type == 'supervisor':
+        supervisor = Supervisor.get_by_id(id=_id)
+        topics = Topic.get_by_supervisor_id(supervisor_id=_id)
+        if supervisor:
+            if len(topics) == 0:
+                supervisor.delete()
+                return jsonify(success=True, message='Delete Successfully')
+            else:
+                return jsonify(success=False, message='Can not delete this supervisor, supervisor has topics.')
         else:
-            topic.delete()
-            return jsonify(success=True, message='Delete Successfully')
+            return jsonify(success=False, message='Supervisor does not exist')
+    elif _type == 'supTopic':
+        topic = Topic.get_by_id(id=_id)
+        if topic:
+            if topic.get_selected_num_final() > 0 or topic.get_selected_num() > 0:
+                return jsonify(success=False, message='Can not delete this topic, students have selected this topic.')
+            else:
+                topic.delete()
+                return jsonify(success=True, message='Delete Successfully')
+        else:
+            return jsonify(success=False, message='Topic does not exist')
     else:
-        return jsonify(success=False, message='Topic does not exist')
+        return ''
 
 
 # Manager delete type
@@ -474,22 +423,6 @@ def delete_type(type_id):
             return jsonify(success=False, error='Can not delete this type, type has topics.')
     else:
         return jsonify(success=False, error='Type does not exist')
-
-
-# Manager delete supervisor
-@bp.route('/delete_supervisor/<int:supervisor_id>')
-@require_manager
-def delete_supervisor(supervisor_id):
-    supervisor = Supervisor.get_by_id(id=supervisor_id)
-    topics = Topic.get_by_supervisor_id(supervisor_id=supervisor_id)
-    if supervisor:
-        if len(topics) == 0:
-            supervisor.delete()
-            return jsonify(success=True)
-        else:
-            return jsonify(success=False, error='Can not delete this supervisor, supervisor has topics.')
-    else:
-        return jsonify(success=False, error='Supervisor does not exist')
 
 
 # Manager reset the selections and students
@@ -593,3 +526,20 @@ def topic_detail(topic_id):
         return render_template('manager/topic/topic_detail.html', topic=topic, types=types, supervisors=supervisors)
     else:
         pass
+
+
+@bp.route('/edit/<string:_type>/<int:id>', methods=['GET'])
+@require_manager
+def edit(_type, id):
+    if _type == 'student':
+        student = Student.get_by_id(id=id)
+        return render_template('manager/student/edit_student.html', student=student)
+    elif _type == 'supervisor':
+        supervisor = Supervisor.get_by_id(id=id)
+        return render_template('manager/supervisor/edit_supervisor.html', supervisor=supervisor)
+    elif _type == 'supTopic':
+        topic = Topic.get_by_id(id=id)
+        types = Type.get_all()
+        return render_template('supervisor/topic/edit_topic.html', topic=topic, types=types)
+    else:
+        return ''

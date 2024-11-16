@@ -52,6 +52,14 @@ class Supervisor(db.Model):
         return cls.query.all()
 
     @classmethod
+    def get_all_admins(cls):
+        return cls.query.filter_by(is_admin=True).all()
+
+    @classmethod
+    def get_all_supervisors(cls):
+        return cls.query.filter_by(is_admin=False).all()
+
+    @classmethod
     def get_num(cls):
         return cls.query.count()
 

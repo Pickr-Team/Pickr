@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/media.css') }}" media="screen">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/utils.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/pickr.css') }}">
 
     {% block link_style %}{% endblock %}
 
@@ -24,32 +25,110 @@
     <script>{% block script %}{% endblock %}</script>
 
     {% block link_script %}{% endblock %}
+
+    <style>
+        .paragraph.i._10_head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-icon {
+            margin-left: 10px;
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .social-icons {
+                display: none;
+            }
+
+            .logo {
+                width: 120px;
+            }
+
+            .login {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    {% with messages = get_flashed_messages(with_categories=True) %}
-      {% if messages %}
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
         {% for category, message in messages %}
-          <div class="alert alert-{{ category }}" role="alert" id="my-alert">
-            {{ message }}
-          </div>
+            <div class="alert alert-{{ category }}" role="alert" id="my-alert">
+                {{ message }}
+            </div>
         {% endfor %}
-      {% endif %}
-    {% endwith %}
+    {% endif %}
+{% endwith %}
+
+<!-- Modal 1-->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true" style="z-index: 99">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="{{ url_for('static',filename='image/icon.png') }}"
+                     style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
+                <h1 class="modal-title fs-5" id="exampleModalLabel"
+                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;">Pickr</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="confirmModal-body" style="font-size: 18px">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-danger" data-bs-target="#secondConfirmModal" data-bs-toggle="modal"
+                        onclick="confirmDel()">Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2-->
+<div class="modal fade" id="secondConfirmModal" aria-hidden="true" style="z-index: 100"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="justify-content: start">
+                <img src="{{ url_for('static',filename='image/icon.png') }}"
+                     style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
+                <h1 class="modal-title fs-5" id="exampleModalLabel"
+                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;">Pickr</h1>
+            </div>
+            <div class="modal-body" id="secondConfirmModal-body" style="font-size: 18px">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary">
+                    Ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
+<header class="head">
+    <a href="{{ url_for('base.home') }}" aria-current="page" class="w-inline-block w--current">
+        <img src="{{ url_for('static',filename='image/head_logo.svg') }}" width="155" alt=""
+             class="image logo"/>
+    </a>
+    <a href="{{ url_for('base.my_pickr') }}" class="login">My Pickr<em>↗</em></a>
+</header>
 
-    <header class="head">
-        <a href="{{ url_for('base.home') }}" aria-current="page" class="w-inline-block w--current">
-            <img src="{{ url_for('static',filename='image/head_logo.svg') }}" loading="lazy" width="155" alt=""
-                 class="image logo"/>
-        </a>
-        <a href="{{ url_for('base.my_pickr') }}" class="login">My Pickr<em>↗</em></a>
-    </header>
+{% block content %}{% endblock %}
 
-    {% block content %}{% endblock %}
-
-    <footer class="footer">
+<footer class="footer">
     <div class="fourth_title">Pickr - CDUT &amp; OBU Collaborative Education Topic Management System</div>
     <div class="text-block accent flex-container">
         Developed by Chengxin Zhao
@@ -58,56 +137,67 @@
         PROJECT START FROM - Nov,7 2023
         <div class="social-icons">
             <a href="mailto:chengxin.zhao24@imperial.ac.uk" class="w-inline-block">
-                <img src="{{ url_for('static',filename='image/email_icon.svg') }}" loading="lazy" width="20"
+                <img src="{{ url_for('static',filename='image/email_icon.svg') }}" width="20"
                      alt="Send Email" class="footer-icon"/>
             </a>
 
             <a href="https://github.com/chengxinzhaox" aria-current="page" class="w-inline-block w--current">
-                <img src="{{ url_for('static',filename='image/github_icon.svg') }}" loading="lazy" width="20" alt=""
+                <img src="{{ url_for('static',filename='image/github_icon.svg') }}" width="20" alt=""
                      class="footer-icon"/>
             </a>
             <a href="https://info.chengxin.design" aria-current="page" class="w-inline-block w--current">
-                <img src="{{ url_for('static',filename='image/web_icon.svg') }}" loading="lazy" width="20" alt=""
+                <img src="{{ url_for('static',filename='image/web_icon.svg') }}" width="20" alt=""
                      class="footer-icon"/>
             </a>
         </div>
     </div>
 </footer>
 
-     <script>
-        customAlert()
-     </script>
+<script>
+    customAlert()
+
+    let _type;
+    let _id;
+    let delTr;
+    function del(type, id) {
+        if (type==='topic') return
+        _type = type;
+        _id = id;
+        delTr = document.querySelector(`button[data-${type}-id="${id}"]`).closest('tr')
+        $('#confirmModal').modal('show')
+        $('#confirmModal-body').text(`Are you sure to delete this ${type}?`);
+    }
+
+    function confirmDel() {
+        $('#confirmModal').modal('hide');
+        $.ajax({
+            url: `/manager/delete/${_type}/${_id}`,
+            type: 'GET',
+            success: function (response) {
+                $('#secondConfirmModal').modal('show');
+                if (response.success) {
+                    $('#secondConfirmModal-body').css('color', 'green');
+                    $('#secondConfirmModal-body').text(response.message);
+                    delTr.remove()
+                } else {
+                    $('#secondConfirmModal-body').css('color', 'red');
+                    $('#secondConfirmModal-body').text(response.message);
+                }
+            },
+            error: function (response) {
+                $('#secondConfirmModal').modal('show');
+                $('#secondConfirmModal-body').css('color', 'red');
+                $('#secondConfirmModal-body').text(response.message);
+            }
+        });
+    }
+
+    $('#secondConfirmModal .btn-secondary').on('click', function () {
+        $('#secondConfirmModal').modal('hide');
+    });
+</script>
 
 
 </body>
-<style>
-    .paragraph.i._10_head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
 
-    .footer-icon {
-        margin-left: 10px;
-    }
-
-    .head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    @media (max-width: 768px) {
-        .social-icons {
-            display: none;
-        }
-        .logo {
-            width: 120px;
-        }
-
-        .login {
-            font-size: 25px;
-        }
-    }
-</style>
 </html>

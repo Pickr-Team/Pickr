@@ -1,0 +1,28 @@
+.pickr-btn {
+  padding: 10px;
+  border: white 1px solid;
+  background-color: transparent;
+  transition: all 0.3s;
+  color: white;
+  cursor: pointer; }
+  .pickr-btn:hover {
+    background-color: white;
+    color: black; }
+
+.del-btn {
+  background-color: red;
+  color: white; }
+  .del-btn:hover {
+    background-color: red;
+    color: white; }
+
+.pickr-table-input {
+  width: 30vw;
+  height: 6vh;
+  margin-right: 10px;
+  margin-left: 2px; }
+
+  @media (max-width: 479px) {
+    .pickr-btn {
+      padding: 5px;   }
+}

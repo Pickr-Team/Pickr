@@ -121,6 +121,14 @@ class Topic(db.Model):
             )
         ).count()
 
+    # Get the number of students who have selected this topic
+    def get_selected_num_total(self):
+        return Selection.query.filter(
+            (Selection.first_topic_id == self.id) |
+            (Selection.second_topic_id == self.id) |
+            (Selection.third_topic_id == self.id)
+        ).count()
+
     # Get the number of students who have selected this topic (selection.status == 3 or 4)
     def get_selected_num_final(self):
         return Selection.query.filter(

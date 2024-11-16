@@ -208,11 +208,11 @@ input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webki
 textarea {
     overflow: auto;
 }
-
+/*
 table {
     border-collapse: collapse;
     border-spacing: 0;
-}
+}*/
 
 td, th {
     padding: 0;

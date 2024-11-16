@@ -9,7 +9,6 @@ from models.pdf_generator import generate_topic_poster
 from openpyxl import Workbook
 from io import BytesIO
 
-
 bp = Blueprint("supervisor", __name__, url_prefix="/supervisor")
 
 
@@ -17,6 +16,17 @@ def require_supervisor(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_name' not in session or session['user_type'] != 'supervisor':
+            print("Not logged in - require_supervisor")
+            return redirect(url_for('base.login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def require_supervisor_or_manager(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_name' not in session or session['user_type'] == 'student':
             print("Not logged in - require_supervisor")
             return redirect(url_for('base.login'))
         return f(*args, **kwargs)
@@ -56,7 +66,7 @@ def new_topic():
 
 # Supervisor add new topic
 @bp.route('/add_topic', methods=['POST'])
-@require_supervisor
+@require_supervisor_or_manager
 def add_topic():
     supervisor_id = Supervisor.get_id(user_name=session['user_name'])
     topic_name = request.form.get('topic_name')
@@ -85,7 +95,10 @@ def add_topic():
                        supervisor_id=supervisor_id,
                        description=description, type_id=type_id)
     _new_topic.add()
-    return redirect(url_for('supervisor.index'))
+    if session['user_type'] == 'manager':
+        return redirect(url_for('manager.index'))
+    else:
+        return redirect(url_for('supervisor.index'))
 
 
 @bp.route('/delete_topic/<int:topic_id>')
@@ -113,7 +126,7 @@ def edit_topic(topic_id):
 
 # Supervisor update topic
 @bp.route('/update_topic/<int:topic_id>', methods=['POST'])
-@require_supervisor
+@require_supervisor_or_manager
 def update_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     topic_name = request.form.get('topic_name')
@@ -147,7 +160,10 @@ def update_topic(topic_id):
 
     topic.update(name=topic_name, supervisor_id=topic.supervisor_id, quota=position, is_custom=False, type_id=type_id,
                  description=description, required_skills=required_skills, reference=reference)
-    return redirect(url_for('supervisor.index'))
+    if session['user_type'] == 'manager':
+        return redirect(url_for('manager.index'))
+    else:
+        return redirect(url_for('supervisor.index'))
 
 
 # Supervisor get the student list

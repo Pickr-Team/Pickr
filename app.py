@@ -14,6 +14,7 @@ from blueprints.manager import bp as manager_bp
 from blueprints.student import bp as student_bp
 from blueprints.supervisor import bp as supervisor_bp
 from config import *
+from flask_scss import Scss
 import secrets
 import os
 
@@ -30,6 +31,7 @@ else:
     config = DevConfig
 
 app.config.from_object(config)
+Scss(app, static_dir='static', asset_dir='assets')
 app.secret_key = secrets.token_hex(16)
 db.init_app(app)
 
@@ -53,6 +55,11 @@ def page_not_found(e):
 # Catch 500 error
 @app.errorhandler(500)
 def internal_server_error(e):
+    return render_template('base/error.html', message='Internal server error'), 500
+
+
+@app.errorhandler(Exception)
+def handle_generic_error(error):
     return render_template('base/error.html', message='Internal server error'), 500
 
 
