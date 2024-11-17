@@ -65,10 +65,6 @@
     color: black;
 }
 
-.modal-backdrop.show {
-    display: none;
-}
-
 .close {
     color: #ffffff;
     float: right;

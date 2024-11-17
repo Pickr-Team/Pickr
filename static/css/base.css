@@ -46,7 +46,7 @@ body {
     background-color: #000;
     margin: 0;
     font-family: Dank Mono, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 20px;
     padding-left: 40px;
     padding-right: 40px;
@@ -300,8 +300,5 @@ p {
     font-family: Dank Mono, sans-serif;
 }
 
-.body {
-    margin-right: 0;
-    padding-left: 40px;
-}
+
 

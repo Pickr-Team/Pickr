@@ -481,11 +481,13 @@
                 e.preventDefault();
                 const searchKey = $(`input[name="search-${type}"]`).val().toLowerCase();
                 visibleData = Array.from(data).filter(function (value, index) {
-                    const td = value.querySelector(`#td-1-${type}`).innerText.trim()
-                    const td2 = value.querySelector(`#td-2-${type}`).innerText.trim()
-                    const td3 = value.querySelector(`#td-3-${type}`).innerText.trim()
+                    const td = value.querySelector(`#td-1-${type}`).innerText.trim().toLowerCase()
+                    const td2 = value.querySelector(`#td-2-${type}`).innerText.trim().toLowerCase()
+                    const td3 = value.querySelector(`#td-3-${type}`).innerText.trim().toLowerCase()
                     if (type === 'student' || type === 'topic') {
                         return !searchKey || td.includes(searchKey) || td2.includes(searchKey) || td3.includes(searchKey);
+                    } else if (type === 'supTopic'){
+                        return !searchKey || td.includes(searchKey) || td2.includes(searchKey)
                     } else {
                         return !searchKey || td.includes(searchKey)
                     }

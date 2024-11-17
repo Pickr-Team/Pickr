@@ -43,6 +43,10 @@
             align-items: center;
         }
 
+        .modal-backdrop.show {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .social-icons {
                 display: none;
@@ -71,14 +75,15 @@
 {% endwith %}
 
 <!-- Modal 1-->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true" style="z-index: 99">
+<div class="modal fade" id="confirmModal" aria-labelledby="confirmModal" tabindex="-1" aria-hidden="true"
+     style="z-index: 99">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <img src="{{ url_for('static',filename='image/icon.png') }}"
                      style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
                 <h1 class="modal-title fs-5" id="exampleModalLabel"
-                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;">Pickr</h1>
+                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;color: black">Pickr</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="confirmModal-body" style="font-size: 18px">
@@ -86,8 +91,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button class="btn btn-danger" data-bs-target="#secondConfirmModal" data-bs-toggle="modal"
-                        onclick="confirmDel()">Confirm
+                <button class="btn btn-danger" onclick="confirmDel()">Confirm
                 </button>
             </div>
         </div>
@@ -95,7 +99,8 @@
 </div>
 
 <!-- Modal 2-->
-<div class="modal fade" id="secondConfirmModal" aria-hidden="true" style="z-index: 100"
+<div class="modal fade" id="secondConfirmModal" aria-labelledby="secondConfirmModal" aria-hidden="true"
+     style="z-index: 100"
      tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -103,7 +108,7 @@
                 <img src="{{ url_for('static',filename='image/icon.png') }}"
                      style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
                 <h1 class="modal-title fs-5" id="exampleModalLabel"
-                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;">Pickr</h1>
+                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;color: black">Pickr</h1>
             </div>
             <div class="modal-body" id="secondConfirmModal-body" style="font-size: 18px">
 
@@ -159,41 +164,46 @@
     let _type;
     let _id;
     let delTr;
+    const $confirmModal = $('#confirmModal')
+    const $secondConfirmModal = $('#secondConfirmModal')
+    const $secondConfirmModalBody = $('#secondConfirmModal-body')
+
     function del(type, id) {
-        if (type==='topic') return
+        if (type === 'topic') return
         _type = type;
         _id = id;
         delTr = document.querySelector(`button[data-${type}-id="${id}"]`).closest('tr')
-        $('#confirmModal').modal('show')
+        $confirmModal.modal('show')
         $('#confirmModal-body').text(`Are you sure to delete this ${type}?`);
     }
 
     function confirmDel() {
-        $('#confirmModal').modal('hide');
+        const user_type = sessionStorage.getItem('user_type')
+        $confirmModal.modal('hide')
         $.ajax({
-            url: `/manager/delete/${_type}/${_id}`,
+            url: `/${user_type}/delete/${_type}/${_id}`,
             type: 'GET',
             success: function (response) {
-                $('#secondConfirmModal').modal('show');
+                $secondConfirmModal.modal('show');
                 if (response.success) {
-                    $('#secondConfirmModal-body').css('color', 'green');
-                    $('#secondConfirmModal-body').text(response.message);
+                    $secondConfirmModalBody.css('color', 'green');
+                    $secondConfirmModalBody.text(response.message);
                     delTr.remove()
                 } else {
-                    $('#secondConfirmModal-body').css('color', 'red');
-                    $('#secondConfirmModal-body').text(response.message);
+                    $secondConfirmModalBody.css('color', 'red');
+                    $secondConfirmModalBody.text(response.message);
                 }
             },
             error: function (response) {
-                $('#secondConfirmModal').modal('show');
-                $('#secondConfirmModal-body').css('color', 'red');
-                $('#secondConfirmModal-body').text(response.message);
+                $secondConfirmModal.modal('show');
+                $secondConfirmModalBody.css('color', 'red');
+                $secondConfirmModalBody.text(response.message);
             }
         });
     }
 
     $('#secondConfirmModal .btn-secondary').on('click', function () {
-        $('#secondConfirmModal').modal('hide');
+        $secondConfirmModal.modal('hide');
     });
 </script>
 

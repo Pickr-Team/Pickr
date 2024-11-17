@@ -22,7 +22,18 @@
   margin-right: 10px;
   margin-left: 2px; }
 
-  @media (max-width: 479px) {
-    .pickr-btn {
-      padding: 5px;   }
+  .table {
+    color: white;
+    text-align: center; }
+    .table thead tr th {
+      font-size: 20px; }
+      .table > :not(caption) > * > * {
+        border-bottom-width: 0.5px;
+        padding: 1.25rem 0.5rem; }
+
+@media (max-width: 479px) {
+  .table thead tr th {
+    font-size: 16px;   }
+  .pickr-btn {
+    padding: 5px;   }
 }

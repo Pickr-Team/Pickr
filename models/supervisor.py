@@ -13,8 +13,10 @@ class Supervisor(db.Model):
     user_name = db.Column(db.String(20))
     password = db.Column(db.String(100))
     email = db.Column(db.String(30))
+    expertise = db.Column(db.String(255))
 
-    def __init__(self, first_name, last_name, is_admin, position, user_name, password, email):
+    def __init__(self, first_name, last_name, is_admin, position, user_name, password, email, expertise):
+        self.expertise = expertise
         self.first_name = first_name
         self.last_name = last_name
         self.is_admin = is_admin
@@ -73,6 +75,14 @@ class Supervisor(db.Model):
     @classmethod
     def get_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
+
+    @classmethod
+    def get_by_name(cls, full_name):
+        first_name, last_name = full_name.split(' ')
+        return cls.query.filter(
+            (cls.first_name == first_name) &
+            (cls.last_name == last_name)
+        ).first()
 
     # Get the number of topic's position supervised by this supervisor
     def get_topic_num(self):

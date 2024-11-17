@@ -129,7 +129,7 @@
                 </table>
             </div>
         {% else %}
-            <div class="third_title accent ">There's no {{ type }} yet.</div>
+            <div class="third_title accent ">There's no data yet.</div>
         {% endif %}
         <div class="_40px_height"></div>
         {% if type != 'topic' %}
@@ -139,12 +139,115 @@
                 Template</a>
             <form action="{{ url_for('manager.import_file', _type=type) }}" method="POST"
                   enctype="multipart/form-data" style="display: inline;">
-                <label for="file-upload" class="submit-button-2 w-button" style="font-weight: normal">↑ Import From
+                <label for="file-upload-{{ type }}" class="submit-button-2 w-button" style="font-weight: normal">↑
+                    Import From
                     Excel
-                    <input id="file-upload" type="file" name="file" accept=".xlsx, .xls"
+                    <input id="file-upload-{{ type }}" type="file" name="file" accept=".xlsx"
                            onchange="this.form.submit()" style="display: none;">
                 </label>
             </form>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro pickr_simple_table(title, data, type, subData, subData_2) %}
+    <h2 class="third_title-2 accent">{{ title }}</h2>
+    {% if type == 'supStudent' %}
+        <span style="color: white; font-size: 18px">
+            There are <span class="accent">{{ subData }}</span> students in your team
+        </span>
+    {% elif type == 'supTopic' %}
+        <span style="color: white; font-size: 18px">
+            Current Position: <span class="accent">{{ subData }}</span> / Total Position: <span class="accent">{{ subData_2 }}</span>
+        </span>
+    {% endif %}
+    <div class="_20px_height">
+        {% if data %}
+            <div class="table-responsive">
+                <table id="table-{{ type }}" class="table align-middle" style="color: white;">
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            {% if type == "supTopic" %}
+                                Topic Id
+                            {% elif type == 'supStudent' or type == 'supCustom' %}
+                                Topic Title
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if type == "supTopic" %}
+                                Title
+                            {% elif type == 'supStudent' or type == 'supCustom' %}
+                                Submit Time
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if type == "supTopic" %}
+                                FinalSelected/TotalSelected/Quota
+                            {% elif type == 'supStudent'or type == 'supCustom' %}
+                                Student Name
+                            {% endif %}
+                        </th>
+                        <th scope="col">Corporation</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody-{{ type }}">
+                    {% for d in data %}
+                        <tr>
+                            <td id="td-1-{{ type }}">
+                                {% if type == "supTopic" %}
+                                    PK{{ "%04d"|format(d.id) }}
+                                {% elif type == 'supStudent'or type == 'supCustom' %}
+                                    {{ d.final_topic_name }}
+                                {% endif %}
+                            </td>
+                            <td id="td-2-{{ type }}">
+                                {% if type == "supTopic" %}
+                                    {{ d.name }}
+                                {% elif type == 'supStudent' or type == 'supCustom'%}
+                                    {{ d.submit_time }}
+                                {% endif %}
+                            </td>
+                            <td id="td-3-{{ type }}">
+                                {% if type == "supTopic" %}
+                                    {{ d.get_selected_num_final() }}/{{ d.get_selected_num_total() }}/{{ d.quota }}
+                                {% elif type == 'supStudent'or type == 'supCustom' %}
+                                    {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display: flex;justify-content:center">
+                                    {% if type == 'supTopic' %}
+                                        <a href="{{ url_for('supervisor.detail_topic', topic_id =d.id) }}"
+                                           class="pickr-btn">Detail</a>
+                                        <a href="{{ url_for('supervisor.edit_topic', topic_id = d.id) }}"
+                                           class="pickr-btn">Edit</a>
+                                        <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
+                                                onclick="del('{{ type }}',{{ d.id }})">Delete
+                                        </button>
+                                    {% elif type == 'supStudent'%}
+                                        <a href="{{ url_for('supervisor.detail_topic', topic_id =d.id) }}"
+                                           class="pickr-btn">Topic Detail</a>
+                                    {% elif type == 'supCustom' %}
+                                        <a href="{{ url_for('base.topic_detail_custom', topic_id =d.final_topic_id) }}"
+                                           class="pickr-btn">Topic Detail</a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="third_title accent ">There's no {{ type }} yet.</div>
+        {% endif %}
+        <div class="_40px_height"></div>
+        {% if type == 'supTopic' %}
+            <a href="{{ url_for('supervisor.new_topic') }}" class="submit-button-2 phone w-button"><em>+</em> New Topic</a>
+            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button-2 phone w-button"><em>→</em>
+                Generate
+                Poster</a>
         {% endif %}
     </div>
 {% endmacro %}

@@ -54,13 +54,13 @@ def login():
             session['user_name'] = student.english_name
             session['user_id'] = student.id
             session['user_type'] = 'student'
-            return jsonify(status='success', redirect=url_for('student.index'))
+            return jsonify(status='success', redirect=url_for('student.index'), user_type=session['user_type'])
         elif supervisor and supervisor.password == password_hash:
             session['user_name'] = supervisor.user_name
             session['user_id'] = supervisor.id
             session['user_type'] = 'supervisor' if not supervisor.if_admin() else 'manager'
             redirect_url = url_for('manager.index') if supervisor.if_admin() else url_for('supervisor.index')
-            return jsonify(status='success', redirect=redirect_url)
+            return jsonify(status='success', redirect=redirect_url, user_type=session['user_type'])
         else:
             return jsonify(status='fail', message='Invalid username or password')
     else:

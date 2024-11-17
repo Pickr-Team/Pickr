@@ -34,5 +34,9 @@ class Type(db.Model):
     def get_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
 
+    @classmethod
+    def get_by_title(cls, _name):
+        return cls.query.filter_by(name=_name).first()
+
     def __repr__(self):
         return f'<Type {self.id}>'

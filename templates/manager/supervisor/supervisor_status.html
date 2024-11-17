@@ -25,11 +25,16 @@
             <div class="fourth_title">{{ supervisor.get_not_custom_topic_num()}}/{{ supervisor.position }} ({{ supervisor.get_total_final_selections() }} students in {{ supervisor.first_name }}'s team)</div>
         </div>
         <div class="_30px_height">
-            <div class="third_title accent">{{ supervisor.first_name }} {{ supervisor.last_name }}&#x27;s topics</div>
+            <div class="third_title accent">Expertise</div>
             <div class="_20px_height"></div>
-
+            <div class="fourth_title">{{ supervisor.expertise }}</div>
+        </div>
+        <div class="_30px_height">
+            <div class="third_title accent">Topics</div>
+            <div class="_20px_height"></div>
         </div>
         <section class="_20header_section" id="topic-section">
+        {% if topics %}
             {% for topic in topics %}
                     <a href="{{ url_for('base.topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
                        data-topic-id="{{ topic.id }}"
@@ -48,6 +53,10 @@
                         <p class="topic_list_item_para description description-{{ topic.id }}">{{ topic.description }}</p>
                     </a>
             {% endfor %}
+        {% else %}
+             <div class="fourth_title">Supervisor hasn't publish any topics yet</div>
+             <div class="_20px_height"></div>
+        {% endif %}
             <script src="../static/js/topic_list.js"></script>
             <script>
                 {% for topic in topics %}

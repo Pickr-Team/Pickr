@@ -246,6 +246,23 @@ def get_temp(_type):
     return send_from_directory(directory_path, filename, as_attachment=True)
 
 
+def get_type_by_required_skills(required_skills):
+    required_skills_lower = required_skills.lower()
+
+    if 'machine' or 'deep' or 'ai' in required_skills_lower:
+        return Type.get_by_title('Machine Learning')
+    elif 'web' or 'ui' or 'wechat' in required_skills_lower:
+        return Type.get_by_title('Web Development')
+    elif 'cryptographic' in required_skills_lower:
+        return Type.get_by_title('Cybersecurity')
+    elif 'data' or 'sql' or 'python' in required_skills_lower:
+        return Type.get_by_title('Big Data')
+    elif 'project' or '3d' or 'game' in required_skills_lower:
+        return Type.get_by_title('Software Development')
+    else:
+        return Type.get_by_title('Others')
+
+
 @bp.route('/import/<string:_type>', methods=['POST'])
 @require_manager
 def import_file(_type):
@@ -254,45 +271,52 @@ def import_file(_type):
         df = pd.read_excel(file)
         if _type == 'student':
             for _index, row in df.iterrows():
+                cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
                 _new_student = Student(
-                    chinese_name=row['chinese_name'],
-                    english_name=row['english_name'],
-                    class_number=row['class_number'],
-                    email=row['email'],
+                    chinese_name=cleaned_row['chinese_name'],
+                    english_name=cleaned_row['english_name'],
+                    class_number=cleaned_row['class_number'],
+                    email=cleaned_row['email'],
                     password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-                    user_name=row['user_name']
+                    user_name=cleaned_row['user_name']
                 )
                 db.session.add(_new_student)
             db.session.commit()
         elif _type == 'supervisor':
             for _index, row in df.iterrows():
+                cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
                 _new_supervisor = Supervisor(
-                    first_name=row['first_name'],
-                    last_name=row['last_name'],
-                    position=row['position'],
-                    user_name=row['user_name'],
+                    first_name=cleaned_row['first_name'],
+                    last_name=cleaned_row['last_name'],
+                    position=cleaned_row['position'],
+                    user_name=cleaned_row['user_name'],
                     password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-                    email=row['email'],
+                    email=cleaned_row['email'],
+                    expertise=cleaned_row['expertise'],
                     is_admin=False
                 )
                 db.session.add(_new_supervisor)
             db.session.commit()
         elif _type == 'supTopic':
-            # TODO
             for _index, row in df.iterrows():
+                cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
+                supervisor_name = cleaned_row['Staff member']
+                supervisor = Supervisor.get_by_name(supervisor_name)
+                # expertise = cleaned_row['Staff Expertise (Projects/Research Interests)'],
+                # supervisor.expertise = expertise
                 _new_topic = Topic(
-                    name=row['name'],
-                    supervisor_id=row['supervisor_id'],
-                    quota=row['quota'],
-                    is_custom=row['is_custom'],
-                    type_id=row['type_id'],
-                    description=row['description'],
-                    required_skills=row['required_skills'],
-                    reference=row['reference']
+                    name=cleaned_row['Proposed Titles*'],
+                    supervisor_id=supervisor.id,
+                    quota=cleaned_row['Number of Students to Supervise'],
+                    is_custom=False,
+                    type_id=get_type_by_required_skills(cleaned_row['Required skills']).id,
+                    description=cleaned_row['Topic details'],
+                    required_skills=cleaned_row['Required skills'],
+                    reference=cleaned_row['References']
                 )
                 db.session.add(_new_topic)
             db.session.commit()
-        return redirect(url_for('manager.index', pre='student'))
+        return redirect(url_for('manager.index'))
     else:
         return redirect(url_for('base.error', message='No file uploaded'))
 

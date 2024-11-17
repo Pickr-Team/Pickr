@@ -10,6 +10,7 @@
             display: flex;
             min-height: 100vh;
         }
+        {#do not delete#}
         .footer {
             margin-top: 0;
         }
@@ -78,6 +79,7 @@
                     success: function (response) {
                         if (response.status === 'success') {
                             window.location.href = response.redirect;
+                            sessionStorage.setItem('user_type', response.user_type)
                         } else {
                             $('#error-info').text(response.message);
                         }

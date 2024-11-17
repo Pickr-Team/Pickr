@@ -101,27 +101,37 @@ def add_topic():
         return redirect(url_for('supervisor.index'))
 
 
-@bp.route('/delete_topic/<int:topic_id>')
+@bp.route('/delete/<string:_type>/<int:_id>')
 @require_supervisor
-def delete_topic(topic_id):
-    topic = Topic.get_by_id(id=topic_id)
-    if topic:
-        if topic.get_selected_num_final() > 0 or topic.get_selected_num() > 0:
-            return jsonify(success=False, error='Can not delete this topic, students have selected this topic.')
+def delete(_type, _id):
+    if _type == 'supTopic':
+        topic = Topic.get_by_id(id=_id)
+        if topic:
+            if topic.get_selected_num_final() > 0 or topic.get_selected_num_total() > 0 or topic.get_selected_num() > 0:
+                return jsonify(success=False, message='Can not delete this topic, students have selected this topic.')
+            else:
+                topic.delete()
+                return jsonify(success=True, message='Delete successfully!')
         else:
-            topic.delete()
-            return jsonify(success=True)
+            return jsonify(success=False, message='Topic does not exist')
     else:
-        return jsonify(success=False, error='Topic does not exist')
+        return jsonify(success=False, message='Type does match')
 
 
-# Supervisor edit topic
 @bp.route('/edit_topic/<int:topic_id>')
 @require_supervisor
 def edit_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     types = Type.get_all()
     return render_template('supervisor/topic/edit_topic.html', topic=topic, types=types)
+
+
+# Supervisor edit topic
+@bp.route('/detail_topic/<int:topic_id>')
+@require_supervisor
+def detail_topic(topic_id):
+    topic = Topic.get_by_id(id=topic_id)
+    return render_template('base/topic_detail.html', topic=topic)
 
 
 # Supervisor update topic

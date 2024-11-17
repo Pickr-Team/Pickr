@@ -17,6 +17,9 @@ from config import *
 from flask_scss import Scss
 import secrets
 import os
+import logging
+import traceback
+import sys
 
 '''Set up database'''
 # Read flask environment variable to determine which database to use
@@ -45,6 +48,9 @@ app.register_blueprint(manager_bp)
 app.register_blueprint(student_bp)
 app.register_blueprint(supervisor_bp)
 
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
+
 
 # Catch 404 error
 @app.errorhandler(404)
@@ -52,14 +58,17 @@ def page_not_found(e):
     return render_template('base/error.html', message='404 NOT FOUND'), 404
 
 
-# Catch 500 error
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('base/error.html', message='Internal server error'), 500
-
-
 @app.errorhandler(Exception)
 def handle_generic_error(error):
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    stack_trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+
+    logger.error(f"Error Name: {error.__class__.__name__}")
+    logger.error(f"Error Message: {str(error)}")
+
+    for line in stack_trace:
+        logger.error(line.strip())
+
     return render_template('base/error.html', message='Internal server error'), 500
 
 
