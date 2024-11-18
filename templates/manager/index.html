@@ -47,7 +47,7 @@
                 <h2 class="third_title-2 accent">Apply Overview</h2>
                 <div class="_20px_height"></div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Student number</div>
                     </div>
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Waiting for submit</div>
                     </div>
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Waiting for system process</div>
                     </div>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Waiting for verify</div>
                     </div>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Fail</div>
                     </div>
@@ -101,13 +101,13 @@
                     </div>
                 </div>
                 <div class="_20px_height"></div>
-                <a href="{{ url_for('manager.process') }}" class="submit-button-2 delete_button w-button">Process</a>
+                <a href="{{ url_for('manager.process') }}" class="submit-button delete_button w-button">Process</a>
                 <a href="{{ url_for('manager.refresh') }}" class="w-button submit-button">Refresh</a>
                 <div class="_20px_height"></div>
                 <h2 class="third_title-2 accent">Supervisor & Topic Overview</h2>
                 <div class="_20px_height"></div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Supervisor number</div>
                     </div>
@@ -116,7 +116,7 @@
                     </div>
                 </div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Supervisor's Topic number</div>
                     </div>
@@ -125,7 +125,7 @@
                     </div>
                 </div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Supervisors Position</div>
                     </div>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div id="w-node-global-01"
-                     class="w-layout-layout course_list_item wf-layout-layout">
+                     class=" course_list_item wf-layout-layout">
                     <div class="w-layout-cell">
                         <div class="text-block"><em>◇</em> Custom Topic number</div>
                     </div>
@@ -144,7 +144,7 @@
                 </div>
                 <div class="_20px_height"></div>
                 <h2 class="third_title-2 accent">Deadline Setting</h2>
-                <div class="w-layout-blockcontainer inlimite_container w-container">
+                <div class="w-layout-blockcontainer w-container" style="max-width: none;">
                     <div class="w-form">
                         <div class="text-block _10button_spac">Round 1</div>
                         <form id="deadline-form-1" class="student_submit_form">
@@ -177,43 +177,43 @@
                 <h2 class="third_title-2 accent">Notes Setting</h2>
                 {% for note in notes %}
                     <div id="w-node-manager-01"
-                         class="w-layout-layout quick-stack-2 wf-layout-layout">
-                        <div class="w-layout-cell cell-11">
-                            <div class="text-block-2"><em class="italic-text-3">{{ note.title }}</em></div>
+                         class=" quick-stack-2 wf-layout-layout">
+                        <div class="w-layout-cell" style="justify-content: center;">
+                            <div class="text-block-2"><em class="normal-text">{{ note.title }}</em></div>
                         </div>
                         <div class="w-layout-cell cell-17"><a
                                 href="{{ url_for('manager.edit_note', note_id = note.id) }}"
-                                class="submit-button-2 w-button">Edit</a>
-                            <div class="div-block-4"></div>
-                            <a href="#" class="submit-button-2 delete_button w-button delete-note"
+                                class="submit-button w-button">Edit</a>
+                            <div style="min-width: 1vw;"></div>
+                            <a href="#" class="submit-button delete_button w-button delete-note"
                                data-note-id="{{ note.id }}">Delete</a></div>
                     </div>
                 {% endfor %}
                 <div class="_40px_height"></div>
-                <a href="{{ url_for('manager.new_note') }}" class="submit-button-2 w-button">+ New Note</a>
+                <a href="{{ url_for('manager.new_note') }}" class="submit-button w-button">+ New Note</a>
 
                 <div class="_40px_height"></div>
                 <h2 class="third_title-2 accent">Types Setting</h2>
                 {% for type in types %}
                     <div id="w-node-manager-01"
-                         class="w-layout-layout quick-stack-2 wf-layout-layout">
-                        <div class="w-layout-cell cell-11">
-                            <div class="text-block-2"><em class="italic-text-3">{{ type.name }}</em></div>
+                         class=" quick-stack-2 wf-layout-layout">
+                        <div class="w-layout-cell" style="justify-content: center;">
+                            <div class="text-block-2"><em class="normal-text">{{ type.name }}</em></div>
                         </div>
                         <div class="w-layout-cell cell-17">
                             <a href="{{ url_for('manager.edit_type', type_id = type.id) }}"
-                               class="submit-button-2 w-button edit-type">Edit</a>
-                            <div class="div-block-4"></div>
-                            <a href="#" class="submit-button-2 delete_button w-button delete-type"
+                               class="submit-button w-button edit-type">Edit</a>
+                            <div style="min-width: 1vw;"></div>
+                            <a href="#" class="submit-button delete_button w-button delete-type"
                                data-type-id="{{ type.id }}">Delete</a>
                         </div>
                     </div>
                 {% endfor %}
                 <div class="_40px_height"></div>
-                <a href="{{ url_for('manager.new_type') }}" class="submit-button-2 w-button">+ New Type</a>
+                <a href="{{ url_for('manager.new_type') }}" class="submit-button w-button">+ New Type</a>
                 <br>
                 <div class="_40px_height"></div>
-                <a href="#" class="submit-button-2 delete_button w-button" id="reset-system">Reset System</a>
+                <a href="#" class="submit-button delete_button w-button" id="reset-system">Reset System</a>
             </div>
             <div data-w-tab="Students" class="w-tab-pane">
                 {{ pickr_table('Students', students, 'student','Student name, Class number') }}

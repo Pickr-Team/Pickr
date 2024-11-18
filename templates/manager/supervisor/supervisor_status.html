@@ -33,13 +33,13 @@
             <div class="third_title accent">Topics</div>
             <div class="_20px_height"></div>
         </div>
-        <section class="_20header_section" id="topic-section">
+        <section style="margin-top: 20px;" id="topic-section">
         {% if topics %}
             {% for topic in topics %}
                     <a href="{{ url_for('base.topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
                        data-topic-id="{{ topic.id }}"
                        data-type-id="{{ topic.type_id }}" data-supervisor-id="{{ topic.supervisor_id }}">
-                        <div class="w-layout-hflex flex-block-5">
+                        <div class="w-layout-hflex" style="align-items: center;">
                             <div class="w-layout-vflex flex-block-8">
                                 <h1 class="third_title no_head_spacing accent no_button_spacing">{{ topic.name }}{% if topic.is_custom == 1 %} (Custom){% endif %}</h1>
                                 <div class="text-block">By {{ topic.get_supervisor_name() }}</div>
@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="topic_list_item_para description description-{{ topic.id }}">{{ topic.description }}</p>
+                        <p class=" description description-{{ topic.id }}" style="width: 60vw;">{{ topic.description }}</p>
                     </a>
             {% endfor %}
         {% else %}

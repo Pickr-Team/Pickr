@@ -7,7 +7,6 @@
 }
 
 .big_wite_heeding.accent {
-    color: var(--accent);
     font-style: italic;
 }
 
@@ -32,15 +31,38 @@
     right: 0%;
 }
 
-.flex-block-3 {
-    align-items: center;
-}
-
 .big_title {
     color: var(--wite);
     font-size: 50px;
 }
 
-.big_title.accent {
-    color: var(--accent);
+@media (max-width: 1250px) {
+    .big_wite_heeding {
+        margin-top: 40px;
+        font-size: 78px;
+        line-height: 60px;
+    }
 }
+
+@media (max-width: 479px) {
+    .big_wite_heeding {
+        margin-top: 6px !important;
+        font-size: 40px !important;
+        line-height: initial !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .big_wite_heeding {
+        margin-top: 20px;
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 991px) {
+    .big_wite_heeding {
+        margin-top: 40px;
+        font-size: 68px;
+    }
+}
+

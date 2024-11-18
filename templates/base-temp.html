@@ -15,14 +15,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/custom.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/media.css') }}" media="screen">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/utils.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/pickr.css') }}">
 
     {% block link_style %}{% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
     <style>{% block style %}{% endblock %}</style>
-    <script>{% block script %}{% endblock %}</script>
 
     {% block link_script %}{% endblock %}
 
@@ -43,8 +40,9 @@
             align-items: center;
         }
 
+        {#do not delete#}
         .modal-backdrop.show {
-            display: none;
+            z-index: 2;
         }
 
         @media (max-width: 768px) {
@@ -82,8 +80,7 @@
             <div class="modal-header">
                 <img src="{{ url_for('static',filename='image/icon.png') }}"
                      style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
-                <h1 class="modal-title fs-5" id="exampleModalLabel"
-                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;color: black">Pickr</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Pickr</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="confirmModal-body" style="font-size: 18px">
@@ -107,8 +104,7 @@
             <div class="modal-header" style="justify-content: start">
                 <img src="{{ url_for('static',filename='image/icon.png') }}"
                      style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
-                <h1 class="modal-title fs-5" id="exampleModalLabel"
-                    style="margin-top:0;font-style: italic;font-size:1.5rem !important;color: black">Pickr</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Pickr</h1>
             </div>
             <div class="modal-body" id="secondConfirmModal-body" style="font-size: 18px">
 
@@ -157,7 +153,6 @@
         </div>
     </div>
 </footer>
-
 <script>
     customAlert()
 
@@ -207,6 +202,7 @@
     });
 </script>
 
+<script>{% block script %}{% endblock %}</script>
 
 </body>
 

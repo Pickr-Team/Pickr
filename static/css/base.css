@@ -29,6 +29,10 @@
     --transparent: rgba(0, 0, 0, 0);
 }
 
+.accent {
+    color: var(--accent) !important;
+}
+
 * {
     box-sizing: border-box;
 }

@@ -29,12 +29,12 @@
 
     <!--by type-->
     <div id="w-node-topic-list-01"
-         class="w-layout-layout topic_filter_item wf-layout-layout">
+         class=" topic_filter_item wf-layout-layout">
         <div class="w-layout-cell cell">
             <div class="text-block accent _10button">|&gt; By Type</div>
         </div>
         <div class="w-layout-cell cell-3">
-            <div class="w-layout-hflex flex-block-7">
+            <div class="w-layout-hflex" style="flex-wrap: wrap; align-items: center;">
                 {% for type in types %}
                     {% if type.has_topics %}
                         <a href="#" id="{{ type.id }}" data-id="{{ type.id }}"
@@ -47,12 +47,12 @@
 
     <!--by supervisor-->
     <div id="w-node-topic-list-02"
-         class="w-layout-layout topic_filter_item wf-layout-layout">
+         class=" topic_filter_item wf-layout-layout">
         <div class="w-layout-cell cell">
             <div class="text-block accent _10button">|&gt; By Supervisor</div>
         </div>
         <div class="w-layout-cell cell-4">
-            <div class="w-layout-hflex flex-block-7">
+            <div class="w-layout-hflex" style="flex-wrap: wrap; align-items: center;">
                 {% for supervisor in supervisors %}
                     {% if supervisor.is_admin!=true and supervisor.has_topics %}
                         <a href="#" id="{{ supervisor.id }}" data-id="{{ supervisor.id }}"
@@ -65,7 +65,7 @@
 
     <!--Search-->
     <div id="w-node-topic-list-03"
-         class="w-layout-layout topic_filter_item wf-layout-layout">
+         class=" topic_filter_item wf-layout-layout">
         <div class="w-layout-cell cell">
             <div class="text-block accent _10button">|&gt; Search Topic</div>
         </div>
@@ -83,13 +83,13 @@
 
     <div id="no-results-message" class="hidden third_title accent not_found">No topic found, try again.</div>
 
-    <section class="_20header_section" id="topic-section">
+    <section style="margin-top: 20px;" id="topic-section">
         {% for topic in topics %}
             {% if (topic.is_custom == 0) and (topic.quota - topic.get_selected_num_final() != 0) %}
                 <a href="{{ url_for('base.topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
                    data-topic-id="{{ topic.id }}"
                    data-type-id="{{ topic.type_id }}" data-supervisor-id="{{ topic.supervisor_id }}">
-                    <div class="w-layout-hflex flex-block-5">
+                    <div class="w-layout-hflex" style="align-items: center;">
                         <div class="w-layout-vflex flex-block-8">
                             <h1 class="third_title no_head_spacing accent no_button_spacing">{{ topic.name }}</h1>
                             <div class="text-block">By {{ topic.get_supervisor_name() }}</div>
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                     </div>
-                    <p class="topic_list_item_para description description-{{ topic.id }}">{{ topic.description }}</p>
+                    <p class="description description-{{ topic.id }}" style="width: 60vw;">{{ topic.description }}</p>
                 </a>
             {% endif %}
         {% endfor %}

@@ -24,18 +24,18 @@
         {% for deadline in deadlines %}
             <h2 class="third_title accent">{{ deadline.note }}</h2>
             <div id="w-node-tutorial-01"
-                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                 class=" tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
-                    <div class="text-block"><em class="italic-text-3">◇ Submit application</em></div>
+                    <div class="text-block"><em class="normal-text">◇ Submit application</em></div>
                 </div>
                 <div class="w-layout-cell">
                     <div class="text-block italic-text"><em class="italic-text">{{ deadline.submit_time }}</em></div>
                 </div>
             </div>
             <div id="w-node-tutorial-02"
-                 class="w-layout-layout tutorial_timeline_item wf-layout-layout">
+                 class=" tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
-                    <div class="text-block"><em class="italic-text-2">◇ Result announce</em></div>
+                    <div class="text-block">◇ Result announce</div>
                 </div>
                 <div class="w-layout-cell">
                     <div class="text-block italic-text"><em class="italic-text">{{ deadline.result_time }}</em></div>

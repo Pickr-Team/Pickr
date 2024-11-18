@@ -7,11 +7,12 @@
     <section class="page_hearder"><h1 class="first_title">{{ selection.first_topic_name }}</h1></section>
     <section>
         <h1 class="third_title accent">Basic info</h1>
-        <div class="_40px_header"></div>
-        <form action="{{ url_for('manager.update_custom_selection', selection_id = selection.id) }}" id="new_topic_form" method="POST">
+        <div style=" margin-top: 40px; margin-right: 40px;"></div>
+        <form action="{{ url_for('manager.update_custom_selection', selection_id = selection.id) }}" id="new_topic_form"
+              method="POST">
 
             <div id="w-node-global-01"
-                 class="w-layout-layout course_list_item wf-layout-layout">
+                 class="  course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Topic Name</div>
                 </div>
@@ -20,7 +21,7 @@
             </div>
 
             <div id="w-node-global-01"
-                 class="w-layout-layout course_list_item wf-layout-layout">
+                 class=" course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Selected Supervisor</div>
                 </div>
@@ -29,16 +30,20 @@
                     {% for supervisor in supervisors %}
                         {% if supervisor.id == selection.custom_supervisor_id %}
                             <option value="{{ supervisor.id }}"
-                                    selected>{{ supervisor.first_name }} {{ supervisor.last_name }} ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})</option>
+                                    selected>{{ supervisor.first_name }} {{ supervisor.last_name }}
+                                ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})
+                            </option>
                         {% elif supervisor.is_admin == 0 %}
-                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }} {{ supervisor.last_name }} ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})</option>
+                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }} {{ supervisor.last_name }}
+                                ({{ supervisor.get_total_final_selections() }}/{{ supervisor.position }})
+                            </option>
                         {% endif %}
                     {% endfor %}
                 </select>
             </div>
 
-            <div id="w-node-global-02"
-                 class="w-layout-layout course_list_item wf-layout-layout">
+            <div id="w-node-global-01"
+                 class=" course_list_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em>◇</em> Type</div>
                 </div>

@@ -5,12 +5,16 @@
 
 {% block content %}
     <style>
-        #w-node-supervisor-02 {
-            grid-template-rows: auto;
-            grid-template-columns: 1.25fr 1fr 1fr;
-        }
         a:hover {
             color: var(--accent);
+        }
+        .tabs-menu {
+          border-right: 1px none var(--wite);
+          border-bottom: 1px none var(--wite);
+          border-left: 1px none var(--wite);
+          justify-content: space-between;
+          padding-top: 20px;
+          display: flex;
         }
     </style>
     <body>
@@ -24,7 +28,7 @@
         <p style="color: #fff">In this page,you can create your topic and check your applications.</p></section>
     <section>
         <div data-current="Applications" class="w-tabs">
-            <address class="tabs-menu w-tab-menu">
+            <address class="tabs-menu" style="position: relative;">
                 <a data-w-tab="Topics" class="tab_link long_tab_link w-inline-block w-tab-link">
                     <div>Topics</div>
                 </a>
@@ -38,11 +42,11 @@
                      {{ pickr_simple_table('Your topics', topics, 'supTopic', total_quta, supervisor.position ) }}
                 </div>
                 {#Applications Section#}
-                <div data-w-tab="Applications" class="w-tab-pane w--tab-active">
+                <div data-w-tab="Applications" class="w-tab-pane" style="display: block;">
                     {{ pickr_simple_table('Your Students', not_custom_selections, 'supStudent', supervisor.get_total_final_selections()) }}
                     {{ pickr_simple_table('Custom Topics', custom_selections, 'supCustom') }}
                     <div class="_40px_height"><a href="{{ url_for('supervisor.export_student_list') }}"
-                                                 class="submit-button-2 phone w-button"><em>→</em> Export</a>
+                                                 class="submit-button phone w-button"><em>→</em> Export</a>
                     </div>
                 </div>
             </div>

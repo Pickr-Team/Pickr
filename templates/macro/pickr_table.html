@@ -133,13 +133,13 @@
         {% endif %}
         <div class="_40px_height"></div>
         {% if type != 'topic' %}
-            <a href="{{ url_for('manager.go_to_new_page',_type=type) }}" class="submit-button-2 w-button">+
+            <a href="{{ url_for('manager.go_to_new_page',_type=type) }}" class="submit-button w-button">+
                 Add {{ title }}</a>
-            <a href="{{ url_for('manager.get_temp', _type=type) }}" class="submit-button-2 w-button">↓ Get Excel
+            <a href="{{ url_for('manager.get_temp', _type=type) }}" class="submit-button w-button">↓ Get Excel
                 Template</a>
             <form action="{{ url_for('manager.import_file', _type=type) }}" method="POST"
                   enctype="multipart/form-data" style="display: inline;">
-                <label for="file-upload-{{ type }}" class="submit-button-2 w-button" style="font-weight: normal">↑
+                <label for="file-upload-{{ type }}" class="submit-button w-button" style="font-weight: normal">↑
                     Import From
                     Excel
                     <input id="file-upload-{{ type }}" type="file" name="file" accept=".xlsx"
@@ -244,8 +244,8 @@
         {% endif %}
         <div class="_40px_height"></div>
         {% if type == 'supTopic' %}
-            <a href="{{ url_for('supervisor.new_topic') }}" class="submit-button-2 phone w-button"><em>+</em> New Topic</a>
-            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button-2 phone w-button"><em>→</em>
+            <a href="{{ url_for('supervisor.new_topic') }}" class="submit-button phone w-button"><em>+</em> New Topic</a>
+            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button phone w-button"><em>→</em>
                 Generate
                 Poster</a>
         {% endif %}

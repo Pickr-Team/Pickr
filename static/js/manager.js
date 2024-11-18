@@ -123,25 +123,6 @@ $('.delete-note').click(function (e) {
     }
 })
 
-// Delete student
-$('.delete-student').click(function (e) {
-    e.preventDefault()
-    var studentID = $(this).data('student-id');
-    var element = $(this).closest('.supervisor_result_item-2')
-
-    var confirmed = confirm("Are you sure you want to delete this student?");
-
-    if (confirmed) {
-        $.ajax({
-            url: '/delete_student/' + studentID,
-            method: 'GET',
-            success: function (result) {
-                element.remove()
-            }
-        })
-    }
-})
-
 // Pagination and Search
 $(document).ready(function () {
     var pageSize = 5;
