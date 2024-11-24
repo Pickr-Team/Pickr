@@ -85,6 +85,7 @@ a,a:hover,a:active,a:visited,a:link,a:focus{
     outline:none;
     background: none;
     text-decoration: none;
+    color: white;
 }
 
 a.login:hover, a.login:active, a.login:visited, a.login:link, a.login:focus {

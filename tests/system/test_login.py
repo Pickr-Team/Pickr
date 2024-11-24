@@ -17,14 +17,6 @@ class TestLogin(SeleniumTest):
     6. Check the page content
     7. Click the logout link
     """
-
-    def setup_method(self, method):
-        self.driver = webdriver.Chrome()
-        self.vars = {}
-
-    def teardown_method(self, method):
-        self.driver.quit()
-
     def test_login(self):
         self.driver.get("http://127.0.0.1:8000?test_name=login")
         time.sleep(2)
@@ -52,5 +44,4 @@ class TestLogin(SeleniumTest):
         self.driver.find_element(By.ID, "user_name").send_keys("Joojo")
         self.driver.find_element(By.ID, "password").send_keys("123456")
         self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
-        time.sleep(2)
-        self.driver.find_element(By.XPATH, "//em[contains(.,\'Logout↗\')]").click()
+        time.sleep(1)

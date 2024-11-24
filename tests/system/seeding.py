@@ -8,14 +8,16 @@ from exts import db
 from models.supervisor import Supervisor
 from models.topic import Topic
 from models.type import Type
+from app import app
 
 
 def clear_db():
-    db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
-    tables = ['notes', 'selections', 'students', 'supervisors', 'topics', 'types']
-    for table in tables:
-        db.session.execute(text(f'TRUNCATE TABLE {table};'))
-    db.session.commit()
+    with app.app_context():
+        db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
+        tables = ['notes', 'selections', 'students', 'supervisors', 'topics', 'types']
+        for table in tables:
+            db.session.execute(text(f'TRUNCATE TABLE {table};'))
+        db.session.commit()
 
 
 def creat_one_student():
@@ -38,7 +40,8 @@ def create_one_supervisor():
         position=4,
         user_name="clivia",
         password="8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
-        email="clivia@zy.cdut.edu.cn"
+        email="clivia@zy.cdut.edu.cn",
+        expertise='expertise'
     )
     new_supervisor.add()
 
@@ -49,9 +52,10 @@ def create_one_manager():
         last_name="Joojo",
         is_admin=1,
         position=0,
-        user_name="Joojo",
+        user_name="joojo",
         password="8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
-        email="clivia@zy.cdut.edu.cn"
+        email="joojo@zy.cdut.edu.cn",
+        expertise='expertise'
     )
     new_supervisor.add()
 
@@ -109,6 +113,7 @@ def create_supervisors():
             user_name=f'user_name{i}',
             password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
             email=f'email{i}',
+            expertise='expertise'
         )
         new_supervisor.add()
 
@@ -213,4 +218,7 @@ def student_selection():
 
 
 if __name__ == '__main__':
-    view_topics()
+    # todo these seeding data are generated in the DEV environment database, and it is inappropriate.
+    #  It should be generated in the test environment database instead.
+    with app.app_context():
+        view_topics()

@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.chrome.service import Service
 
 from selenium_test import SeleniumTest
 
@@ -18,36 +19,13 @@ class TestManagerViewTopics(SeleniumTest):
     This test method tests the manager's ability to view topics
 
     1. The manager logs in
-    2. The manager views the topics
+    2. The manager views the detail of a topic
     3. The manager logs out
     """
 
-    def setup_method(self, method):
-        self.driver = webdriver.Chrome()
-        self.vars = {}
-
-    def teardown_method(self, method):
-        self.driver.quit()
-
     def test_managerViewTopics(self):
-        self.driver.get("http://127.0.0.1:8000?test_name=student_selection")
-        time.sleep(1)
-        self.driver.find_element(By.LINK_TEXT, "My Pickr↗").click()
-        time.sleep(1)
-        self.driver.find_element(By.ID, "user_name").click()
-        time.sleep(1)
-        self.driver.find_element(By.ID, "user_name").send_keys("Joojo")
-        time.sleep(1)
-        self.driver.find_element(By.ID, "password").click()
-        time.sleep(1)
-        self.driver.find_element(By.ID, "password").send_keys("123456")
-        time.sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
-        time.sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, ".tab_link:nth-child(3) > div").click()
+        self.driver.find_element(By.LINK_TEXT, "Supervisor Topics").click()
         time.sleep(1)
         self.driver.find_element(By.LINK_TEXT, "Detail").click()
         time.sleep(1)
-        self.driver.find_element(By.LINK_TEXT, "My Pickr↗").click()
-        time.sleep(1)
-        self.driver.find_element(By.XPATH, "//em[contains(.,\'Logout↗\')]").click()
+        # todo CRUD of topic

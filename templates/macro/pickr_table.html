@@ -1,7 +1,6 @@
 {% macro pickr_table(title, data, type, placeholder) %}
     <h2 class="third_title-2 accent">{{ title }}</h2>
-    <div class="_20px_height"></div>
-    <form style="display: flex; align-items: center">
+    <form class="pickr-search-form">
         <input name="search-{{ type }}" type="text" class="pickr-table-input" placeholder="{{ placeholder }}"/>
         <input id="search-input-{{ type }}" type="submit" value="Search" data-wait="Please wait..." class="pickr-btn"
                style="line-height: unset"/>
@@ -240,7 +239,7 @@
                 </table>
             </div>
         {% else %}
-            <div class="third_title accent ">There's no {{ type }} yet.</div>
+            <div class="third_title  ">nothing here.</div>
         {% endif %}
         <div class="_40px_height"></div>
         {% if type == 'supTopic' %}

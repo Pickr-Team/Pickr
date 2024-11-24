@@ -21,13 +21,6 @@ class TestSupervisorViewSelectionResult(SeleniumTest):
     3. The supervisor logs out
     """
 
-    def setup_method(self, method):
-        self.driver = webdriver.Chrome()
-        self.vars = {}
-
-    def teardown_method(self, method):
-        self.driver.quit()
-
     def test_supervisorViewSelectionResult(self):
         self.driver.get("http://127.0.0.1:8000?test_name=student_selection")
         time.sleep(1)
@@ -35,7 +28,7 @@ class TestSupervisorViewSelectionResult(SeleniumTest):
         time.sleep(1)
         self.driver.find_element(By.ID, "user_name").click()
         time.sleep(1)
-        self.driver.find_element(By.ID, "user_name").send_keys("Joojo")
+        self.driver.find_element(By.ID, "user_name").send_keys("joojo")
         time.sleep(1)
         self.driver.find_element(By.ID, "password").click()
         time.sleep(1)
@@ -43,15 +36,21 @@ class TestSupervisorViewSelectionResult(SeleniumTest):
         time.sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
         time.sleep(1)
-        self.driver.find_element(By.LINK_TEXT, "Process").click()
+        process_btn = self.driver.find_element(By.LINK_TEXT, "Process")
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", process_btn)
         time.sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, ".small_link:nth-child(3) > em").click()
+        process_btn.click()
         time.sleep(1)
+        self.driver.execute_script("window.scrollTo(0,0)")
         self.driver.find_element(By.LINK_TEXT, "My Pickr↗").click()
+        time.sleep(1)
+        self.driver.find_element(By.XPATH, "//em[contains(.,\'Logout↗\')]").click()
+        time.sleep(1)
+        self.driver.get("http://127.0.0.1:8000/login")
         time.sleep(1)
         self.driver.find_element(By.ID, "user_name").click()
         time.sleep(1)
-        self.driver.find_element(By.ID, "user_name").send_keys("user_name4")
+        self.driver.find_element(By.ID, "user_name").send_keys("clivia")
         time.sleep(1)
         self.driver.find_element(By.ID, "password").click()
         time.sleep(1)
@@ -60,8 +59,7 @@ class TestSupervisorViewSelectionResult(SeleniumTest):
         self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
         time.sleep(1)
         self.driver.find_element(By.LINK_TEXT, "Applications").click()
+        export_btn = self.driver.find_element(By.LINK_TEXT, "→ Export")
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", export_btn)
         time.sleep(1)
-        self.driver.find_element(By.LINK_TEXT, "→ Export").click()
-        time.sleep(1)
-        self.driver.execute_script("window.scrollTo(0,0)")
-        self.driver.find_element(By.CSS_SELECTOR, ".small_link:nth-child(3) > em").click()
+        export_btn.click()

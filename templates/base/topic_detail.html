@@ -9,6 +9,20 @@
             grid-template-rows: auto;
             grid-template-columns: .25fr 1fr;
         }
+
+        @media (max-width: 700px) {
+            #w-node-topic-detail-02,
+            #w-node-topic-detail-01,
+            .w-node-topic-detail-01 {
+                display: block;
+            }
+
+            .w-node-topic-detail-01 > .w-layout-cell,
+            #w-node-topic-detail-02 > .w-layout-cell,
+            #w-node-topic-detail-01 > .w-layout-cell {
+                margin-bottom: 5px;
+            }
+        }
     </style>
     <body>
     <section class="page_hearder"><h1 class="first_title">{{ topic.name }}</h1></section>

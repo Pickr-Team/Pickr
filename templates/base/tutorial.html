@@ -4,10 +4,15 @@
 
 {% block content %}
     <style>
-        #w-node-tutorial-01,
-        #w-node-tutorial-02 {
+        #w-node-tutorial {
             grid-template-rows: auto;
             grid-template-columns: .25fr 1fr;
+        }
+
+        @media (max-width: 479px) {
+            #w-node-tutorial {
+                grid-template-columns: .5fr 1fr !important;
+            }
         }
     </style>
     <body>
@@ -23,7 +28,7 @@
 
         {% for deadline in deadlines %}
             <h2 class="third_title accent">{{ deadline.note }}</h2>
-            <div id="w-node-tutorial-01"
+            <div id="w-node-tutorial"
                  class=" tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block"><em class="normal-text">◇ Submit application</em></div>
@@ -32,7 +37,7 @@
                     <div class="text-block italic-text"><em class="italic-text">{{ deadline.submit_time }}</em></div>
                 </div>
             </div>
-            <div id="w-node-tutorial-02"
+            <div id="w-node-tutorial"
                  class=" tutorial_timeline_item wf-layout-layout">
                 <div class="w-layout-cell">
                     <div class="text-block">◇ Result announce</div>

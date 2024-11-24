@@ -28,6 +28,17 @@
                     {% endfor %}
                 </select>
 
+{#            manager: assign a supervisor to this topic#}
+            {% if supervisors %}
+                <label for="supervisor" class="text-block _10button_spac">Supervisor</label>
+                <select id="supervisor" name="supervisor" required="required" class="text-field creatnew w-select">
+                    <option value="">Select one...</option>
+                    {% for s in supervisors %}
+                        <option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+
                 <label for="position" class="text-block _10button_spac">Position</label>
                 <input type="number" id="position" name="position" class="text-field creatnew w-input" maxlength="256"
                        value="{{ position or '' }}" required="required"/>
