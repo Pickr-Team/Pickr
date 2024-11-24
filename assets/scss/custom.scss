@@ -14,7 +14,7 @@ $transparent: rgba(0, 0, 0, 0);
   background-color: #3898ec;
   border: 0;
   border-radius: 0;
-  padding: 9px 15px;
+  padding: 10px 15px;
   text-decoration: none;
   display: inline-block;
 }
@@ -332,8 +332,6 @@ input.w-button {
   }
 
   &.accent {
-    margin-top: 10px;
-
     &._10button {
       margin-bottom: 10px;
     }
@@ -363,27 +361,6 @@ input.w-button {
   &._10button_spac {
     margin-top: 20px;
     margin-bottom: 10px;
-  }
-}
-
-.text-block-2 {
-  color: #fff;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-right: 0;
-  font-size: 20px;
-  font-style: normal;
-
-  &.italic-text {
-    font-style: italic;
-
-    &._20_leading {
-      margin-left: 20px;
-    }
-  }
-
-  &.back_space {
-    margin-right: 220px;
   }
 }
 
@@ -593,9 +570,7 @@ input.w-button {
   justify-content: flex-start;
 }
 
-.cell-3, .cell-4 {
-  justify-content: center;
-}
+
 
 .cell-16 {
   justify-content: center;
@@ -807,9 +782,9 @@ input.w-button {
 
 .pickr-table-input {
   width: 30vw;
-  height: 6vh;
   margin-right: 10px;
   margin-left: 2px;
+  padding: 10px;
 }
 
 .table {
@@ -824,6 +799,7 @@ input.w-button {
   }
 }
 
-@media (max-width: 479px)  {
-
+.pickr-search-form {
+  display: flex;
+  align-items: center
 }

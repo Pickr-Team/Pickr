@@ -121,7 +121,8 @@ def go_to_new_page(_type):
         return render_template('manager/supervisor/new_supervisor.html')
     elif _type == 'supTopic':
         types = Type.get_all()
-        return render_template('supervisor/topic/new_topic.html', types=types)
+        supervisors = Supervisor.get_all()
+        return render_template('supervisor/topic/new_topic.html', types=types, supervisors=supervisors)
     else:
         return ''
 
@@ -246,21 +247,13 @@ def get_temp(_type):
     return send_from_directory(directory_path, filename, as_attachment=True)
 
 
-def get_type_by_required_skills(required_skills):
+def get_type_id_by_required_skills(required_skills):
     required_skills_lower = required_skills.lower()
 
-    if 'machine' or 'deep' or 'ai' in required_skills_lower:
-        return Type.get_by_title('Machine Learning')
-    elif 'web' or 'ui' or 'wechat' in required_skills_lower:
-        return Type.get_by_title('Web Development')
-    elif 'cryptographic' in required_skills_lower:
-        return Type.get_by_title('Cybersecurity')
-    elif 'data' or 'sql' or 'python' in required_skills_lower:
-        return Type.get_by_title('Big Data')
-    elif 'project' or '3d' or 'game' in required_skills_lower:
-        return Type.get_by_title('Software Development')
+    if 'machine' in required_skills_lower or 'deep' in required_skills_lower or 'ai' in required_skills_lower or 'python' in required_skills_lower:
+        return Type.get_by_title('Machine Learning').id
     else:
-        return Type.get_by_title('Others')
+        return Type.get_by_title('Software Development').id
 
 
 @bp.route('/import/<string:_type>', methods=['POST'])
@@ -302,14 +295,12 @@ def import_file(_type):
                 cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
                 supervisor_name = cleaned_row['Staff member']
                 supervisor = Supervisor.get_by_name(supervisor_name)
-                # expertise = cleaned_row['Staff Expertise (Projects/Research Interests)'],
-                # supervisor.expertise = expertise
                 _new_topic = Topic(
                     name=cleaned_row['Proposed Titles*'],
                     supervisor_id=supervisor.id,
                     quota=cleaned_row['Number of Students to Supervise'],
                     is_custom=False,
-                    type_id=get_type_by_required_skills(cleaned_row['Required skills']).id,
+                    type_id=get_type_id_by_required_skills(cleaned_row['Required skills']),
                     description=cleaned_row['Topic details'],
                     required_skills=cleaned_row['Required skills'],
                     reference=cleaned_row['References']
@@ -382,18 +373,6 @@ def update_deadline():
     return json.dumps({'success': True})
 
 
-# Manager delete note
-@bp.route('/delete_note/<int:note_id>')
-@require_manager
-def delete_note(note_id):
-    note = Note.get_by_id(id=note_id)
-    if note:
-        note.delete()
-        return jsonify(success=True)
-    else:
-        return redirect(url_for('base.error', message='Note does not exist'))
-
-
 @bp.route('/delete/<string:_type>/<int:_id>')
 @require_manager
 def delete(_type, _id):
@@ -429,24 +408,26 @@ def delete(_type, _id):
                 return jsonify(success=True, message='Delete Successfully')
         else:
             return jsonify(success=False, message='Topic does not exist')
+    elif _type == 'type':
+        type_item = Type.get_by_id(id=_id)
+        topics = Topic.get_by_type_id(type_id=_id)
+        if type_item:
+            if len(topics) == 0:
+                type_item.delete()
+                return jsonify(success=True, message='Delete Successfully')
+            else:
+                return jsonify(success=False, message='Can not delete this type, type has topics.')
+        else:
+            return jsonify(success=False, message='Type does not exist')
+    elif _type == 'note':
+        note = Note.get_by_id(id=_id)
+        if note:
+            note.delete()
+            return jsonify(success=True, message='Delete Successfully')
+        else:
+            return jsonify(success=False, message='Note does not exist')
     else:
         return ''
-
-
-# Manager delete type
-@bp.route('/delete_type/<int:type_id>')
-@require_manager
-def delete_type(type_id):
-    type_item = Type.get_by_id(id=type_id)
-    topics = Topic.get_by_type_id(type_id=type_id)
-    if type_item:
-        if len(topics) == 0:
-            type_item.delete()
-            return jsonify(success=True)
-        else:
-            return jsonify(success=False, error='Can not delete this type, type has topics.')
-    else:
-        return jsonify(success=False, error='Type does not exist')
 
 
 # Manager reset the selections and students

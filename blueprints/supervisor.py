@@ -68,7 +68,11 @@ def new_topic():
 @bp.route('/add_topic', methods=['POST'])
 @require_supervisor_or_manager
 def add_topic():
-    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor = request.form.get('supervisor')  # manager
+    if supervisor:
+        supervisor_id = supervisor
+    else:
+        supervisor_id = Supervisor.get_id(user_name=session['user_name'])
     topic_name = request.form.get('topic_name')
     type_id = request.form.get('type')
     position = request.form.get('position')

@@ -20,37 +20,27 @@ class TestSupervisorcreatetopic(SeleniumTest):
     2. The supervisor creates a topic
     3. The supervisor logs out
     """
-
-    def setup_method(self, method):
-        self.driver = webdriver.Chrome()
-        self.vars = {}
-
-    def teardown_method(self, method):
-        self.driver.quit()
-
     def test_supervisorcreatetopic(self):
-        self.driver.get("http://127.0.0.1:8000?test_name=supervisor_create_topics")
-        time.sleep(2)
-        self.driver.find_element(By.LINK_TEXT, "My Pickr↗").click()
-        self.driver.find_element(By.ID, "user_name").click()
-        self.driver.find_element(By.ID, "user_name").send_keys("clivia")
-        self.driver.find_element(By.ID, "password").click()
-        self.driver.find_element(By.ID, "password").send_keys("123456")
-        self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
-        time.sleep(2)
-        self.driver.find_element(By.LINK_TEXT, "+ New Topic").click()
+        new_topic_btn = self.driver.find_element(By.LINK_TEXT, "+ New Topic")
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", new_topic_btn)
+        time.sleep(1)
+        new_topic_btn.click()
+        time.sleep(1)
         self.driver.find_element(By.ID, "topic_name").click()
         self.driver.find_element(By.ID, "topic_name").send_keys("test")
         self.driver.find_element(By.ID, "topic_type").click()
         dropdown = self.driver.find_element(By.ID, "topic_type")
-        dropdown.find_element(By.XPATH, "//option[. = 'type0']").click()
+        dropdown.find_element(By.XPATH, "//option[. = 'Machine Learning']").click()
         self.driver.find_element(By.ID, "position").send_keys("1")
-        self.driver.find_element(By.ID, "description").send_keys("test")
+        desc = self.driver.find_element(By.ID, "description")
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", desc)
+        time.sleep(1)
+        desc.click()
+        time.sleep(1)
+        desc.send_keys("test")
         self.driver.find_element(By.ID, "skills").send_keys("test")
-        self.driver.find_element(By.ID, "reference").send_keys("test")
+        refer = self.driver.find_element(By.ID, "reference")
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", refer)
+        time.sleep(1)
+        refer.send_keys("test")
         self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".image").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".link_accent > em").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".w-layout-vflex").click()
-        self.driver.find_element(By.LINK_TEXT, "My Pickr↗").click()
-        self.driver.find_element(By.XPATH, "//em[contains(.,\'Logout↗\')]").click()

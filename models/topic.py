@@ -108,7 +108,7 @@ class Topic(db.Model):
 
     @classmethod
     def get_all(cls):
-        return cls.query.all()
+        return cls.query.order_by(cls.id.desc()).all()
 
     # Get the number of students who have selected this topic (selection.status == 0)
     def get_selected_num(self):

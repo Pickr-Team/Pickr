@@ -35,15 +35,22 @@
     line-height: normal;
 }
 
-#w-node-student-01,
-#w-node-student-02 {
+#w-node-student {
     grid-template-rows: auto;
     grid-template-columns: .25fr 1fr;
 }
 
 .w-form-label {
-  cursor: pointer;
-  margin-bottom: 0;
-  font-weight: normal;
-  display: inline-block;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: normal;
+    display: inline-block;
 }
+
+@media (max-width: 479px) {
+    #w-node-student {
+        grid-template-columns: .5fr 1fr !important;
+    }
+}
+
+

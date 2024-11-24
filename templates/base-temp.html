@@ -72,7 +72,6 @@
     {% endif %}
 {% endwith %}
 
-<!-- Modal 1-->
 <div class="modal fade" id="confirmModal" aria-labelledby="confirmModal" tabindex="-1" aria-hidden="true"
      style="z-index: 99">
     <div class="modal-dialog">
@@ -95,7 +94,6 @@
     </div>
 </div>
 
-<!-- Modal 2-->
 <div class="modal fade" id="secondConfirmModal" aria-labelledby="secondConfirmModal" aria-hidden="true"
      style="z-index: 100"
      tabindex="-1">
@@ -110,7 +108,7 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary">
+                <button class="btn btn-secondary" id="ok-btn">
                     Ok
                 </button>
             </div>
@@ -158,18 +156,26 @@
 
     let _type;
     let _id;
-    let delTr;
+    let _parentNode;
     const $confirmModal = $('#confirmModal')
     const $secondConfirmModal = $('#secondConfirmModal')
     const $secondConfirmModalBody = $('#secondConfirmModal-body')
 
-    function del(type, id) {
+    function del(type, id, parentDivClass) {
         if (type === 'topic') return
         _type = type;
         _id = id;
-        delTr = document.querySelector(`button[data-${type}-id="${id}"]`).closest('tr')
+        if(parentDivClass) {
+            //if it's not table, then find the parent node and remove it
+            _parentNode = document.querySelector(`button[data-${type}-id="${id}"]`).closest(parentDivClass)
+        } else {
+            _parentNode = document.querySelector(`button[data-${type}-id="${id}"]`).closest('tr')
+        }
         $confirmModal.modal('show')
-        $('#confirmModal-body').text(`Are you sure to delete this ${type}?`);
+        //TODO Optimize prompt words of deletion
+        //topic: title
+        //student/supervisor: name
+        $('#confirmModal-body').text(`Are you sure to delete?`);
     }
 
     function confirmDel() {
@@ -181,17 +187,17 @@
             success: function (response) {
                 $secondConfirmModal.modal('show');
                 if (response.success) {
-                    $secondConfirmModalBody.css('color', 'green');
+                    $secondConfirmModalBody.css('color', 'white');
                     $secondConfirmModalBody.text(response.message);
-                    delTr.remove()
+                    _parentNode.remove()
                 } else {
-                    $secondConfirmModalBody.css('color', 'red');
+                    $secondConfirmModalBody.css('color', 'var(--accent)');
                     $secondConfirmModalBody.text(response.message);
                 }
             },
             error: function (response) {
                 $secondConfirmModal.modal('show');
-                $secondConfirmModalBody.css('color', 'red');
+                $secondConfirmModalBody.css('color', 'var(--accent)');
                 $secondConfirmModalBody.text(response.message);
             }
         });

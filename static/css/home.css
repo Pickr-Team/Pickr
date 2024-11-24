@@ -44,11 +44,10 @@
     }
 }
 
-@media (max-width: 479px) {
+@media (max-width: 991px) {
     .big_wite_heeding {
-        margin-top: 6px !important;
-        font-size: 40px !important;
-        line-height: initial !important;
+        margin-top: 40px;
+        font-size: 68px;
     }
 }
 
@@ -59,10 +58,15 @@
     }
 }
 
-@media (max-width: 991px) {
+@media (max-width: 479px) {
     .big_wite_heeding {
-        margin-top: 40px;
-        font-size: 68px;
+        margin-top: 6px !important;
+        font-size: 40px !important;
+        line-height: initial !important;
+    }
+
+    .se {
+        font-size: 30px;
     }
 }
 

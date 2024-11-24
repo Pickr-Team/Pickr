@@ -9,7 +9,7 @@
     background-color: #3898ec;
     border: 0;
     border-radius: 0;
-    padding: 9px 15px;
+    padding: 10px 15px;
     text-decoration: none;
     display: inline-block; }
 
@@ -252,10 +252,8 @@
       margin-left: 10px; }
       .text-block.italic-text._20_leading {
         margin-left: 20px; }
-  .text-block.accent {
-    margin-top: 10px; }
-    .text-block.accent._10button {
-      margin-bottom: 10px; }
+  .text-block.accent._10button {
+    margin-bottom: 10px; }
   .text-block._10head_spacing {
     margin-top: 10px; }
     .text-block._10head_spacing.i {
@@ -270,20 +268,6 @@
       .text-block._10button_spac {
         margin-top: 20px;
         margin-bottom: 10px; }
-
-.text-block-2 {
-  color: #fff;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-right: 0;
-  font-size: 20px;
-  font-style: normal; }
-  .text-block-2.italic-text {
-    font-style: italic; }
-    .text-block-2.italic-text._20_leading {
-      margin-left: 20px; }
-  .text-block-2.back_space {
-    margin-right: 220px; }
 
 .paragraph {
   color: white; }
@@ -426,45 +410,42 @@
   flex-wrap: wrap;
   justify-content: flex-start; }
 
-  .cell-3, .cell-4 {
-    justify-content: center; }
+  .cell-16 {
+    justify-content: center;
+    align-items: center; }
 
-    .cell-16 {
-      justify-content: center;
-      align-items: center; }
+    .cell-17 {
+      flex-direction: row;
+      justify-content: flex-end; }
 
-      .cell-17 {
-        flex-direction: row;
-        justify-content: flex-end; }
+      .tutorial_timeline_item {
+        margin-bottom: 10px;
+        padding: 0; }
 
-        .tutorial_timeline_item {
-          margin-bottom: 10px;
-          padding: 0; }
+        .footer {
+          border-top: 1px solid white;
+          margin-top: 20px;
+          padding-top: 20px;
+          padding-bottom: 20px; }
 
-          .footer {
-            border-top: 1px solid white;
-            margin-top: 20px;
-            padding-top: 20px;
-            padding-bottom: 20px; }
+          .student_submit_form {
+            flex-direction: row;
+            align-items: center;
+            display: flex; }
 
-            .student_submit_form {
-              flex-direction: row;
-              align-items: center;
-              display: flex; }
-
-              .text-field_topic {
-                width: 300px;
-                color: white;
-                background-color: #000;
-                margin-bottom: 0;
-                margin-right: 40px;
-                transition: border-color 0.2s ease-in-out; }
-                .text-field_topic:hover {
+            .text-field_topic {
+              width: 300px;
+              color: white;
+              background-color: #000;
+              margin-bottom: 0;
+              margin-right: 40px;
+              transition: border-color 0.2s ease-in-out; }
+              .text-field_topic:hover {
+                border: 1px solid #ff7167; }
+                .text-field_topic:focus-visible {
                   border: 1px solid #ff7167; }
-                  .text-field_topic:focus-visible {
+                  .text-field_topic[data-wf-focus-visible] {
                     border: 1px solid #ff7167; }
-                    .text-field_topic[data-wf-focus-visible] {
-                      border: 1px solid #ff7167; }
 
 .quick-stack {
   border-style: none none solid;
@@ -597,9 +578,9 @@
 
 .pickr-table-input {
   width: 30vw;
-  height: 6vh;
   margin-right: 10px;
-  margin-left: 2px; }
+  margin-left: 2px;
+  padding: 10px; }
 
   .table {
     color: white;
@@ -609,3 +590,7 @@
       .table > :not(caption) > * > * {
         border-bottom-width: 0.5px;
         padding: 1.25rem 0.5rem; }
+
+.pickr-search-form {
+  display: flex;
+  align-items: center; }

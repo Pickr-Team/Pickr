@@ -1,0 +1,330 @@
+<div>
+    <div class="_40px_height"></div>
+    <h2 class="third_title-2 accent">Apply Overview</h2>
+    <div class="_20px_height"></div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Student number</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ students|length }} ({{ num_success }} success)</div>
+        </div>
+    </div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Waiting for submit</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ num_waiting }}</div>
+        </div>
+    </div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Waiting for system process</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ num_process }}</div>
+        </div>
+    </div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Waiting for verify</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ num_verify }}</div>
+        </div>
+    </div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Fail</div>
+        </div>
+        <div class="w-layout-cell">
+            <a href="#" id="fail_students" class="small_link accent">{{ num_fail }}<em
+                    class="italic-text">↗</em></a>
+        </div>
+    </div>
+    <!-- Floating window -->
+    <div id="modal" class="modal" style="display:none;">
+        <!-- Contents -->
+        <div class="modal-content"
+             style="width: 25%; position: absolute; left: 50%;top: 50%;transform: translate(-50%, -50%);padding: 10px">
+            <span class="close" style=" position: absolute; right: 10px; top: 0; scale: 1.5">&times;</span>
+            <p id="student-data">Loading...</p>
+        </div>
+    </div>
+    <div class="_20px_height"></div>
+    <a href="{{ url_for('manager.process') }}" class="submit-button delete_button w-button">Process</a>
+    <a href="{{ url_for('manager.refresh') }}" class="w-button submit-button">Refresh</a>
+    <div class="_20px_height"></div>
+    <h2 class="third_title-2 accent">Supervisor & Topic Overview</h2>
+    <div class="_20px_height"></div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Supervisor number</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ supervisors|length }}</div>
+        </div>
+    </div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Supervisor's Topic number</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ topic_num }}</div>
+        </div>
+    </div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Supervisors Position</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ static_topic_num }} / {{ total_quta }}</div>
+        </div>
+    </div>
+    <div id="w-node-global-01"
+         class=" course_list_item wf-layout-layout">
+        <div class="w-layout-cell">
+            <div class="text-block"><em>◇</em> Custom Topic number</div>
+        </div>
+        <div class="w-layout-cell">
+            <div class="text-block">{{ custom_topic_num }}</div>
+        </div>
+    </div>
+    <div class="_20px_height"></div>
+    <h2 class="third_title-2 accent">Deadline Setting</h2>
+    <div class="w-layout-blockcontainer w-container" style="max-width: none;">
+        <div class="w-form">
+            <div class="text-block _10button_spac">Round 1</div>
+            <form id="deadline-form-1" class="student_submit_form">
+                <input type="text" class="deadline_field w-input" placeholder="submit time"
+                       id="round1-submit" required="required"/>
+                <input type="text" class="deadline_field w-input" placeholder="Result time"
+                       id="round1-result" required="required"/>
+                <input type="text" class="deadline_field w-input" placeholder="Title" id="round1-title"
+                       required="required"/>
+                <input id="round1-submit-button" type="submit" value="Save" data-wait="Please wait..."
+                       class="submit-button w-button"/>
+            </form>
+        </div>
+
+        <div class="w-form">
+            <div class="text-block _10button_spac">Round 2</div>
+            <form id="deadline-form-2" class="student_submit_form">
+                <input type="text" class="deadline_field w-input" placeholder="Submit time"
+                       id="round2-submit" required="required"/>
+                <input type="text" class="deadline_field w-input" placeholder="Result time"
+                       id="round2-result" required="required"/>
+                <input type="text" class="deadline_field w-input" name="field-3" placeholder="Title"
+                       id='round2-title' required="required"/>
+                <input id="round2-submit-button" type="submit" value="Save" data-wait="Please wait..."
+                       class="submit-button w-button"/>
+            </form>
+        </div>
+    </div>
+    <div class="_20px_height"></div>
+    <h2 class="third_title-2 accent">Notes Setting</h2>
+    {% for note in notes %}
+        <div class="w-node-manager-01 quick-stack-2 wf-layout-layout">
+            <div class="w-layout-cell" style="justify-content: center;">
+                <div class="text-block-2"><em class="normal-text">{{ note.title }}</em></div>
+            </div>
+            <div class="w-layout-cell cell-17">
+                <a href="{{ url_for('manager.edit_note', note_id = note.id) }}" class="submit-button w-button">Edit</a>
+                <button class="pickr-btn del-btn" data-note-id="{{ note.id }}"
+                        onclick="del('note',{{ note.id }}, '.w-node-manager-01')">Delete
+                </button>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="_40px_height"></div>
+    <a href="{{ url_for('manager.new_note') }}" class="submit-button w-button">+ New Note</a>
+
+    <div class="_40px_height"></div>
+    <h2 class="third_title-2 accent">Types Setting</h2>
+    {% for type in types %}
+        <div class="w-node-manager-01 quick-stack-2 wf-layout-layout">
+            <div class="w-layout-cell" style="justify-content: center;">
+                <div class="text-block-2"><em class="normal-text">{{ type.name }}</em></div>
+            </div>
+            <div class="w-layout-cell cell-17">
+                <a href="{{ url_for('manager.edit_type', type_id = type.id) }}"
+                   class="submit-button w-button edit-type-btn">Edit</a>
+                <button class="pickr-btn del-btn" data-type-id="{{ type.id }}"
+                        onclick="del('type',{{ type.id }},'.w-node-manager-01')">Delete
+                </button>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="_40px_height"></div>
+    <a href="{{ url_for('manager.new_type') }}" class="submit-button w-button">+ New Type</a>
+    <br>
+    <div class="_40px_height"></div>
+    <a href="#" class="submit-button delete_button w-button" id="reset-system">Reset System</a>
+</div>
+
+<script>
+    // Deadline time picker
+    window.addEventListener('DOMContentLoaded', (event) => {
+        flatpickr("#round1-submit", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true
+        });
+
+        flatpickr("#round1-result", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true
+        });
+
+        flatpickr("#round2-submit", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true
+        });
+
+        flatpickr("#round2-result", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true
+        });
+    });
+
+    //Display exist deadlines
+    $(document).ready(function () {
+        if ('{{ deadline_1.submit_time }}' !== 'None') {
+            $('#round1-submit').val('{{ deadline_1.submit_time }}').prop('disabled', true).addClass('disabled-color');
+            $('#round1-result').val('{{ deadline_1.result_time }}').prop('disabled', true).addClass('disabled-color');
+            $('#round1-title').val('{{ deadline_1.note }}').prop('disabled', true).addClass('disabled-color');
+            $('#deadline-form-1 .submit-button').val('Reset');
+        }
+        if ('{{ deadline_2.submit_time }}' !== 'None') {
+            $('#round2-submit').val('{{ deadline_2.submit_time }}').prop('disabled', true).addClass('disabled-color');
+            $('#round2-result').val('{{ deadline_2.result_time }}').prop('disabled', true).addClass('disabled-color');
+            $('#round2-title').val('{{ deadline_2.note }}').prop('disabled', true).addClass('disabled-color');
+            $('#deadline-form-2 .submit-button').val('Reset');
+        }
+    });
+
+    //Deadline form submit
+    $('#deadline-form-1, #deadline-form-2').submit(function (e) {
+        e.preventDefault();
+        var formID = $(this).attr('id');
+        var roundNumber = formID === 'deadline-form-1' ? 1 : 2;
+        var submit_time = $('#round' + roundNumber + '-submit').val();
+        var result_time = $('#round' + roundNumber + '-result').val();
+        var note = $('#round' + roundNumber + '-title').val();
+        var isReset = $('#round' + roundNumber + '-submit-button').val() === 'Reset';
+        console.log(isReset)
+
+        if (isReset) {
+            resetForm(roundNumber);
+            return;
+        }
+
+        // Reset form
+        function resetForm(roundNumber) {
+            $.ajax({
+                url: '{{ url_for('manager.update_deadline') }}',
+                method: 'POST',
+                data: {round_num: roundNumber, reset: 'true'},
+                success: function (result) {
+                    $('#round' + roundNumber + '-submit').val('');
+                    $('#round' + roundNumber + '-result').val('');
+                    $('#round' + roundNumber + '-title').val('');
+                    $('#deadline-form-' + roundNumber + ' .submit-button').val('Save');
+                    location.reload()
+                }
+            })
+        }
+
+        // submit form
+        $.ajax({
+            url: '{{ url_for('manager.update_deadline') }}',
+            method: 'POST',
+            data: {
+                submit_time: submit_time,
+                result_time: result_time,
+                note: note,
+                round_num: roundNumber
+            },
+            success: function (result) {
+                $('#round' + roundNumber + '-submit').val(submit_time)
+                $('#round' + roundNumber + '-result').val(result_time)
+                $('#round' + roundNumber + '-title').val(note)
+                $('#deadline-form-' + roundNumber + ' .submit-button').val('Reset');
+                location.reload()
+            }
+        })
+    })
+
+
+    //reset system
+    $('#reset-system').click(function (e) {
+        e.preventDefault()
+        var confirmed = confirm("Are you sure you want to reset the system? This operation will clean all SELECTIONS and STUDENTS data.");
+
+        if (confirmed) {
+            $.ajax({
+                url: '{{ url_for('manager.resetting') }}',
+                method: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        location.reload()
+                    } else {
+                        alert(response.error)
+                    }
+                }
+            })
+        }
+    })
+
+
+    var modal = document.getElementById("modal");
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    document.querySelector('#fail_students').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        modal.style.display = "block";
+
+        fetch('{{ url_for('manager.fail_students') }}')
+            .then(response => response.json())
+            .then(data => {
+                var studentDataElement = document.getElementById("student-data");
+                studentDataElement.innerHTML = "";
+                if (data.students.length === 0) {
+                    studentDataElement.innerHTML = `<h2 class="second_title accent">Fail Students</h2><div class="_20px_height"></div><div class="text-block">No fail students</div>`;
+                    return;
+                }
+                studentDataElement.innerHTML += `<h2 class="second_title accent">Fail Students</h2><div class="_20px_height"></div>`;
+                data.students.forEach(student => {
+                    studentDataElement.innerHTML += `
+                            <div class="text-block">${student.english_name}(${student.chinese_name}) - ${student.class_number} <a href="/manager/student_status/${student.id}"class="small_link accent" style="display: inline !important; margin-left: 40px">Detail↗</a></div>
+                            <div class="_20px_height"></div>`;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>

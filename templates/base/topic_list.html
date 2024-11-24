@@ -13,12 +13,35 @@
             margin-top: 40px;
         }
 
-        #w-node-topic-list-01,
-        #w-node-topic-list-02,
-        #w-node-topic-list-03 {
+        .cell-3, .cell-4 {
+          justify-content: center;
+        }
+
+        .system-row {
             grid-template-rows: auto;
             grid-template-columns: .25fr 1fr;
         }
+
+        .span_40px_back {
+          margin-bottom: 10px;
+          margin-right: 40px;
+        }
+
+        @media (max-width: 479px) {
+            .cell-4 {
+                flex-wrap: wrap;
+            }
+            .system-row {
+                grid-template-columns: unset;
+            }
+            .wf-layout-layout {
+                grid-row-gap: 0;
+            }
+            .topic_filter_item {
+                margin-top: 0;
+            }
+        }
+
     </style>
     <body class="body">
     <!-- Page header-->
@@ -28,10 +51,9 @@
     </section>
 
     <!--by type-->
-    <div id="w-node-topic-list-01"
-         class=" topic_filter_item wf-layout-layout">
+    <div id="type-filter" class="system-row topic_filter_item wf-layout-layout">
         <div class="w-layout-cell cell">
-            <div class="text-block accent _10button">|&gt; By Type</div>
+            <div class="text-block accent _10button">|&gt; Type</div>
         </div>
         <div class="w-layout-cell cell-3">
             <div class="w-layout-hflex" style="flex-wrap: wrap; align-items: center;">
@@ -46,10 +68,9 @@
     </div>
 
     <!--by supervisor-->
-    <div id="w-node-topic-list-02"
-         class=" topic_filter_item wf-layout-layout">
+    <div id="supervisor-filter" class="system-row topic_filter_item wf-layout-layout">
         <div class="w-layout-cell cell">
-            <div class="text-block accent _10button">|&gt; By Supervisor</div>
+            <div class="text-block accent _10button">|&gt; Supervisor</div>
         </div>
         <div class="w-layout-cell cell-4">
             <div class="w-layout-hflex" style="flex-wrap: wrap; align-items: center;">
@@ -64,8 +85,7 @@
     </div>
 
     <!--Search-->
-    <div id="w-node-topic-list-03"
-         class=" topic_filter_item wf-layout-layout">
+    <div class="system-row topic_filter_item wf-layout-layout">
         <div class="w-layout-cell cell">
             <div class="text-block accent _10button">|&gt; Search Topic</div>
         </div>
