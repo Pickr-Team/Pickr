@@ -1,8 +1,9 @@
 from exts import db
+from .base import BaseModel
 from .topic import Topic
 
 
-class Type(db.Model):
+class Type(BaseModel):
     __tablename__ = 'types'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -10,29 +11,9 @@ class Type(db.Model):
     def __init__(self, name):
         self.name = name
 
-    def add(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self, name):
-        self.name = name
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
     @property
     def has_topics(self):
         return db.session.query(Topic.id).filter_by(type_id=self.id, is_custom=False).first() is not None
-
-    @classmethod
-    def get_all(cls):
-        return cls.query.order_by(cls.id.desc()).all()
-
-    @classmethod
-    def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
 
     @classmethod
     def get_by_title(cls, _name):

@@ -36,7 +36,7 @@ def redirect_to_home():
 @bp.route('/home')
 @require_manager
 def index():
-    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     pre = request.args.get('pre')
     students = Student.get_all()

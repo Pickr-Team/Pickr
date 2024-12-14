@@ -32,7 +32,7 @@ def redirect_to_home():
 @bp.route('/home')
 @require_student
 def index():
-    student_id = Student.get_id(english_name=session['user_name'])
+    student_id = Student.get_id_by_english_name(english_name=session['user_name'])
     selection = Selection.get_by_student_id(student_id=student_id)
     supervisors = Supervisor.get_all()
     types = Type.get_all()
@@ -46,25 +46,25 @@ def index():
 @bp.route('/submit')
 @require_student
 def submit():
-    student_id = Student.get_id(english_name=session['user_name'])
+    student_id = Student.get_id_by_english_name(english_name=session['user_name'])
     selection = Selection.get_by_student_id(student_id=student_id)
     submit_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     if selection:
         if selection.if_custom:
-            if selection.first_topic_id is None:
-                return redirect(url_for('student.index', error='You have not selected any topic'))
-            else:
-                selection.update_status(status=2)
-                selection.update_submit_time(submit_time=submit_time)
-                return redirect(url_for('student.index'))
+            # if selection.first_topic_id is None: # if selection.if_custom is true the first_topic_id will always existed
+            #     return redirect(url_for('student.index', error='You have not selected any topic'))
+            # else:
+            selection.update_status(status=2)
+            selection.update_submit_time(submit_time=submit_time)
+            return redirect(url_for('student.index'))
         else:
             if selection.first_topic_id is None or selection.second_topic_id is None or selection.third_topic_id is None:
-                return redirect(url_for('student.index', error='You have full all three choices'))
+                return redirect(url_for('student.index', error='You have not full all three choices'))
             else:
                 selection.update_status(status=1)
                 selection.update_submit_time(submit_time=submit_time)
-                return redirect(url_for('student.index'))
+                return redirect(url_for('student.index', message='Successfully submit'))
     else:
         return redirect(url_for('student.index', error='You have not selected any topic'))
 
@@ -73,7 +73,7 @@ def submit():
 @bp.route('/update_custom_topic', methods=['POST'])
 @require_student
 def update_custom_topic():
-    student_id = Student.get_id(english_name=session['user_name'])
+    student_id = Student.get_id_by_english_name(english_name=session['user_name'])
     topic_name = request.form.get('topic_name')
     supervisor_id = request.form.get('supervisor_id')
     description = request.form.get('description')
@@ -109,7 +109,7 @@ def update_custom_topic():
 @bp.route('/update_selection', methods=['POST'])
 @require_student
 def update_selection():
-    student_id = Student.get_id(english_name=session['user_name'])
+    student_id = Student.get_id_by_english_name(english_name=session['user_name'])
     topic_id = request.form.get('topic_id')
     choice_number = int(request.form.get('choice_number'))
     reset = request.form.get('reset') == 'true'
@@ -144,17 +144,17 @@ def update_selection():
     if topic.get_selected_num_final() == topic.quota:
         return json.dumps({'success': False, 'error': 'This topic is full'})
 
-    if topic:
-        if match:
-            if choice_number == 1:
-                selection.first_topic_id = formatted_topic_id
-            elif choice_number == 2:
-                selection.second_topic_id = formatted_topic_id
-            elif choice_number == 3:
-                selection.third_topic_id = formatted_topic_id
+    # if topic:
+    if match:
+        if choice_number == 1:
+            selection.first_topic_id = formatted_topic_id
+        elif choice_number == 2:
+            selection.second_topic_id = formatted_topic_id
+        elif choice_number == 3:
+            selection.third_topic_id = formatted_topic_id
 
-        db.session.commit()
-        return json.dumps({'success': True, 'topic_name': topic.name})
-    else:
-        return json.dumps({'success': False, 'error': 'Topic does not exist'})
+    db.session.commit()
+    return json.dumps({'success': True, 'topic_name': topic.name})
+    # else:
+    #     return json.dumps({'success': False, 'error': 'Topic does not exist'})
 

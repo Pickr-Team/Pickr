@@ -1,7 +1,8 @@
 from exts import db
+from models.base import BaseModel
 
 
-class Student(db.Model):
+class Student(BaseModel):
     __tablename__ = 'students'
     id = db.Column(db.Integer, primary_key=True)
     chinese_name = db.Column(db.String(20))
@@ -19,24 +20,8 @@ class Student(db.Model):
         self.user_name = user_name
         self.class_number = class_number
 
-    def add(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self, chinese_name, english_name, email, user_name, class_number):
-        self.chinese_name = chinese_name
-        self.english_name = english_name
-        self.email = email
-        self.user_name = user_name
-        self.class_number = class_number
-        db.session.commit()
-
     def update_pwd(self, pwd):
         self.password = pwd
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
         db.session.commit()
 
     def to_json(self):
@@ -50,24 +35,8 @@ class Student(db.Model):
         }
 
     @classmethod
-    def get_all(cls):
-        return cls.query.all()
-
-    @classmethod
-    def get_query(cls):
-        return cls.query
-
-    @classmethod
-    def get_num(cls):
-        return cls.query.count()
-
-    @classmethod
-    def get_id(cls, english_name):
+    def get_id_by_english_name(cls, english_name):
         return cls.query.filter_by(english_name=english_name).first().id
-
-    @classmethod
-    def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
 
     @classmethod
     def get_by_name_username_class_number(cls, search_query):

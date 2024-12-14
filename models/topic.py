@@ -137,7 +137,10 @@ class Topic(db.Model):
         ).count()
 
     def get_supervisor_name(self):
-        return f'{self.supervisor.first_name} {self.supervisor.last_name}'
+        if self.supervisor:
+            return f'{self.supervisor.first_name} {self.supervisor.last_name}'
+        else:
+            return None
 
     def get_type_name(self):
         return self.type.name

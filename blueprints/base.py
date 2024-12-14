@@ -144,10 +144,17 @@ def topic_search():
 @bp.route('/topic_detail/<int:topic_id>')
 def topic_detail(topic_id):
     topic = Topic.get_by_id(id=topic_id)
-    return render_template('base/topic_detail.html', topic=topic)
+    if topic:
+        return render_template('base/topic_detail.html', topic=topic)
+    else:
+        return render_template('base/error.html', message='The topic is not existed'), 404
 
 
 @bp.route('/topic_detail_custom/<int:topic_id>/')
 def topic_detail_custom(topic_id):
     topic = Topic.get_by_id(id=topic_id)
-    return render_template('base/topic_detail_custom.html', topic=topic)
+    if topic:
+        return render_template('base/topic_detail_custom.html', topic=topic)
+    else:
+        return render_template('base/error.html', message='The topic is not existed'), 404
+

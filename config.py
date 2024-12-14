@@ -18,3 +18,9 @@ class ProdConfig:
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://flask:2024flask@localhost/studentprojectmanager"
     APPLICATION_ROOT = '/studentprojectmanager'
+
+
+class MemoryConfig:
+    TESTING = True
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"

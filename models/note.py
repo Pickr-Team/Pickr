@@ -1,7 +1,8 @@
 from exts import db
+from models.base import BaseModel
 
 
-class Note(db.Model):
+class Note(BaseModel):
     __tablename__ = 'notes'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
@@ -10,27 +11,6 @@ class Note(db.Model):
     def __init__(self, title, content):
         self.title = title
         self.content = content
-
-    def add(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self, title, content):
-        self.title = title
-        self.content = content
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    @classmethod
-    def get_all(cls):
-        return cls.query.order_by(cls.id.desc()).all()
-
-    @classmethod
-    def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
 
     def __repr__(self):
         return f'<Note {self.id}>'

@@ -1,7 +1,8 @@
 from exts import db
+from models.base import BaseModel
 
 
-class Deadline(db.Model):
+class Deadline(BaseModel):
     __tablename__ = 'deadlines'
     id = db.Column(db.Integer, primary_key=True)
     submit_time = db.Column(db.String(20))
@@ -12,28 +13,6 @@ class Deadline(db.Model):
         self.submit_time = submit_time
         self.result_time = result_time
         self.note = note
-
-    def add(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self, submit_time, result_time, note):
-        self.submit_time = submit_time
-        self.result_time = result_time
-        self.note = note
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    @classmethod
-    def get_num(cls):
-        return cls.query.count()
-
-    @classmethod
-    def get_all(cls):
-        return cls.query.all()
 
     @classmethod
     def get_first(cls):

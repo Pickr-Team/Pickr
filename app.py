@@ -6,6 +6,7 @@ from models.supervisor import Supervisor
 from models.selection import Selection
 from models.topic import Topic
 from models.type import Type
+from models.deadline import Deadline
 # import data migration tool
 from flask_migrate import Migrate
 # import blueprints

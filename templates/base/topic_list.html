@@ -158,7 +158,7 @@
 
                 var filterConditions = {typeId: [], supervisorId: [], topicId: []};
 
-                function handleTopicFilter() {
+                function handleTopicFilter(topic_ids) {
                     let selectedTopicsNumber = 0;
                     let topics = $('#topic-section').children();
                     topics.each(function () {
@@ -177,7 +177,7 @@
                         }
                     })
 
-                    if (selectedTopicsNumber === 0) {
+                    if (selectedTopicsNumber === 0 || (topic_ids && topic_ids.length === 0)) {
                         $('#no-results-message').removeClass('hidden');
                     } else {
                         $('#no-results-message').addClass('hidden');
@@ -224,7 +224,7 @@
                             success: function (response) {
                                 let topic_ids = JSON.parse(response).topic_ids;
                                 filterConditions["topicId"] = topic_ids;
-                                handleTopicFilter();
+                                handleTopicFilter(topic_ids);
                             }
                         });
                     } else {

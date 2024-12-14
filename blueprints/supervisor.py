@@ -43,7 +43,7 @@ def redirect_to_home():
 @bp.route('/home')
 @require_supervisor
 def index():
-    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
@@ -72,7 +72,7 @@ def add_topic():
     if supervisor:
         supervisor_id = supervisor
     else:
-        supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+        supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     topic_name = request.form.get('topic_name')
     type_id = request.form.get('type')
     position = request.form.get('position')
@@ -150,7 +150,7 @@ def update_topic(topic_id):
     required_skills = request.form.get('required_skills')
     reference = request.form.get('reference')
 
-    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     types = Type.get_all()
@@ -184,7 +184,7 @@ def update_topic(topic_id):
 @bp.route('/export_student_list')
 @require_supervisor
 def export_student_list():
-    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
     custom_selections = Selection.get_supervisor_selection_custom(supervisor_id=supervisor_id)
     wb = Workbook()
@@ -221,7 +221,7 @@ def export_student_list():
 @bp.route('/topic_poster')
 @require_supervisor
 def topic_poster():
-    supervisor_id = Supervisor.get_id(user_name=session['user_name'])
+    supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     supervisor = Supervisor.get_by_id(id=supervisor_id)
 
