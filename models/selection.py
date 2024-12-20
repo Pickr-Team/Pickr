@@ -1,7 +1,8 @@
 from exts import db
+from models.base import BaseModel
 
 
-class Selection(db.Model):
+class Selection(BaseModel):
     __tablename__ = 'selections'
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
@@ -28,28 +29,6 @@ class Selection(db.Model):
     def __init__(self, student_id):
         self.student_id = student_id
         self.status = 0
-
-    def add(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self, student_id, submit_time, status, first_topic_id, second_topic_id, third_topic_id, final_topic_id):
-        self.student_id = student_id
-        self.submit_time = submit_time
-        self.status = status
-        self.first_topic_id = first_topic_id
-        self.second_topic_id = second_topic_id
-        self.third_topic_id = third_topic_id
-        self.final_topic_id = final_topic_id
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    @classmethod
-    def get_all(cls):
-        return cls.query.all()
 
     @property
     def first_topic_name(self):
@@ -138,14 +117,14 @@ class Selection(db.Model):
     def get_all_custom_selections(cls):
         return cls.query.filter(cls.status.in_([2, 3])).all()
 
-    @classmethod
-    def get_by_id(cls, selection_id):
-        return cls.query.filter_by(id=selection_id).first()
-
     # get student name
     @classmethod
     def get_student_name(cls, student_id):
         return cls.query.filter_by(student_id=student_id).first().student.english_name
+
+    @classmethod
+    def get_num_of_status(cls, status):
+        return cls.query.filter_by(status=status).count()
 
     # get number of status equal to 0
     @classmethod
@@ -210,8 +189,8 @@ class Selection(db.Model):
         self.first_topic.name = name
         db.session.commit()
 
-    def update_topic_id(self, topic_priority, topic_id):
-        self.__setattr__(self, f'{topic_priority}_topic_id', topic_id)
+    # def update_topic_id(self, topic_priority, topic_id):
+    #     self.__setattr__(self, f'{topic_priority}_topic_id', topic_id)
 
     # ===================================================================================================
     # DEPRECATE

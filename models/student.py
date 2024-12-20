@@ -40,6 +40,8 @@ class Student(BaseModel):
 
     @classmethod
     def get_by_name_username_class_number(cls, search_query):
+        # Student.get_by_name_username_class_number('wangwu').first() or
+        # Student.get_by_name_username_class_number('wangwu').all()
         return cls.query.filter(
             (cls.chinese_name.like(f'%{search_query}%')) |
             (cls.english_name.like(f'%{search_query}%')) |

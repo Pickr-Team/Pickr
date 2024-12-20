@@ -47,7 +47,7 @@ def index():
     custom_selections = Selection.get_all_custom_selections()
     notes = Note.get_all()
     types = Type.get_all()
-    topic_num = Topic.get_num()
+    topic_num = Topic.get_num_not_custom()
     custom_topic_num = Topic.get_num_custom()
     topics = Topic.get_all()
     num_success = Selection.get_num_of_status_3or4()
@@ -55,14 +55,14 @@ def index():
     num_process = Selection.get_num_of_status_1()
     num_verify = Selection.get_num_of_status_2()
     num_fail = Selection.get_num_of_status_5()
-    total_quta = Topic.get_all_quota()
+    # total_quta = Topic.get_all_quota()
     static_topic_num = Selection.get_num_of_status_4()
 
     return render_template('manager/index.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
                            notes=notes, students=students, supervisors=supervisors,
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
                            custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
-                           num_process=num_process, num_verify=num_verify, num_fail=num_fail, total_quta=total_quta,
+                           num_process=num_process, num_verify=num_verify, num_fail=num_fail,
                            static_topic_num=static_topic_num, pre=pre, topics=topics)
 
 

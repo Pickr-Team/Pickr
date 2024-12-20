@@ -15,7 +15,7 @@ bp = Blueprint("base", __name__)
 
 @bp.route("/")
 def home():
-    num_of_topics = Topic.get_num()
+    num_of_topics = Topic.get_num_not_custom()
     num_of_supervisors = Supervisor.get_num()
     return render_template('base/home.html', num_of_topics=num_of_topics, num_of_supervisors=num_of_supervisors)
 

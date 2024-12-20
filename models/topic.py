@@ -1,10 +1,11 @@
 from sqlalchemy import or_, func
 from exts import db
+from .base import BaseModel
 from .selection import Selection
 import re
 
 
-class Topic(db.Model):
+class Topic(BaseModel):
     __tablename__ = 'topics'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -32,25 +33,6 @@ class Topic(db.Model):
         db.session.add(self)
         db.session.commit()
         return self.id
-
-    def update(self, name, supervisor_id, quota, is_custom, type_id, description, required_skills, reference):
-        self.name = name
-        self.supervisor_id = supervisor_id
-        self.quota = quota
-        self.is_custom = is_custom
-        self.type_id = type_id
-        self.description = description
-        self.required_skills = required_skills
-        self.reference = reference
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    @classmethod
-    def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
 
     @classmethod
     def get_by_supervisor_id(cls, supervisor_id):
@@ -80,35 +62,15 @@ class Topic(db.Model):
             ).all()
         return []
 
-    @classmethod
-    def get_by_id_or_name(cls, search_query):
-        if search_query.lower().startswith('pk'):
-            match = re.search(r'\d+', search_query)
-            if match:
-                number_part = int(match.group())
-                return cls.query.filter(cls.id == number_part).first()
-        else:
-            return cls.query.filter(
-                or_(
-                    cls.id == search_query,
-                    cls.name.like(f'%{search_query}%')
-                )
-            ).first()
-        return None
-
-    @classmethod
-    def search_by_id(cls, id):
-        if id.lower().startswith('pk'):
-            match = re.search(r'\d+', id)
-            if match:
-                number_part = int(match.group())
-                return cls.query.filter(cls.id == number_part).first()
-            else:
-                return None
-
-    @classmethod
-    def get_all(cls):
-        return cls.query.order_by(cls.id.desc()).all()
+    # @classmethod
+    # def search_by_id(cls, id):
+    #     if id.lower().startswith('pk'):
+    #         match = re.search(r'\d+', id)
+    #         if match:
+    #             number_part = int(match.group())
+    #             return cls.query.filter(cls.id == number_part).first()
+    #         else:
+    #             return None
 
     # Get the number of students who have selected this topic (selection.status == 0)
     def get_selected_num(self):
@@ -147,19 +109,23 @@ class Topic(db.Model):
 
     @classmethod
     def get_all_quota(cls):
+        # warning, do not change the '==' to 'is'!
         return cls.query.filter(cls.is_custom == False).with_entities(func.sum(cls.quota)).scalar()
 
     @classmethod
-    def get_num(cls):
+    def get_num_not_custom(cls):
+        # warning, do not change the '==' to 'is'!
         return cls.query.filter(cls.is_custom == False).count()
 
     @classmethod
     def get_num_custom(cls):
+        # warning, do not change the '==' to 'is'!
         return cls.query.filter(cls.is_custom == True).count()
 
     # Get all topics that are custom
     @classmethod
     def get_all_custom(cls):
+        # warning, do not change the '==' to 'is'!
         return cls.query.filter(cls.is_custom == True).all()
 
     def __repr__(self):
