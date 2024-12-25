@@ -41,6 +41,7 @@ def test_custom_topic_detail(client):
     response = client.get('/topic_detail_custom/4', follow_redirects=True)
     assert response.status_code == 200
 
+
 # custom topic detail
 def test_custom_topic_detail_not_existed(client):
     response = client.get('/topic_detail_custom/999', follow_redirects=True)

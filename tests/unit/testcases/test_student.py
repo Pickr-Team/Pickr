@@ -109,7 +109,7 @@ def test_update_selection_fail_already_selected(client):
         'reset': 'false',
         'choice_number': 1,
     }
-    Selection.get_by_id(2).update(3, None, None, 1, 1, 1, None)
+    Selection.get_by_id(2).update(student_id=3, submit_time=None, status=None, first_topic_id=1, second_topic_id=1, third_topic_id=1)
     response = client.post('/student/update_selection', data=data)
     response_data = json.loads(response.data.decode('utf-8'))
     assert response_data['success'] is False

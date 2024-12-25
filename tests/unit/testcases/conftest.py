@@ -8,6 +8,8 @@ from models.supervisor import Supervisor
 from models.selection import Selection
 from models.topic import Topic
 from models.type import Type
+from models.deadline import Deadline
+from models.note import Note
 from exts import db
 from blueprints.base import bp as base_bp
 from blueprints.manager import bp as manager_bp
@@ -33,13 +35,17 @@ def insert_test_data(app):
         # student have a custom selection
         student_4 = Student('李四', 'Lisi', 'lisi@qq.com',
                           '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'lisi', 'SES1')
-        # student have a custom selection(fail)
+        #
         student_5 = Student('老刘', 'laoliu', 'laoliu@qq.com',
                           '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'laoliu', 'SES1')
 
         supervisor = Supervisor('Clivia', 'Li', False, 15, 'clivia',
                                 '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'clivia@qq.com',
                                 'software development')
+        supervisor_2 = Supervisor('Supervisor', '2', False, 10, 'supervisor_2',
+                                '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'clivia@qq.com',
+                                'software development')
+
         manager = Supervisor('Joojo', 'Walker', True, 15, 'joojo',
                              '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'joojo@qq.com',
                              'machine learning')
@@ -53,13 +59,13 @@ def insert_test_data(app):
         stu_topic = Topic('Student Topic', None, 1, True, 1, None, None, None)
 
         selection_not_custom = Selection(2)  # s1
-        selection_not_custom.update(2, None, 1, 1, 2, 3, None)
+        selection_not_custom.update(student_id=2, submit_time=None, status=1, first_topic_id=1, second_topic_id=2, third_topic_id=3, final_topic_id=None)
         selection_not_custom_fail = Selection(3)  # s2
         selection_custom = Selection(4)  # s3
-        selection_custom.update(4, None, 1, 4, None, None, None)
+        selection_custom.update(student_id=4, submit_time=None, status=1, first_topic_id=4, second_topic_id=2, third_topic_id=3, final_topic_id=None)
 
-        db.session.add_all([student, student_2, student_3, student_4,
-                            supervisor, manager, _type, sup_topic_1, sup_topic_2, sup_topic_3, stu_topic,
+        db.session.add_all([student, student_2, student_3, student_4, student_5,
+                            supervisor, supervisor_2, manager, _type, sup_topic_1, sup_topic_2, sup_topic_3, stu_topic,
                             selection_not_custom, selection_not_custom_fail, selection_custom])
         db.session.commit()
 
@@ -84,6 +90,13 @@ def app():
 
     with app.app_context():
         db.session.remove()
+        # db.session.query(Selection).delete()
+        # db.session.query(Student).delete()
+        # db.session.query(Topic).delete()
+        # db.session.query(Type).delete()
+        # db.session.query(Supervisor).delete()
+        # db.session.query(Note).delete()
+        # db.session.query(Deadline).delete()
         db.drop_all()
 
 

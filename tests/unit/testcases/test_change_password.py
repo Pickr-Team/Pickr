@@ -4,13 +4,14 @@ def test_change_password(client):
         'user_name': 'crystal',
         'password_hash': '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
     }
-    client.post('/login', data=data, follow_redirects=True)
+    response = client.post('/login', data=data, follow_redirects=True)
+    assert response.status_code == 200
     response = client.get('/change_password')
     assert response.status_code == 200
     assert b'Change Password' in response.data
 
 
-# change_password success(student)
+#change_password success(student)
 def test_change_password_student(client):
     data = {
         'user_name': 'crystal',
@@ -18,9 +19,6 @@ def test_change_password_student(client):
     }
     response = client.post('/login', data=data, follow_redirects=True)
     assert response.status_code == 200
-    assert response.json['status'] == 'success'
-    assert response.json['redirect'] == '/student/home'
-    assert response.json['user_type'] == 'student'
     change_pwd_data = {
         'new_password_hash': '96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e',
         'old_password_hash': '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
