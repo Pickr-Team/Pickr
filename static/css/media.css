@@ -53,6 +53,8 @@
                     .text-block {
                       margin-right: 0;
                       font-size: 15px;   }
+                      .text-block._10head_spacing {
+                         margin-top: 0;}
                       .text-block._10head_spacing._10button_spacing {
                         margin-bottom: 10px;   }
                         .text-block.back_space {
@@ -65,7 +67,8 @@
   .third_title.no_head_spacing {
     font-size: 18px;   }
     .third_title.accent {
-      font-size: 20px;   }
+      font-size: 20px;
+      line-height: 28px;}
   ._40px_height {
     padding-top: 20px;   }
     .link-block {

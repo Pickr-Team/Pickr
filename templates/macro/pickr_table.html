@@ -1,4 +1,4 @@
-{% macro pickr_table(title, data, type, placeholder) %}
+{% macro pickr_table(title, data, type, placeholder, supervisor_id) %}
     <h2 class="third_title-2 accent">{{ title }}</h2>
     <form class="pickr-search-form">
         <input name="search-{{ type }}" type="text" class="pickr-table-input" placeholder="{{ placeholder }}"/>
@@ -117,7 +117,8 @@
                                     {% if type != 'topic' %}
                                         <a href="{{ url_for('manager.edit', _type=type, id=d.id) }}" class="pickr-btn">Edit</a>
                                         <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
-                                                onclick="del('{{ type }}',{{ d.id }})">Delete
+                                                onclick="del('{{ type }}',{{ d.id }})" {% if d.id == supervisor_id %}disabled{% endif %}>
+                                            Delete
                                         </button>
                                     {% endif %}
                                 </div>
@@ -225,7 +226,7 @@
                                                 onclick="del('{{ type }}',{{ d.id }})">Delete
                                         </button>
                                     {% elif type == 'supStudent'%}
-                                        <a href="{{ url_for('supervisor.detail_topic', topic_id =d.id) }}"
+                                        <a href="{{ url_for('supervisor.detail_topic', topic_id = d.final_topic.id) }}"
                                            class="pickr-btn">Topic Detail</a>
                                     {% elif type == 'supCustom' %}
                                         <a href="{{ url_for('base.topic_detail_custom', topic_id =d.final_topic_id) }}"
@@ -244,9 +245,9 @@
         <div class="_40px_height"></div>
         {% if type == 'supTopic' %}
             <a href="{{ url_for('supervisor.new_topic') }}" class="submit-button phone w-button"><em>+</em> New Topic</a>
-            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button phone w-button"><em>→</em>
+{#            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button phone w-button"><em>→</em>
                 Generate
-                Poster</a>
+                Poster</a>#}
         {% endif %}
     </div>
 {% endmacro %}

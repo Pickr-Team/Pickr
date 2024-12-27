@@ -45,6 +45,12 @@
 
 @media (max-width: 479px) {
 
+  .text-block {
+    &._10head_spacing {
+      margin-top: 0;
+    }
+  }
+
   .w-tab-link {
     display: block;
     padding: 0;
@@ -115,6 +121,7 @@
 
     &.accent {
       font-size: 20px;
+      line-height: 28px;
     }
   }
 

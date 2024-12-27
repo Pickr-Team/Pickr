@@ -116,7 +116,6 @@
     </div>
 </div>
 
-
 <header class="head">
     <a href="{{ url_for('base.home') }}" aria-current="page" class="w-inline-block w--current">
         <img src="{{ url_for('static',filename='image/head_logo.svg') }}" width="155" alt=""
@@ -179,6 +178,8 @@
     }
 
     function confirmDel() {
+        {#TODO encrypt the key and value of 'user_type'#}
+        {#TODO: 发送 /delete/type/id 给base，然后在base中判断session['user_type']，从而传给具体的user blueprint，以避免在前端存储user_type#}
         const user_type = sessionStorage.getItem('user_type')
         $confirmModal.modal('hide')
         $.ajax({

@@ -1,5 +1,7 @@
 # base and basic functions
 from flask import Blueprint, render_template, session, request, url_for, redirect, jsonify, flash
+
+from models.result import Result
 from models.supervisor import Supervisor
 from models.student import Student
 from models.topic import Topic
@@ -157,4 +159,3 @@ def topic_detail_custom(topic_id):
         return render_template('base/topic_detail_custom.html', topic=topic)
     else:
         return render_template('base/error.html', message='The topic is not existed'), 404
-

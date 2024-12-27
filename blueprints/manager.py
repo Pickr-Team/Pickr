@@ -63,7 +63,7 @@ def index():
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
                            custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
                            num_process=num_process, num_verify=num_verify, num_fail=num_fail,
-                           static_topic_num=static_topic_num, pre=pre, topics=topics)
+                           static_topic_num=static_topic_num, pre=pre, topics=topics, supervisor_id=supervisor_id)
 
 
 # Manager process all the selections
@@ -85,9 +85,9 @@ def process():
         if not selection_successful:
             selection.update_status(status=5)  # 5:fail
             fail += 1
-    print("Success count: {}".format(success))
-    print("Fail count: {}".format(fail))
-    print("Total count: {}".format(len(selections)))
+    # print("Success count: {}".format(success))
+    # print("Fail count: {}".format(fail))
+    # print("Total count: {}".format(len(selections)))
     return redirect(url_for('manager.index'))
 
 
@@ -191,6 +191,7 @@ def update_supervisor(supervisor_id):
     position = request.form.get('position')
     user_name = request.form.get('username')
     email = request.form.get('email')
+    expertise = request.form.get('expertise')
 
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
 
@@ -205,28 +206,28 @@ def update_supervisor(supervisor_id):
                                supervisor=supervisor)
 
     supervisor.update(first_name=first_name, last_name=last_name, position=position,
-                      user_name=user_name, email=email)
+                      user_name=user_name, email=email, expertise=expertise)
     return redirect(url_for('manager.index', pre='supervisor'))
 
 
 @bp.route('/reset_password', methods=['POST'])
 @require_manager
 def reset_password():
-    if request.method == 'POST':
-        user_id = request.form['user_id']
-        user_type = request.form['user_type']
-        new_password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
+    user_id = request.form['user_id']
+    user_type = request.form['user_type']
+    new_password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
 
-        if user_type == 'student':
-            student = Student.query.filter_by(id=user_id).first()
-            student.password = new_password
-            db.session.commit()
-            return jsonify(status='success')
-        elif user_type == 'supervisor':
-            supervisor = Supervisor.query.filter_by(id=user_id).first()
-            supervisor.password = new_password
-            db.session.commit()
-            return jsonify(status='success')
+    if user_type == 'student':
+        student = Student.query.filter_by(id=user_id).first()
+        student.password = new_password
+        db.session.commit()
+        return jsonify(status='success')
+    elif user_type == 'supervisor':
+        supervisor = Supervisor.query.filter_by(id=user_id).first()
+        supervisor.password = new_password
+        db.session.commit()
+        return jsonify(status='success')
+
 
 
 # Manager create new note
@@ -295,8 +296,9 @@ def import_file(_type):
                 cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
                 supervisor_name = cleaned_row['Staff member']
                 supervisor = Supervisor.get_by_name(supervisor_name)
+                # staff expertise is read in supervisor excel
                 _new_topic = Topic(
-                    name=cleaned_row['Proposed Titles*'],
+                    name=cleaned_row['Proposed Titles'],
                     supervisor_id=supervisor.id,
                     quota=cleaned_row['Number of Students to Supervise'],
                     is_custom=False,
@@ -336,16 +338,14 @@ def detail(_type, id):
         student = Student.get_by_id(id=id)
         return render_template('manager/student/student_status.html', selection=selection, student=student)
     elif _type == 'topic':
-        selection = Selection.get_by_id(selection_id=id)
+        selection = Selection.get_by_id(id)
         supervisors = Supervisor.get_all()
         types = Type.get_all()
         return render_template('manager/selection/check_custom_selection.html', selection=selection,
                                supervisors=supervisors, types=types)
-    elif _type == 'supTopic':
-        topic = Topic.get_by_id(id=id)
+    else: # elif _type == 'supTopic':
+        topic = Topic.get_by_id(id)
         return render_template('base/topic_detail.html', topic=topic)
-    else:
-        return ''
 
 
 # Manager update deadline
@@ -427,7 +427,7 @@ def delete(_type, _id):
         else:
             return jsonify(success=False, message='Note does not exist')
     else:
-        return ''
+        return jsonify(success=False, message='Invalid Type')
 
 
 # Manager reset the selections and students
@@ -490,9 +490,10 @@ def add_supervisor():
     user_name = request.form.get('username')
     password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
     email = request.form.get('email')
+    expertise = request.form.get('expertise')
 
     _new_supervisor = Supervisor(first_name=first_name, last_name=last_name, position=position,
-                                 user_name=user_name, password=password, email=email, is_admin=False)
+                                 user_name=user_name, password=password, email=email, is_admin=False, expertise=expertise)
     _new_supervisor.add()
     return redirect(url_for('manager.index', pre='supervisor'))
 
@@ -501,14 +502,14 @@ def add_supervisor():
 @bp.route('/update_custom_selection/<int:selection_id>', methods=['POST'])
 @require_manager
 def update_custom_selection(selection_id):
-    selection = Selection.get_by_id(selection_id=selection_id)
+    selection = Selection.get_by_id(selection_id)
     supervisor_id = request.form.get('supervisor')
     topic_name = request.form.get('name')
     description = request.form.get('description')
     type_id = request.form.get('type')
     status = request.form.get('status')
 
-    if status == '3':
+    if status == '3':  # 3 - success(custom Topic)
         selection.final_topic_id = selection.first_topic_id
     elif status == '2':  # 2 - waiting for verify(custom Topic)
         selection.final_topic_id = None
@@ -521,16 +522,13 @@ def update_custom_selection(selection_id):
     return redirect(url_for('manager.index', pre='custom_selection'))
 
 
-@bp.route('/topic_detail/<int:topic_id>', methods=['GET', 'POST'])
-@require_manager
-def topic_detail(topic_id):
-    topic = Topic.get_by_id(topic_id)
-    types = Type.get_all()
-    supervisors = Supervisor.get_all()
-    if request.method == 'GET':
-        return render_template('manager/topic/topic_detail.html', topic=topic, types=types, supervisors=supervisors)
-    else:
-        pass
+# @bp.route('/topic_detail/<int:topic_id>', methods=['GET'])
+# @require_manager
+# def topic_detail(topic_id):
+#     topic = Topic.get_by_id(topic_id)
+#     types = Type.get_all()
+#     supervisors = Supervisor.get_all()
+#     return render_template('manager/topic/topic_detail.html', topic=topic, types=types, supervisors=supervisors)
 
 
 @bp.route('/edit/<string:_type>/<int:id>', methods=['GET'])
@@ -547,4 +545,4 @@ def edit(_type, id):
         types = Type.get_all()
         return render_template('supervisor/topic/edit_topic.html', topic=topic, types=types)
     else:
-        return ''
+        pass

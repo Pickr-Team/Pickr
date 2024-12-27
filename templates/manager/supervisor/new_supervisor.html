@@ -25,6 +25,9 @@
                 <label for="username" class="text-block _10button_spac">Username</label>
                 <input type="text" class="text-field creatnew w-input" name="username" id="username"/>
                 <span style="display: none;color: red" id="u-alert">Please input username</span>
+                <label for="expertise" class="text-block _10button_spac">Expertise</label>
+                <textarea maxlength="5000" class="text-field text-area w-input" name="expertise" id="expertise"></textarea>
+                <span style="display: none;color: red" id="ex-alert">Please input expertise</span>
                 <input style="display: block" type="submit" value="+ Add" data-wait="Please wait..." class="submit-button _20head_spacing w-button"/>
             </form>
         </div>
@@ -39,8 +42,9 @@
                 const position = $('#position').val().trim();
                 const email = $('#email').val().trim();
                 const username = $('#username').val().trim();
+                const expertise = $('#expertise').val().trim();
 
-                $('#f-alert, #l-alert, #p-alert, #e-alert, #u-alert').hide();
+                $('#f-alert, #l-alert, #p-alert, #e-alert, #u-alert, #ex-alert').hide();
 
                 let isValid = true;
 
@@ -67,6 +71,11 @@
 
                 if (username === '') {
                     $('#u-alert').show();
+                    isValid = false;
+                }
+
+                if (expertise === '') {
+                    $('#ex-alert').show();
                     isValid = false;
                 }
 

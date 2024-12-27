@@ -318,6 +318,8 @@ input.w-button {
   margin-right: 0;
   font-size: 20px;
   font-style: normal;
+  text-align: justify;
+  line-height: 26px;
 
   &.italic-text {
     font-style: italic;
@@ -344,7 +346,7 @@ input.w-button {
       font-style: italic;
     }
 
-    &._10button_spacing.accent.tipic_item_candidate {
+    &._10button_spacing.accent.topic_item_candidate {
       margin-left: 10px;
     }
   }

@@ -75,7 +75,7 @@ class Topic(BaseModel):
     # Get the number of students who have selected this topic (selection.status == 0)
     def get_selected_num(self):
         return Selection.query.filter(
-            Selection.status == 0,
+            Selection.status.in_([0, 1]),
             (
                     (Selection.first_topic_id == self.id) |
                     (Selection.second_topic_id == self.id) |
@@ -111,6 +111,11 @@ class Topic(BaseModel):
     def get_all_quota(cls):
         # warning, do not change the '==' to 'is'!
         return cls.query.filter(cls.is_custom == False).with_entities(func.sum(cls.quota)).scalar()
+
+    @classmethod
+    def get_not_custom(cls):
+        # warning, do not change the '==' to 'is'!
+        return cls.query.filter(cls.is_custom == False).all()
 
     @classmethod
     def get_num_not_custom(cls):

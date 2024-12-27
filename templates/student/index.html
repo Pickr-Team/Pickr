@@ -136,6 +136,7 @@
             </div>
         {% endif %}
 
+        {# TODO refine here, macro#}
         {#Result#}
         {% if selection.status == 1 %}
             <div class="_40px_height"></div>
@@ -591,6 +592,9 @@
                     },
                 {% endfor %}
             ];
+
+            {#console.log('deadlines[0]>>>', deadlines[0]) // second round#}
+            {#console.log('deadlines[1]>>>', deadlines[1]) // first round#}
 
             function formatTimeLeft(timeLeft) {
                 var hours = Math.floor(timeLeft / 3600);

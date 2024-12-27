@@ -51,6 +51,10 @@
     #w-node-student {
         grid-template-columns: .5fr 1fr !important;
     }
+
+    #w-node-global-01 {
+        display: block;
+    }
 }
 
 

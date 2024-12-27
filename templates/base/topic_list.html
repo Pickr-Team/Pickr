@@ -27,7 +27,21 @@
           margin-right: 40px;
         }
 
+        .description {
+            width: 60vw;
+            text-align: justify;
+        }
+
+        @media (min-width: 767px) and (max-width: 1000px) {
+            .topic-position {
+                display: block;
+            }
+        }
+
         @media (max-width: 479px) {
+            .description {
+                width: unset;
+            }
             .cell-4 {
                 flex-wrap: wrap;
             }
@@ -75,7 +89,7 @@
         <div class="w-layout-cell cell-4">
             <div class="w-layout-hflex" style="flex-wrap: wrap; align-items: center;">
                 {% for supervisor in supervisors %}
-                    {% if supervisor.is_admin!=true and supervisor.has_topics %}
+                    {% if supervisor.has_topics %}
                         <a href="#" id="{{ supervisor.id }}" data-id="{{ supervisor.id }}"
                            class="small_link span_40px_back supervisor_link">{{ supervisor.first_name }} {{ supervisor.last_name }}</a>
                     {% endif %}
@@ -114,17 +128,20 @@
                             <h1 class="third_title no_head_spacing accent no_button_spacing">{{ topic.name }}</h1>
                             <div class="text-block">By {{ topic.get_supervisor_name() }}</div>
                             <div class="text-block _10head_spacing">{{ topic.get_type_name() }}</div>
-                            <div class="w-layout-hflex">
-                                <div class="text-block _10head_spacing _10button_spacing">{{ topic.quota - topic.get_selected_num_final() }}
+                            <div class="w-layout-hflex topic-position" >
+                                <div class="text-block _10head_spacing _10button_spacing">
+                                    {{ topic.quota - topic.get_selected_num_final() }}
+                                    {# TODO: display quota and selected_num_final seperately?#}
                                     Positions
                                 </div>
-                                <div class="text-block _10head_spacing _10button_spacing accent tipic_item_candidate">
-                                    ({{ topic.get_selected_num() }} other candidates)
+                                <div class="text-block _10head_spacing _10button_spacing accent topic_item_candidate">
+                                    ({{ topic.get_selected_num() }} candidates)
+                                    {# TODO: add: how many students have finally select this topic successfully#}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <p class="description description-{{ topic.id }}" style="width: 60vw;">{{ topic.description }}</p>
+                    <p class="description description-{{ topic.id }}">{{ topic.description }}</p>
                 </a>
             {% endif %}
         {% endfor %}

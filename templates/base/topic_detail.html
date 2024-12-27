@@ -10,6 +10,14 @@
             grid-template-columns: .25fr 1fr;
         }
 
+{#        .topic_refer_link {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+            white-space: nowrap;
+            cursor: pointer;
+        }#}
+
         @media (max-width: 700px) {
             #w-node-topic-detail-02,
             #w-node-topic-detail-01,
@@ -52,7 +60,8 @@
                 <div class="text-block"><em>◇</em> Position</div>
             </div>
             <div class="w-layout-cell" style="flex-direction: row;">
-                <div class="text-block italic-text">{{ topic.quota }}</div>
+{#                TODO final selected num: topic.get_selected_num_final()#}
+                <div class="text-block italic-text">{{ topic.quota  }}</div>
                 <div class="text-block italic-text accent _0head">({{ topic.get_selected_num() }} other candidates)
                 </div>
             </div>
@@ -81,6 +90,7 @@
 
         <div class="_20px_height"></div>
         <h1 class="third_title accent">References</h1>
+        {# todo: text overflow, a href, multiple links #}
         <div class="text-block back_space">{{ topic.reference }}</div>
 
         <div class="_80px_header"></div>

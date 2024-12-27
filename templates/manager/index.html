@@ -10,7 +10,7 @@
 {% block content %}
     <body>
     <section class="page_hearder">
-        <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
+        <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}! </h1>
         <div class="_20px_height"></div>
         <a href="{{ url_for('base.logout') }}" class="small_link accent"><em>Logout↗</em></a>
         <a href="{{ url_for('base.change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
@@ -49,7 +49,7 @@
                 {{ pickr_table('Students', students, 'student','Student name, Class number') }}
             </div>
             <div data-w-tab="Supervisor" class="w-tab-pane">
-                {{ pickr_table('Supervisors', supervisors, 'supervisor','Supervisor name, ID') }}
+                {{ pickr_table('Supervisors', supervisors, 'supervisor','Supervisor name, ID', supervisor_id) }}
             </div>
             <div data-w-tab="SupTopics" class="w-tab-pane">
                 {{ pickr_table('Supervisor Topics', topics, 'supTopic', 'Topic title, Student name, Supervisor name') }}
@@ -92,6 +92,8 @@
             let currentPage = 1;
             const $table = $(`#table-${type}`)
             const tbody = document.querySelector(`#tbody-${type}`)
+            {#TODO bug: if there is not any data, disable last-page-button#}
+            if(tbody == null) return;
             let data = tbody.getElementsByTagName('tr');
             let originalData = data;
             let visibleData = data;

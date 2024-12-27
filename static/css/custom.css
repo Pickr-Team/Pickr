@@ -245,7 +245,9 @@
   margin-bottom: 0;
   margin-right: 0;
   font-size: 20px;
-  font-style: normal; }
+  font-style: normal;
+  text-align: justify;
+  line-height: 26px;}
   .text-block.italic-text {
     font-style: italic; }
     .text-block.italic-text.accent._0head {
@@ -258,7 +260,7 @@
     margin-top: 10px; }
     .text-block._10head_spacing.i {
       font-style: italic; }
-      .text-block._10head_spacing._10button_spacing.accent.tipic_item_candidate {
+      .text-block._10head_spacing._10button_spacing.accent.topic_item_candidate {
         margin-left: 10px; }
   .text-block.center {
     text-align: center; }
