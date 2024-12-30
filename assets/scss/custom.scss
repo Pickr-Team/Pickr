@@ -204,7 +204,7 @@ input.w-button {
   margin-top: 30px;
   padding-bottom: 0;
   padding-right: 40px;
-  font-family: Dank Mono, sans-serif;
+  //font-family: Dank Mono, sans-serif;
   font-size: 30px;
   font-style: italic;
   text-decoration: none;
@@ -277,7 +277,6 @@ input.w-button {
 
 .page_hearder {
   border-bottom: 1px solid #fff;
-  border-right: 1px solid #000;
   margin-top: 0;
   margin-bottom: 0;
   padding-top: 115px;
@@ -313,11 +312,7 @@ input.w-button {
 
 .text-block {
   color: $white;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-right: 0;
   font-size: 20px;
-  font-style: normal;
   text-align: justify;
   line-height: 26px;
 

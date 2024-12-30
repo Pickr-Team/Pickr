@@ -98,6 +98,13 @@ class Topic(BaseModel):
             (Selection.final_topic_id == self.id)
         ).count()
 
+    # todo unittest
+    def get_selected_final_selection(self):
+        return Selection.query.filter(
+            Selection.status.in_([3, 4]),
+            (Selection.final_topic_id == self.id)
+        ).all()
+
     def get_supervisor_name(self):
         if self.supervisor:
             return f'{self.supervisor.first_name} {self.supervisor.last_name}'

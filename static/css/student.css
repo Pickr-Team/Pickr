@@ -47,6 +47,124 @@
     display: inline-block;
 }
 
+
+.page_header {
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-top: 115px;
+  padding-bottom: 10px;
+  padding-left: 0;
+}
+
+.tab-container {
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid white;
+}
+
+ul, li, ol {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+ul {
+    display: flex;
+}
+
+li {
+    padding: 10px 15px;
+    border-left: 1px solid white;
+    border-top: 1px solid white;
+    transition: .4s all
+}
+li.active,
+li:hover{
+    cursor: pointer;
+    background-color: #fff;
+    color: black;
+}
+li:last-child {
+    border-right: 1px solid white;
+}
+
+.panel .sub-panel {
+    display: none;
+    color: white;
+}
+
+
+.tab-desc span {
+    display: none;
+}
+
+.sub-panel.active,
+.tab-desc span.active{
+    display: block;
+}
+
+main {
+    min-height: 700px;
+}
+
+.report-panel label{
+    margin-bottom: 0;
+}
+
+.report-panel .text-block {
+    font-weight: normal;
+}
+
+
+.report-panel .text-area {
+    margin-top: 10px;
+    max-width: unset;
+}
+
+.report-panel .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: black;
+    background-color: white;
+}
+.report-panel .nav-link {
+    color: white;
+}
+
+.report-panel td {
+    padding: 5px 10px;
+    border-width: 1px
+}
+
+.report-panel .w-button {
+    padding: 5px 10px;
+    font-size: 15px;
+}
+
+.report-panel .save-btn:hover .icon path {
+    fill: #ff7167;
+}
+
+.report-panel .text-area[disabled] {
+    background-color: black;
+}
+
+.report-panel .text-area[disabled] {
+    border: unset;
+}
+
+.report-panel .text-area[disabled]:hover {
+    cursor: unset;
+}
+
+/*
+.report-panel #v-pills-tab {
+    border-right: 1px solid white;
+    padding-right: 10px;
+}
+*/
+
 @media (max-width: 479px) {
     #w-node-student {
         grid-template-columns: .5fr 1fr !important;

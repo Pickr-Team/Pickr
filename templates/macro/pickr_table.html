@@ -183,7 +183,14 @@
                         </th>
                         <th scope="col">
                             {% if type == "supTopic" %}
-                                FinalSelected/TotalSelected/Quota
+                                Quota
+                            {% elif type == 'supStudent'or type == 'supCustom' %}
+                                Student Name
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if type == "supTopic" %}
+                                Students
                             {% elif type == 'supStudent'or type == 'supCustom' %}
                                 Student Name
                             {% endif %}
@@ -210,7 +217,16 @@
                             </td>
                             <td id="td-3-{{ type }}">
                                 {% if type == "supTopic" %}
-                                    {{ d.get_selected_num_final() }}/{{ d.get_selected_num_total() }}/{{ d.quota }}
+                                    {{ d.quota }}
+                                {% elif type == 'supStudent'or type == 'supCustom' %}
+                                    {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
+                                {% endif %}
+                            </td>
+                            <td id="td-3-{{ type }}">
+                                {% if type == "supTopic" %}
+                                     <button style="width: 100px; margin: 0 auto" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#topic-{{ d.id }}-details" aria-expanded="true" aria-controls="topic-{{ d.id }}-details">
+                                        {{ d.get_selected_num_final() }}
+                                    </button>
                                 {% elif type == 'supStudent'or type == 'supCustom' %}
                                     {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
                                 {% endif %}
@@ -235,12 +251,21 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr id="topic-{{ d.id }}-details" class="accordion-collapse collapse show" >
+                            <td colspan="5" class="accordion-body">
+                                {% if d.get_selected_num_final() > 0 %}
+                                    {{ d.get_selected_final_selection()[0].student.english_name }}({{ d.get_selected_final_selection()[0].student.chinese_name }}) {{ d.get_selected_final_selection()[0].student.class_number }}
+                                {% else %}
+                                    No students have yet got this topic. 😊
+                                {% endif %}
+                            </td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
         {% else %}
-            <div class="third_title  ">nothing here.</div>
+            <p >nothing here.</p>
         {% endif %}
         <div class="_40px_height"></div>
         {% if type == 'supTopic' %}
@@ -248,6 +273,6 @@
 {#            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button phone w-button"><em>→</em>
                 Generate
                 Poster</a>#}
+        </div>
         {% endif %}
-    </div>
 {% endmacro %}

@@ -35,7 +35,7 @@ else:
     config = DevConfig
 
 app.config.from_object(config)
-Scss(app, static_dir='static', asset_dir='assets')
+Scss(app, static_dir='static/css', asset_dir='assets')
 app.secret_key = secrets.token_hex(16)
 db.init_app(app)
 

@@ -8,6 +8,10 @@
         a:hover {
             color: var(--accent);
         }
+
+        h2 {
+            margin-top: 0;
+        }
         .tabs-menu {
           border-right: 1px none var(--wite);
           border-bottom: 1px none var(--wite);
@@ -15,6 +19,20 @@
           justify-content: space-between;
           padding-top: 20px;
           display: flex;
+        }
+        .accordion-body {
+            background-color: black;
+            color: white;
+        }
+        .accordion-button:not(.collapsed) {
+            color: black;
+            background-color: white;
+        }
+        .accordion-button {
+            padding: .5rem 1rem;
+        }
+        .accordion-button:not(.collapsed)::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")
         }
     </style>
     <body>
@@ -27,27 +45,28 @@
         <div class="_20px_height"></div>
         <p style="color: #fff">In this page,you can create your topic and check your applications.</p></section>
     <section>
+
         <div data-current="Applications" class="w-tabs">
             <address class="tabs-menu" style="position: relative;">
                 <a data-w-tab="Topics" class="tab_link long_tab_link w-inline-block w-tab-link">
                     <div>Topics</div>
                 </a>
-                <a data-w-tab="Applications" class="tab_link long_tab_link w-inline-block w-tab-link">
-                    <div>Applications</div>
+                <a data-w-tab="Reports" class="tab_link long_tab_link w-inline-block w-tab-link">
+                    <div>Reports</div>
                 </a>
             </address>
             <div class="w-tab-content">
                 {#Topics Section#}
                 <div data-w-tab="Topics" class="w-tab-pane">
-                     {{ pickr_simple_table('Your topics', topics, 'supTopic', total_quta, supervisor.position ) }}
+                    {{ pickr_simple_table('Your topics', topics, 'supTopic', total_quta, supervisor.position ) }}
+                    <div style="margin-top: 50px;"></div>
+                    {{ pickr_simple_table('Student Custom Topics', custom_selections, 'supCustom') }}
+                    <div class="_40px_height"><a href="{{ url_for('supervisor.export_student_list') }}" class="submit-button phone w-button"><em>→</em> Export Student List</a></div>
                 </div>
                 {#Applications Section#}
-                <div data-w-tab="Applications" class="w-tab-pane" style="display: block;">
-                    {{ pickr_simple_table('Your Students', not_custom_selections, 'supStudent', supervisor.get_total_final_selections()) }}
-                    {{ pickr_simple_table('Custom Topics', custom_selections, 'supCustom') }}
-                    <div class="_40px_height"><a href="{{ url_for('supervisor.export_student_list') }}"
-                                                 class="submit-button phone w-button"><em>→</em> Export</a>
-                    </div>
+                <div data-w-tab="Reports" class="w-tab-pane">
+                    <h1>Report</h1>
+
                 </div>
             </div>
         </div>

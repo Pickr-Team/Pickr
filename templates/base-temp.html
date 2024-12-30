@@ -124,7 +124,8 @@
     <a href="{{ url_for('base.my_pickr') }}" class="login">My Pickr<em>↗</em></a>
 </header>
 
-{% block content %}{% endblock %}
+{#{% block content %}{% endblock %}#}
+<main>{% block content %}{% endblock %}</main>
 
 <footer class="footer">
     <div class="fourth_title">Pickr - CDUT &amp; OBU Collaborative Education Topic Management System</div>
@@ -209,7 +210,7 @@
     });
 </script>
 
-<script>{% block script %}{% endblock %}</script>
+{% block script %}{% endblock %}
 
 </body>
 
