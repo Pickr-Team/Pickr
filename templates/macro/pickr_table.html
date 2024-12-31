@@ -161,7 +161,7 @@
             Current Position: <span class="accent">{{ subData }}</span> / Total Position: <span class="accent">{{ subData_2 }}</span>
         </span>
     {% endif %}
-    <div class="_20px_height">
+    <div class="_20px_height"></div>
         {% if data %}
             <div class="table-responsive">
                 <table id="table-{{ type }}" class="table align-middle" style="color: white;">
@@ -273,6 +273,5 @@
 {#            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button phone w-button"><em>→</em>
                 Generate
                 Poster</a>#}
-        </div>
         {% endif %}
 {% endmacro %}

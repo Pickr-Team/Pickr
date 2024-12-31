@@ -34,6 +34,22 @@
         .accordion-button:not(.collapsed)::after {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")
         }
+        .report label {
+            color: white;
+            margin-bottom: unset;
+            line-height: 42px;
+        }
+        .report select{
+            width: 180px;
+            margin: 0 10px;
+            padding: .3rem 2rem .3rem .5rem;
+        }
+        .icon path {
+            transition: .4s all;
+        }
+        .analysis-btn:hover .icon path {
+            fill: black;
+        }
     </style>
     <body>
     <section class="page_hearder">
@@ -43,16 +59,17 @@
         <a href="{{ url_for('base.change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
             Password↗</em></a>
         <div class="_20px_height"></div>
-        <p style="color: #fff">In this page,you can create your topic and check your applications.</p></section>
-    <section>
+        <p style="color: #fff">In this page,you can create your topic and check your applications.</p>
+    </section>
 
+    <section>
         <div data-current="Applications" class="w-tabs">
             <address class="tabs-menu" style="position: relative;">
                 <a data-w-tab="Topics" class="tab_link long_tab_link w-inline-block w-tab-link">
-                    <div>Topics</div>
+                    Topics
                 </a>
                 <a data-w-tab="Reports" class="tab_link long_tab_link w-inline-block w-tab-link">
-                    <div>Reports</div>
+                    Reports
                 </a>
             </address>
             <div class="w-tab-content">
@@ -65,13 +82,17 @@
                 </div>
                 {#Applications Section#}
                 <div data-w-tab="Reports" class="w-tab-pane">
-                    <h1>Report</h1>
-
+                    {% include './supervisor/report/report.html' %}
                 </div>
             </div>
         </div>
         <div class="_80px_height"></div>
     </section>
+
+    </body>
+{% endblock %}
+
+{% block script %}
     <script>
         $(document).ready(function () {
             $('.tab_link').click(function (e) {
@@ -84,8 +105,5 @@
             });
             $('.tab_link').first().click();
         });
-
-
     </script>
-    </body>
 {% endblock %}

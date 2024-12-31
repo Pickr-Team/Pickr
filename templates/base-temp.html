@@ -19,9 +19,9 @@
     {% block link_style %}{% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
-    <style>{% block style %}{% endblock %}</style>
 
-    {% block link_script %}{% endblock %}
+    {% block style %}{% endblock %}
+
 
     <style>
         .paragraph.i._10_head {
@@ -209,6 +209,7 @@
         $secondConfirmModal.modal('hide');
     });
 </script>
+{% block link_script %}{% endblock %}
 
 {% block script %}{% endblock %}
 

@@ -1,0 +1,96 @@
+{% extends 'base-temp.html' %}
+{% from 'macro/report_table.html' import report_table %}
+
+{% block title %}Pickr | Report Detail{% endblock %}
+
+{% block style %}
+    <style>
+        main {
+            padding-top: 100px;
+            color: white;
+        }
+        .w-input[disabled]:not(.w-input-disabled), .w-input[readonly]:not(.w-input-disabled), fieldset[disabled] .w-input:not(.w-input-disabled), .w-select[disabled]:not(.w-input-disabled), .w-select[readonly]:not(.w-input-disabled), fieldset[disabled] .w-select:not(.w-input-disabled){
+            background-color: black;
+        }
+        .text-area {
+            max-width: unset;
+            border: none;
+            margin: 10px 0;
+            height: auto;
+            resize: none;
+            min-height: 50px;
+        }
+        .text-area:hover {
+            border: unset;
+            cursor: unset;
+        }
+         td {
+            padding: 5px 10px;
+            border-width: 1px
+        }
+        .feedback-btn-group {
+            position: fixed;
+            bottom: 100px;
+            right: 40px;
+        }
+        .pickr-btn {
+            color: black;
+            background-color: white;
+            border: 1px solid black;
+            transition: all .4s;
+        }
+        .pickr-btn:first-child {
+            border-right: none;
+            border-radius: 25px 0 0 25px;
+        }
+        .pickr-btn:last-child {
+            border-radius: 0 25px 25px 0;
+        }
+        .pickr-btn:hover {
+            color: white;
+            background-color: black;
+            border: 1px solid white;
+        }
+        .icon path {
+            transition: .4s
+        }
+        .pickr-btn:hover .icon path {
+            fill: white;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+{{ report_table() }}
+
+    <div class="btn-group feedback-btn-group" role="group" aria-label="Basic example">
+      <button type="button" class="pickr-btn" onclick="window.history.back()">⮌ Go Back</button>
+      <button type="button" class="pickr-btn">Feedback
+        <svg t="1735632729243" class="icon" viewBox="0 0 1126 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4260" width="20" height="20"><path d="M1105.063576 220.756913l-575.553946 578.111964a71.215208 71.215208 0 1 1-100.70915-100.683571l575.553945-578.111963A71.215208 71.215208 0 0 1 1105.063576 220.756913zM870.493368 102.320701l-676.928181 0.409283c-75.359197 2.123155-89.991057 24.096525-89.991057 101.885839L102.320701 157.625041l0.332543 685.369638c3.888187 61.545902 25.733656 77.917214 103.139267 77.917214l-103.088107-0.665084v1.099947l818.565612-0.409283-0.127901-94.95361-0.639505 94.237366-103.216007 0.690664c86.205191 0 103.59971-20.080438 103.855512-100.555669L920.886313 562.022033a51.160351 51.160351 0 0 1 102.320702 0L1023.565137 869.725962H1023.207015v51.160351a102.320701 102.320701 0 0 1-102.320702 102.320702h-54.357873l-709.849866 0.358122V1023.207015H102.320701a102.09048 102.09048 0 0 1-101.860258-97.767431L0 101.885838A102.03932 102.03932 0 0 1 97.74185 0.460443L870.467787 0a51.160351 51.160351 0 0 1 0 102.320701zM102.320701 102.781145v0.179061l32.282182-0.204642H102.320701z" fill="#2c2c2c" p-id="4261"></path></svg>
+      </button>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        function adjustTextareaHeight(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight > parseInt(getComputedStyle(textarea).maxHeight) ? parseInt(getComputedStyle(textarea).maxHeight) : textarea.scrollHeight) + 'px';
+            if (textarea.offsetHeight < parseInt(getComputedStyle(textarea).minHeight)) {
+                textarea.style.height = parseInt(getComputedStyle(textarea).minHeight) + 'px';
+            }
+        }
+
+        function onWindowResize() {
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(adjustTextareaHeight);
+        }
+
+        window.addEventListener('resize', onWindowResize);
+        window.addEventListener('DOMContentLoaded', function() {
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(adjustTextareaHeight);
+        });
+    </script>
+{% endblock %}

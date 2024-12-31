@@ -233,3 +233,9 @@ def topic_poster():
         'Content-Disposition': 'attachment;filename=topic_poster.pdf',
         'Content-Type': 'application/pdf'
     })
+
+
+@bp.route('/report')
+@require_supervisor
+def review_weekly_report():
+    return render_template('report/report_detail.html')
