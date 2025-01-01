@@ -239,3 +239,9 @@ def topic_poster():
 @require_supervisor
 def review_weekly_report():
     return render_template('report/report_detail.html')
+
+
+@bp.route('/report_analysis')
+@require_supervisor
+def weekly_report_analysis():
+    return render_template('supervisor/report/analysis.html')

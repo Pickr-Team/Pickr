@@ -152,11 +152,7 @@
 
 {% macro pickr_simple_table(title, data, type, subData, subData_2) %}
     <h2 class="third_title-2 accent">{{ title }}</h2>
-    {% if type == 'supStudent' %}
-        <span style="color: white; font-size: 18px">
-            There are <span class="accent">{{ subData }}</span> students in your team
-        </span>
-    {% elif type == 'supTopic' %}
+    {% if type == 'supTopic' %}
         <span style="color: white; font-size: 18px">
             Current Position: <span class="accent">{{ subData }}</span> / Total Position: <span class="accent">{{ subData_2 }}</span>
         </span>
@@ -170,28 +166,28 @@
                         <th scope="col">
                             {% if type == "supTopic" %}
                                 Topic Id
-                            {% elif type == 'supStudent' or type == 'supCustom' %}
+                            {% elif type == 'supCustom' %}
                                 Topic Title
                             {% endif %}
                         </th>
                         <th scope="col">
                             {% if type == "supTopic" %}
                                 Title
-                            {% elif type == 'supStudent' or type == 'supCustom' %}
+                            {% elif type == 'supCustom' %}
                                 Submit Time
                             {% endif %}
                         </th>
                         <th scope="col">
                             {% if type == "supTopic" %}
                                 Quota
-                            {% elif type == 'supStudent'or type == 'supCustom' %}
+                            {% elif type == 'supCustom' %}
                                 Student Name
                             {% endif %}
                         </th>
                         <th scope="col">
                             {% if type == "supTopic" %}
                                 Students
-                            {% elif type == 'supStudent'or type == 'supCustom' %}
+                            {% elif type == 'supCustom' %}
                                 Student Name
                             {% endif %}
                         </th>
@@ -204,21 +200,21 @@
                             <td id="td-1-{{ type }}">
                                 {% if type == "supTopic" %}
                                     PK{{ "%04d"|format(d.id) }}
-                                {% elif type == 'supStudent'or type == 'supCustom' %}
+                                {% elif type == 'supCustom' %}
                                     {{ d.final_topic_name }}
                                 {% endif %}
                             </td>
                             <td id="td-2-{{ type }}">
                                 {% if type == "supTopic" %}
                                     {{ d.name }}
-                                {% elif type == 'supStudent' or type == 'supCustom'%}
+                                {% elif type == 'supCustom'%}
                                     {{ d.submit_time }}
                                 {% endif %}
                             </td>
                             <td id="td-3-{{ type }}">
                                 {% if type == "supTopic" %}
                                     {{ d.quota }}
-                                {% elif type == 'supStudent'or type == 'supCustom' %}
+                                {% elif type == 'supCustom' %}
                                     {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
                                 {% endif %}
                             </td>
@@ -227,7 +223,7 @@
                                      <button style="width: 100px; margin: 0 auto" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#topic-{{ d.id }}-details" aria-expanded="true" aria-controls="topic-{{ d.id }}-details">
                                         {{ d.get_selected_num_final() }}
                                     </button>
-                                {% elif type == 'supStudent'or type == 'supCustom' %}
+                                {% elif type == 'supCustom' %}
                                     {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
                                 {% endif %}
                             </td>
@@ -241,9 +237,6 @@
                                         <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
                                                 onclick="del('{{ type }}',{{ d.id }})">Delete
                                         </button>
-                                    {% elif type == 'supStudent'%}
-                                        <a href="{{ url_for('supervisor.detail_topic', topic_id = d.final_topic.id) }}"
-                                           class="pickr-btn">Topic Detail</a>
                                     {% elif type == 'supCustom' %}
                                         <a href="{{ url_for('base.topic_detail_custom', topic_id =d.final_topic_id) }}"
                                            class="pickr-btn">Topic Detail</a>
@@ -254,7 +247,9 @@
                         <tr id="topic-{{ d.id }}-details" class="accordion-collapse collapse show" >
                             <td colspan="5" class="accordion-body">
                                 {% if d.get_selected_num_final() > 0 %}
-                                    {{ d.get_selected_final_selection()[0].student.english_name }}({{ d.get_selected_final_selection()[0].student.chinese_name }}) {{ d.get_selected_final_selection()[0].student.class_number }}
+                                    {% for selection in d.get_selected_final_selection() %}
+                                       {{ selection.student.english_name }} ({{ selection.student.chinese_name }}) - Class: {{ selection.student.class_number }} - Submit Time: {{ selection.submit_time }}
+                                    {% endfor %}
                                 {% else %}
                                     No students have yet got this topic. 😊
                                 {% endif %}
@@ -270,8 +265,9 @@
         <div class="_40px_height"></div>
         {% if type == 'supTopic' %}
             <a href="{{ url_for('supervisor.new_topic') }}" class="submit-button phone w-button"><em>+</em> New Topic</a>
-{#            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button phone w-button"><em>→</em>
+{#            TODO:BUG#}
+            <a href="{{ url_for('supervisor.topic_poster') }}" class="submit-button phone w-button"><em>→</em>
                 Generate
-                Poster</a>#}
+                Poster</a>
         {% endif %}
 {% endmacro %}
