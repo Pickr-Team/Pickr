@@ -194,6 +194,30 @@ main {
     #w-node-global-01 {
         display: block;
     }
+
+    .report-container {
+        position: relative;
+    }
+
+    .report-tab {
+        position: absolute;
+    }
+
+    .last-update-span {
+        margin-top: 20px;
+    }
+
+    .tab-content {
+        margin-top: 100px;
+    }
+
+    .tab-container {
+        display: block;
+    }
+
+    .tabs {
+        margin-top: 20px;
+    }
 }
 
 

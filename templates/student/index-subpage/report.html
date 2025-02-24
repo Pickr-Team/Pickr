@@ -3,11 +3,11 @@
 
 <div style="margin-top: 20px"></div>
 
-{#TODO:如果当前在哪一周，tab直接active到那一周#}
+{#TODO:如果当前在哪周，tab直接active到那一周#}
 
-
-<div class="d-flex align-items-start">
-  <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="width: 200px;">
+<div class="d-flex align-items-start report-container">
+  <div class="nav flex-column nav-pills me-3 report-tab" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="width: 200px;">
+{#      semester 1#}
       <div class="accordion-item" style="border: none">
         <div class="accordion-header">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#s1" aria-expanded="true" aria-controls="s1">
@@ -18,13 +18,13 @@
           <div class="accordion-body" style="padding: unset; background-color: black">
             <button class="nav-link" id="v-pills-1st-tab" data-bs-toggle="pill" data-bs-target="#v-pills-1st" type="button" role="tab" aria-controls="v-pills-1st" aria-selected="true">1st Week ✘</button>
             <button class="nav-link" id="v-pills-2nd-tab" data-bs-toggle="pill" data-bs-target="#v-pills-2nd" type="button" role="tab" aria-controls="v-pills-2nd" aria-selected="false">2nd Week ✔</button>
-            <button class="nav-link active" id="v-pills-3rd-tab" data-bs-toggle="pill" data-bs-target="#v-pills-3rd" type="button" role="tab" aria-controls="v-pills-3rd" aria-selected="false">3rd Week</button>
+              <button class="nav-link active" id="v-pills-3rd-tab" data-bs-toggle="pill" data-bs-target="#v-pills-3rd" type="button" role="tab" aria-controls="v-pills-3rd" aria-selected="false">3rd Week</button>
             <button class="nav-link" id="v-pills-4th-tab" data-bs-toggle="pill" data-bs-target="#v-pills-4th" type="button" role="tab" aria-controls="v-pills-4th" aria-selected="false" disabled style="color: gray">4th Week</button>
             <button class="nav-link" id="v-pills-5th-tab" data-bs-toggle="pill" data-bs-target="#v-pills-5th" type="button" role="tab" aria-controls="v-pills-5th" aria-selected="false" disabled style="color: gray">5th Week</button>
           </div>
         </div>
       </div>
-
+{#      semester 2#}
       <div class="accordion-item" style="border: none">
         <div class="accordion-header">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#s2" aria-expanded="true" aria-controls="s2" disabled style="background-color:gray;">
@@ -38,8 +38,8 @@
           </div>
         </div>
       </div>
-
   </div>
+
   <div class="tab-content" id="v-pills-tabContent" style="width: 100%">
     <div class="tab-pane " id="v-pills-1st" role="tabpanel" aria-labelledby="v-pills-1st-tab" style="width: 100%">
 
@@ -111,12 +111,9 @@
 
         </table>
         <div style="margin-top: 15px;">
-            <a href="#" class="submit-button w-button save-btn">Save
-                <svg t="1735524573931" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4255" width="18" height="18"><path d="M708.388571 121.904762L902.095238 320.804571V828.952381a73.142857 73.142857 0 0 1-73.142857 73.142857H195.047619a73.142857 73.142857 0 0 1-73.142857-73.142857V195.047619a73.142857 73.142857 0 0 1 73.142857-73.142857h513.340952zM292.571429 195.023238L195.047619 195.047619v633.904762l97.52381-0.024381V536.380952h438.857142v292.547048L828.952381 828.952381V350.549333l-97.52381-100.156952V365.714286H292.571429V195.023238zM658.285714 609.52381H365.714286v219.40419h292.571428V609.52381z m-48.761904 73.142857v73.142857h-195.04762v-73.142857h195.04762z m48.761904-487.619048H365.714286v97.52381h292.571428V195.047619z" p-id="4256" fill="#ffffff"></path></svg>
-            </a>
             <a href="#" class="submit-button w-button">Submit ↑</a>
             <a href="#" class="submit-button w-button">Export as PDF →</a>
-            <span style="float: right">Last Update: 2024/01/01 23:00:00</span>
+            <span style="float: right" class="last-update-span">Last Update: 2024/01/01 23:00:00</span>
         </div>
     </div>
     <div class="tab-pane" id="v-pills-4th" role="tabpanel" aria-labelledby="v-pills-4th-tab">444</div>

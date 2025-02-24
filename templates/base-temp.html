@@ -179,16 +179,13 @@
     }
 
     function confirmDel() {
-        {#TODO encrypt the key and value of 'user_type'#}
-        {#TODO: 发送 /delete/type/id 给base，然后在base中判断session['user_type']，从而传给具体的user blueprint，以避免在前端存储user_type#}
-        const user_type = sessionStorage.getItem('user_type')
         $confirmModal.modal('hide')
         $.ajax({
-            url: `/${user_type}/delete/${_type}/${_id}`,
+            url: `/delete/${_type}/${_id}`,
             type: 'GET',
-            success: function (response) {
+            success: function (response) {1
                 $secondConfirmModal.modal('show');
-                if (response.success) {
+               if (response.success) {
                     $secondConfirmModalBody.css('color', 'white');
                     $secondConfirmModalBody.text(response.message);
                     _parentNode.remove()

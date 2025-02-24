@@ -159,3 +159,10 @@ def topic_detail_custom(topic_id):
         return render_template('base/topic_detail_custom.html', topic=topic)
     else:
         return render_template('base/error.html', message='The topic is not existed'), 404
+
+
+@bp.route('/delete/<_type>/<_id>')
+def delete_middle_ware(_type, _id):
+    user_type = session['user_type']
+    target_url = f'/{user_type}/delete/{_type}/{_id}'
+    return redirect(target_url)

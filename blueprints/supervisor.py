@@ -225,7 +225,6 @@ def topic_poster():
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
     supervisor = Supervisor.get_by_id(id=supervisor_id)
 
-    # todo bug
     pdf_buffer = generate_topic_poster(supervisor, topics)
     pdf_buffer.seek(0)
 
@@ -243,5 +242,5 @@ def review_weekly_report():
 
 @bp.route('/report_analysis')
 @require_supervisor
-def weekly_report_analysis():
+def report_analysis():
     return render_template('supervisor/report/analysis.html')

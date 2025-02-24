@@ -1,3 +1,5 @@
+import os
+
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.colors import white
@@ -19,8 +21,12 @@ def generate_topic_poster(supervisor, topics):
     seed = 220
 
     # Fonts
-    pdfmetrics.registerFont(TTFont('DankMono_Italic', 'static/font/Dank-Mono-Italic.ttf'))
-    pdfmetrics.registerFont(TTFont('DankMono', 'static/font/Dank-Mono-Regular.ttf'))
+    current_dir = os.path.dirname(__file__)
+    parent_dir = os.path.dirname(current_dir)
+    font_path = os.path.join(parent_dir, 'static', 'font', 'Dank-Mono-Italic.ttf') # C:\Users\20854\Desktop\Pickr\models\static\font\Dank-Mono-Italic.ttf
+    pdfmetrics.registerFont(TTFont('DankMono_Italic', font_path))
+    font_path = os.path.join(parent_dir, 'static', 'font', 'Dank-Mono-Regular.ttf')
+    pdfmetrics.registerFont(TTFont('DankMono', font_path))
 
     c.setFont("DankMono_Italic", 40)
     c.setFillColorRGB(225 / 255.0, 108 / 255.0, 99 / 255.0)

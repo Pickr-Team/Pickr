@@ -20,7 +20,7 @@ function toggleDivs() {
     }
 }
 
-document.getElementById('customTopicCheckbox').addEventListener('change', toggleDivs);
+document.getElementById('customTopicCheckbox')?.addEventListener('change', toggleDivs);
 document.addEventListener('DOMContentLoaded', toggleDivs);
 
 function refreshPageContent() {
