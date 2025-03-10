@@ -79,5 +79,15 @@ class Supervisor(BaseModel):
                 total_selections += final_selections
         return total_selections
 
+    def get_total_selected_selections(self):
+        topics = Topic.query.filter_by(supervisor_id=self.id).all()
+        all_final_selections = []
+        for topic in topics:
+            final_selections = topic.get_selected_final_selection()
+            if final_selections is not None:
+                for s in final_selections:
+                    all_final_selections.append(s)
+        return all_final_selections
+
     def __repr__(self):
         return f'<Supervisor {self.id}>'

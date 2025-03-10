@@ -2,7 +2,7 @@
 
 <div style="margin-top: 20px"></div>
 
-{% if semester %}
+{% if semester and selection and selection.final_topic_name %}
     {% set semesters = [
   {"id": "s1", "name": "Semester 1", "start_date": semester.first_semester_start_date},
   {"id": "s2", "name": "Semester 2", "start_date": semester.second_semester_start_date}

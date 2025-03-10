@@ -1,5 +1,9 @@
+from datetime import datetime
+
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, Response
 from functools import wraps
+
+from models.report import Report
 from models.student import Student
 from models.supervisor import Supervisor
 from models.selection import Selection
@@ -52,8 +56,11 @@ def index():
     for topic in topics:
         total_quta += topic.quota
 
+    reports = Report.get_all_reports_by_supervisor_id(supervisor_id)
+    print('reports', reports)
     return render_template('supervisor/index.html', topics=topics, supervisor=supervisor, total_quta=total_quta,
-                           not_custom_selections=not_custom_selections, custom_selections=custom_selections)
+                           not_custom_selections=not_custom_selections, custom_selections=custom_selections,
+                           reports=reports)
 
 
 # Supervisor create new topic
@@ -234,10 +241,29 @@ def topic_poster():
     })
 
 
+def get_graduation_year():
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+    if current_month >= 7:
+        return current_year + 1
+    else:
+        return current_year
+
+
 @bp.route('/report')
 @require_supervisor
 def review_weekly_report():
-    return render_template('report/report_detail.html')
+    report_id = request.args.get('report_id')
+    report = Report.get_by_id(report_id)
+    report.mark_as_read()
+
+    supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
+    supervisor = Supervisor.get_by_id(id=supervisor_id)
+    supervisor_name = supervisor.first_name + ' ' + supervisor.last_name
+
+    graduation_year = get_graduation_year()
+    return render_template('report/report_detail.html', report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
 
 
 @bp.route('/report_analysis')

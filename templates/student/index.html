@@ -23,16 +23,16 @@
         </div>
         <div class="tabs">
             <ul>
-                <li >Topic Selection</li>
-                <li class="active">Weekly Report</li>
+                <li class="active">Topic Selection</li>
+                <li >Weekly Report</li>
             </ul>
         </div>
     </div>
     <div class="panel">
-        <div class="sub-panel ">
+        <div class="sub-panel active">
             {% include 'student/index-subpage/topic_selection.html' %}
         </div>
-        <div class="sub-panel report-panel active">
+        <div class="sub-panel report-panel ">
             {% include 'student/index-subpage/report.html' %}
         </div>
     </div>
@@ -51,6 +51,7 @@
                     // Remove active class from all panels
                     panels.forEach(p => p.classList.remove('active'));
                     descList.forEach(d => d.classList.remove('active'));
+
                     // Add active class to the clicked tab
                     tab.classList.add('active');
                     // Add active class to the corresponding panel

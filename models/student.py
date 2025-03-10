@@ -1,5 +1,6 @@
 from exts import db
 from models.base import BaseModel
+from models.selection import Selection
 
 
 class Student(BaseModel):
@@ -48,6 +49,10 @@ class Student(BaseModel):
             (cls.user_name.like(f'%{search_query}%')) |
             (cls.class_number.like(f'%{search_query}%'))
         )
+
+    def get_final_topic_name(self):
+        selection = Selection.get_by_student_id(self.id)
+        return selection.final_topic_name
 
     def __repr__(self):
         return f'<Student {self.id}>'

@@ -1,5 +1,5 @@
 {% extends 'base-temp.html' %}
-{% from 'macro/report_table.html' import report_table %}
+{% from 'macro/report_table.html' import report_table_review %}
 
 {% block title %}Pickr | Report Detail{% endblock %}
 
@@ -48,7 +48,7 @@
         }
         .pickr-btn:hover {
             color: white;
-            background-color: black;
+            background-color: var(--accent) ;
             border: 1px solid white;
         }
         .icon path {
@@ -61,10 +61,10 @@
 {% endblock %}
 
 {% block content %}
-    {{ report_table() }}
+    {{ report_table_review(report, supervisor_name, graduation_year) }}
 
     <div class="btn-group feedback-btn-group" role="group" aria-label="Basic example">
-      <button type="button" class="pickr-btn" onclick="window.history.back()">⮌ Go Back</button>
+      <button type="button" class="pickr-btn" onclick="history.back()">⮌ Go Back</button>
     </div>
 {% endblock %}
 

@@ -249,6 +249,7 @@
                                 {% if d.get_selected_num_final() > 0 %}
                                     {% for selection in d.get_selected_final_selection() %}
                                        {{ selection.student.english_name }} ({{ selection.student.chinese_name }}) - Class: {{ selection.student.class_number }} - Submit Time: {{ selection.submit_time }}
+                                        <div style="margin: 10px 0"/>
                                     {% endfor %}
                                 {% else %}
                                     No students have yet got this topic. 😊

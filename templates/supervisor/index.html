@@ -12,43 +12,106 @@
         h2 {
             margin-top: 0;
         }
+
         .tabs-menu {
-          border-right: 1px none var(--wite);
-          border-bottom: 1px none var(--wite);
-          border-left: 1px none var(--wite);
-          justify-content: space-between;
-          padding-top: 20px;
-          display: flex;
+            border-right: 1px none var(--wite);
+            border-bottom: 1px none var(--wite);
+            border-left: 1px none var(--wite);
+            justify-content: space-between;
+            padding-top: 20px;
+            display: flex;
         }
+
         .accordion-body {
             background-color: black;
             color: white;
         }
+
         .accordion-button:not(.collapsed) {
             color: black;
             background-color: white;
         }
+
         .accordion-button {
             padding: .5rem 1rem;
         }
+
         .accordion-button:not(.collapsed)::after {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")
         }
+
         .report label {
             color: white;
             margin-bottom: unset;
             line-height: 42px;
         }
-        .report select{
+
+        .report select {
             width: 180px;
             margin: 0 10px;
             padding: .3rem 2rem .3rem .5rem;
         }
+
         .icon path {
             transition: .4s all;
         }
+
         .analysis-btn:hover .icon path {
             fill: black;
+        }
+
+        .filter-box {
+            display: flex;
+            width: 100%
+        }
+
+        .select-box {
+            display: flex;
+        }
+
+        .report-detail {
+            display: inline-block;
+        }
+
+        @media (max-width: 1080px) {
+            .filter-box {
+                flex-wrap: wrap;
+                row-gap: 20px;
+            }
+
+            .analysis-btn {
+                order: 1;
+                margin-left: 0 !important;
+                width: auto !important;
+                display: block;
+                margin-top: 8px;
+            }
+        }
+
+        @media (max-width: 468px) {
+            .form-select {
+                font-size: .8rem;
+            }
+
+            .report select {
+                width: unset;
+                padding: 0rem 2rem 0rem .5rem;
+            }
+
+            .w-tab-link {
+                padding: 4px 0;
+                font-size: 14px;
+            }
+
+            .submit-button.phone {
+                border: 1px solid white;
+                padding: 4px;
+                font-size: 14px;
+            }
+
+            .report table, #tbody-supTopic {
+                font-size: 14px;
+            }
         }
     </style>
     <body>
@@ -78,7 +141,9 @@
                     {{ pickr_simple_table('Your topics', topics, 'supTopic', total_quta, supervisor.position ) }}
                     <div style="margin-top: 50px;"></div>
                     {{ pickr_simple_table('Student Custom Topics', custom_selections, 'supCustom') }}
-                    <div class="_40px_height"><a href="{{ url_for('supervisor.export_student_list') }}" class="submit-button phone w-button"><em>→</em> Export Student List</a></div>
+                    <div class="_40px_height"><a href="{{ url_for('supervisor.export_student_list') }}"
+                                                 class="submit-button phone w-button"><em>→</em> Export Student List</a>
+                    </div>
                 </div>
                 {#Reports Section#}
                 <div data-w-tab="Reports" class="w-tab-pane">

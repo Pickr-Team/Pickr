@@ -11,12 +11,19 @@
     <body>
     <section class="page_hearder">
         <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}! </h1>
+        {#<div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+            <label class="form-check-label" for="flexSwitchCheckChecked" style="color: white">
+                MANAGER MODE
+            </label>
+        </div>#}
         <div class="_20px_height"></div>
         <a href="{{ url_for('base.logout') }}" class="small_link accent"><em>Logout↗</em></a>
         <a href="{{ url_for('base.change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
             Password↗</em></a>
         <div class="_20px_height"></div>
     </section>
+
     <div data-current="System" data-easing="ease" data-duration-in="300" data-duration-out="100" class="w-tabs">
         <address style="display: flex;overflow-x: auto">
             <a data-w-tab="System" class="tab_link w-inline-block w-tab-link w--current"
@@ -93,7 +100,7 @@
             const $table = $(`#table-${type}`)
             const tbody = document.querySelector(`#tbody-${type}`)
             {#TODO bug: if there is not any data, disable last-page-button#}
-            if(tbody == null) return;
+            if (tbody == null) return;
             let data = tbody.getElementsByTagName('tr');
             let originalData = data;
             let visibleData = data;
@@ -187,6 +194,17 @@
             pagination('topic')
             pagination('supTopic')
         })
+
+        {#todo: switch page#}
+        // switch mode
+{#        $(document).ready(function () {
+            const modeSwitch = document.getElementById('flexSwitchCheckChecked');
+            const modeLabel = document.querySelector('label[for="flexSwitchCheckChecked"]');
+            modeSwitch.addEventListener('change', function () {
+                modeLabel.textContent = this.checked ? 'MANAGER MODE' : 'SUPERVISOR MODE';
+            });
+        })#}
+
 
     </script>
     </body>

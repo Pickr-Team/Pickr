@@ -1,5 +1,6 @@
 from exts import db
 from models.base import BaseModel
+from models.supervisor import Supervisor
 
 
 class Report(BaseModel):
@@ -15,9 +16,10 @@ class Report(BaseModel):
     feedback = db.Column(db.Text, nullable=True)
     semester = db.Column(db.Integer, nullable=False)  # 1, 2
     week = db.Column(db.Integer, nullable=False)  # 1 - 12
+    is_read = db.Column(db.Integer, nullable=False)  # 0-not read, 1-read
 
     def __init__(self, student_id, submit_time, update_time, semester, week,
-                 current_plan=None, next_plan=None, issues=None, feedback=None):
+                 current_plan=None, next_plan=None, issues=None, feedback=None, is_read=0):
         self.student_id = student_id
         self.submit_time = submit_time
         self.update_time = update_time
@@ -27,7 +29,29 @@ class Report(BaseModel):
         self.next_plan = next_plan
         self.issues = issues
         self.feedback = feedback
+        self.is_read = is_read
 
     @classmethod
     def get_by_student_id(cls, student_id):
         return cls.query.filter_by(student_id=student_id).all()
+
+    @classmethod
+    def get_all_reports_by_supervisor_id(cls, supervisor_id):
+        """Get all reports from students supervised by the specified supervisor"""
+        supervisor = Supervisor.get_by_id(supervisor_id)
+        # 1. Get finalized selections for this supervisor
+        selections = supervisor.get_total_selected_selections()
+        print('selections', selections) # selections [[<Selection 1>], []]
+        all_reports = []
+        # 2. Get student IDs from these selections
+        for selection in selections:
+            # 3. Get reports for each student
+            reports = Report.get_by_student_id(selection.student_id)
+            for r in reports:
+                all_reports.append(r)
+        return all_reports
+
+    def mark_as_read(self):
+        self.is_read = 1
+        db.session.add(self)
+        db.session.commit()
