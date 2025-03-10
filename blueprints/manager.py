@@ -62,9 +62,7 @@ def index():
     static_topic_num = Selection.get_num_of_status_4()
 
     semester = Semester.get_latest()
-    print('{{ graduation_year }}', semester.graduation_year)
-    print('{{ first_semester_start_date }}', semester.first_semester_start_date)
-    print('{{ second_semester_start_date }}', semester.second_semester_start_date)
+
     return render_template('manager/index.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
                            notes=notes, students=students, supervisors=supervisors,
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
@@ -585,3 +583,9 @@ def update_semester_start_date(graduation_year, num, start_time):
             existing_semester.update(second_semester_start_date=start_time)
 
     return Result.success(f"Semester {num} start date updated successfully for year {graduation_year}.")
+
+
+@bp.route('/to-supervisor')
+@require_manager
+def switch_to_supervisor_page():
+    return redirect(url_for('supervisor.index'))

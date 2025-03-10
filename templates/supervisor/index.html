@@ -117,6 +117,9 @@
     <body>
     <section class="page_hearder">
         <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}!</h1>
+        {% if is_manager %}
+                <a href="{{ url_for('manager.index') }}" class="pickr-btn" style="display: inline-block; margin: 20px 0">Back to Manager Page</a>
+        {% endif %}
         <div class="_20px_height"></div>
         <a href="{{ url_for('base.logout') }}" class="small_link accent"><em>Logout↗</em></a>
         <a href="{{ url_for('base.change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change

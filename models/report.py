@@ -39,15 +39,16 @@ class Report(BaseModel):
     def get_all_reports_by_supervisor_id(cls, supervisor_id):
         """Get all reports from students supervised by the specified supervisor"""
         supervisor = Supervisor.get_by_id(supervisor_id)
-        # 1. Get finalized selections for this supervisor
         selections = supervisor.get_total_selected_selections()
+
         all_reports = []
-        # 2. Get student IDs from these selections
         for selection in selections:
-            # 3. Get reports for each student
-            reports = Report.get_by_student_id(selection.student_id)
-            for r in reports:
-                all_reports.append(r)
+            reports = Report.query.filter_by(student_id=selection.student_id) \
+                .order_by(Report.update_time.desc()).all()
+            all_reports.extend(reports)
+
+        all_reports.sort(key=lambda x: x.update_time, reverse=True)
+
         return all_reports
 
     def mark_as_read(self):

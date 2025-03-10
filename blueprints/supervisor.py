@@ -16,22 +16,21 @@ from io import BytesIO
 bp = Blueprint("supervisor", __name__, url_prefix="/supervisor")
 
 
-def require_supervisor(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_name' not in session or session['user_type'] != 'supervisor':
-            print("Not logged in - require_supervisor")
-            return redirect(url_for('base.login'))
-        return f(*args, **kwargs)
-
-    return decorated_function
+# def require_supervisor(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         if 'user_name' not in session or session['user_type'] != 'supervisor':
+#             print("Not logged in - require_supervisor")
+#             return redirect(url_for('base.login'))
+#         return f(*args, **kwargs)
+#
+#     return decorated_function
 
 
 def require_supervisor_or_manager(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_name' not in session or session['user_type'] == 'student':
-            print("Not logged in - require_supervisor")
             return redirect(url_for('base.login'))
         return f(*args, **kwargs)
 
@@ -39,13 +38,13 @@ def require_supervisor_or_manager(f):
 
 
 @bp.route('/')
-@require_supervisor
+@require_supervisor_or_manager
 def redirect_to_home():
     return redirect(url_for('supervisor.index'))
 
 
 @bp.route('/home')
-@require_supervisor
+@require_supervisor_or_manager
 def index():
     supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     supervisor = Supervisor.get_by_id(id=supervisor_id)
@@ -58,15 +57,16 @@ def index():
 
     reports = Report.get_all_reports_by_supervisor_id(supervisor_id)
     students = supervisor.get_all_students()
+    is_manager = session['user_type'] == 'manager'
 
     return render_template('supervisor/index.html', topics=topics, supervisor=supervisor, total_quta=total_quta,
                            not_custom_selections=not_custom_selections, custom_selections=custom_selections,
-                           reports=reports, students=students)
+                           reports=reports, students=students, is_manager=is_manager)
 
 
 # Supervisor create new topic
 @bp.route('/new_topic')
-@require_supervisor
+@require_supervisor_or_manager
 def new_topic():
     types = Type.get_all()
     return render_template('supervisor/topic/new_topic.html', types=types)
@@ -114,7 +114,7 @@ def add_topic():
 
 
 @bp.route('/delete/<string:_type>/<int:_id>')
-@require_supervisor
+@require_supervisor_or_manager
 def delete(_type, _id):
     if _type == 'supTopic':
         topic = Topic.get_by_id(id=_id)
@@ -131,7 +131,7 @@ def delete(_type, _id):
 
 
 @bp.route('/edit_topic/<int:topic_id>')
-@require_supervisor
+@require_supervisor_or_manager
 def edit_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     types = Type.get_all()
@@ -140,7 +140,7 @@ def edit_topic(topic_id):
 
 # Supervisor edit topic
 @bp.route('/detail_topic/<int:topic_id>')
-@require_supervisor
+@require_supervisor_or_manager
 def detail_topic(topic_id):
     topic = Topic.get_by_id(id=topic_id)
     return render_template('base/topic_detail.html', topic=topic)
@@ -190,7 +190,7 @@ def update_topic(topic_id):
 
 # Supervisor get the student list
 @bp.route('/export_student_list')
-@require_supervisor
+@require_supervisor_or_manager
 def export_student_list():
     supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     not_custom_selections = Selection.get_supervisor_selection_not_custom(supervisor_id=supervisor_id)
@@ -227,7 +227,7 @@ def export_student_list():
 
 # Generate topic poster
 @bp.route('/topic_poster')
-@require_supervisor
+@require_supervisor_or_manager
 def topic_poster():
     supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     topics = Topic.get_by_supervisor_id_not_custom(supervisor_id=supervisor_id)
@@ -253,7 +253,7 @@ def get_graduation_year():
 
 
 @bp.route('/report')
-@require_supervisor
+@require_supervisor_or_manager
 def review_weekly_report():
     report_id = request.args.get('report_id')
     report = Report.get_by_id(report_id)
@@ -268,6 +268,6 @@ def review_weekly_report():
 
 
 @bp.route('/report_analysis')
-@require_supervisor
+@require_supervisor_or_manager
 def report_analysis():
     return render_template('supervisor/report/analysis.html')

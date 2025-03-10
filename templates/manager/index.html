@@ -11,12 +11,7 @@
     <body>
     <section class="page_hearder">
         <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}! </h1>
-        {#<div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-            <label class="form-check-label" for="flexSwitchCheckChecked" style="color: white">
-                MANAGER MODE
-            </label>
-        </div>#}
+        <a href="{{ url_for('manager.switch_to_supervisor_page') }}" class="pickr-btn" style="display: inline-block; margin: 20px 0">Go to Supervisor Page</a>
         <div class="_20px_height"></div>
         <a href="{{ url_for('base.logout') }}" class="small_link accent"><em>Logout↗</em></a>
         <a href="{{ url_for('base.change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
@@ -67,7 +62,11 @@
         </div>
     </div>
     <div class="_80px_height"></div>
-    <script>
+</body>
+{% endblock %}
+
+{% block script %}
+<script>
         // Tab switch
         $(document).ready(function () {
             const _pre = sessionStorage.getItem('pre') || ''
@@ -195,17 +194,5 @@
             pagination('supTopic')
         })
 
-        {#todo: switch page#}
-        // switch mode
-{#        $(document).ready(function () {
-            const modeSwitch = document.getElementById('flexSwitchCheckChecked');
-            const modeLabel = document.querySelector('label[for="flexSwitchCheckChecked"]');
-            modeSwitch.addEventListener('change', function () {
-                modeLabel.textContent = this.checked ? 'MANAGER MODE' : 'SUPERVISOR MODE';
-            });
-        })#}
-
-
     </script>
-    </body>
 {% endblock %}
