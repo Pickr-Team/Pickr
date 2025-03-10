@@ -1,71 +1,83 @@
-{% macro report_table() %}
-    <table style="width: 100%">
-        <h1 style="text-align: center">Chengdu University of Technology Oxford Brookes College Project Module (CHC 6096)</h1>
-        <h2 style="text-align: center; margin-bottom: 20px">Weekly Report Sheet - 2023/2024 Academic Year</h2>
+{% macro report_table(year, semester, week, week_start, name, supervisor, topic, report=None) %}
+    <form id="reportForm" method="POST" action="{{ url_for('student.handle_report') }}">
+        <input type="hidden" name="semester" value="{{ semester }}">
+        <input type="hidden" name="week" value="{{ week }}">
+        <input type="hidden" name="action" value="{% if report %}update{% else %}create{% endif %}">
+
+        <table style="width: 100%">
+{#            <h1 style="text-align: center">Chengdu University of Technology Oxford Brookes College Project Module (CHC#}
+{#                6096)</h1>#}
+{#            <h2 style="text-align: center; margin-bottom: 20px">Weekly Report Sheet - {{ year-1 }}/{{ year }} Academic#}
+{#                Year</h2>#}
             <tr>
                 <td>STUDENT NAME:</td>
-                <td>Crystal</td>
+                <td>{{ name }}</td>
             </tr>
             <tr>
                 <td>SUPERVISOR NAME:</td>
-                <td>Clivia Li</td>
+                <td>{{ supervisor }}</td>
             </tr>
             <tr>
                 <td>PROJECT NAME:</td>
-                <td>Graduation Project Management System</td>
+                <td>{{ topic }}</td>
             </tr>
             <tr>
                 <td>WEEK NUMBER:</td>
-                <td>1</td>
+                <td>{{ week }}</td>
             </tr>
             <tr>
-                <td>DATE:</td>
-                <td>2024/01/01 - 2024/01/07</td>
+                <td>START DATE:</td>
+                <td>{{ week_start }}</td>
             </tr>
             <tr>
-                <td>SUBMITED TIME:</td>
-                <td>2024/01/01 12:00:00</td>
+                <td>SUBMITTED TIME:</td>
+                <td>
+                    {% if report %}
+                        {{ report.submit_time }}
+                    {% else %}
+                        Not submitted yet
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td colspan="2">
                     Action plan for the current week:
-                    <textarea class="text-field text-area w-input" name="" id="" disabled>
-1. Proident eiusmod est minim sunt. Eu amet consectetur nulla id duis incididunt dolore veniam. Consequat laboris aliquip tempor duis culpa ad labore qui minim reprehenderit sit enim consequat.
-2. Amet deserunt nostrud excepteur occaecat officia nostrud Lorem non proident. Adipisicing amet non aliquip do aliquip nostrud minim laboris elit aliquip. Anim esse laboris pariatur excepteur.
-3. Laboris voluptate et qui pariatur mollit nostrud id adipisicing labore. Quis incididunt tempor duis nostrud commodo. Labore in consequat reprehenderit dolor in voluptate.
-                    </textarea>
+                    <textarea class="text-field text-area w-input" name="current_plan" required>{{ report.current_plan if report else '' }}</textarea>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     Challenges and issues encountered in the week:
-                    <textarea class="text-field text-area w-input" name="" id=""  disabled>
-1. Proident eiusmod est minim sunt. Eu amet consectetur nulla id duis incididunt dolore veniam. Consequat laboris aliquip tempor duis culpa ad labore qui minim reprehenderit sit enim consequat.
-2. Amet deserunt nostrud excepteur occaecat officia nostrud Lorem non proident. Adipisicing amet non aliquip do aliquip nostrud minim laboris elit aliquip. Anim esse laboris pariatur excepteur.
-3. Laboris voluptate et qui pariatur mollit nostrud id adipisicing labore. Quis incididunt tempor duis nostrud commodo. Labore in consequat reprehenderit dolor in voluptate.
-                    </textarea>                </td>
+                    <textarea class="text-field text-area w-input" name="issues" required>{{ report.issues if report else '' }}</textarea>
+                </td>
             </tr>
             <tr>
                 <td colspan="2">
                     Action plan for the next week:
-                    <textarea class="text-field text-area w-input" name="" id="" disabled>
-1. Proident eiusmod est minim sunt. Eu amet consectetur nulla id duis incididunt dolore veniam. Consequat laboris aliquip tempor duis culpa ad labore qui minim reprehenderit sit enim consequat.
-2. Amet deserunt nostrud excepteur occaecat officia nostrud Lorem non proident. Adipisicing amet non aliquip do aliquip nostrud minim laboris elit aliquip. Anim esse laboris pariatur excepteur.
-3. Laboris voluptate et qui pariatur mollit nostrud id adipisicing labore. Quis incididunt tempor duis nostrud commodo. Labore in consequat reprehenderit dolor in voluptate.
-                    </textarea>                </td>
+                    <textarea class="text-field text-area w-input" name="next_plan" required>{{ report.next_plan if report else '' }}</textarea>
+                </td>
             </tr>
             <tr>
                 <td colspan="2">
                     Supervisor Feedback:
-                    <textarea class="text-field text-area w-input" name="" id="" disabled>
-1. Proident eiusmod est minim sunt. Eu amet consectetur nulla id duis incididunt dolore veniam. Consequat laboris aliquip tempor duis culpa ad labore qui minim reprehenderit sit enim consequat.
-2. Amet deserunt nostrud excepteur occaecat officia nostrud Lorem non proident. Adipisicing amet non aliquip do aliquip nostrud minim laboris elit aliquip. Anim esse laboris pariatur excepteur.
-3. Laboris voluptate et qui pariatur mollit nostrud id adipisicing labore. Quis incididunt tempor duis nostrud commodo. Labore in consequat reprehenderit dolor in voluptate.
-                    </textarea>                </td>
+                    <textarea class="text-field text-area w-input" name="feedback" required>{{ report.feedback if report else '' }}</textarea>
+                </td>
             </tr>
-    </table>
-    <div style="margin-top: 15px;">
-        <a href="#" class="submit-button w-button">Export as PDF →</a>
-        <span style="float: right">Last Update: 2024/01/01 23:00:00</span>
-     </div>
+        </table>
+        <div style="margin-top: 15px;">
+            <a href="#" class="submit-button w-button">Export as PDF →</a>
+            {% if report %}
+               <button type="submit" class="submit-button w-button">Update ↑</button>
+            {% else %}
+               <button type="submit" class="submit-button w-button">Submit ↑</button>
+            {% endif %}
+            <span style="float: right">Last Update:
+                {% if report %}
+                    {{ report.update_time }}
+                {% else %}
+                    Not submitted yet
+                {% endif %}
+            </span>
+        </div>
+    </form>
 {% endmacro %}

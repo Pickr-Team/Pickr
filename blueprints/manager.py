@@ -1,5 +1,8 @@
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, send_from_directory, flash
 from functools import wraps
+
+from models.result import Result
+from models.semester import Semester
 from models.student import Student
 from models.supervisor import Supervisor
 from models.selection import Selection
@@ -55,15 +58,19 @@ def index():
     num_process = Selection.get_num_of_status_1()
     num_verify = Selection.get_num_of_status_2()
     num_fail = Selection.get_num_of_status_5()
-    # total_quta = Topic.get_all_quota()
+    total_quta = Topic.get_all_quota()
     static_topic_num = Selection.get_num_of_status_4()
 
+    semester = Semester.get_latest()
+    print('{{ graduation_year }}', semester.graduation_year)
+    print('{{ first_semester_start_date }}', semester.first_semester_start_date)
+    print('{{ second_semester_start_date }}', semester.second_semester_start_date)
     return render_template('manager/index.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
                            notes=notes, students=students, supervisors=supervisors,
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
                            custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
                            num_process=num_process, num_verify=num_verify, num_fail=num_fail,
-                           static_topic_num=static_topic_num, pre=pre, topics=topics, supervisor_id=supervisor_id)
+                           static_topic_num=static_topic_num, pre=pre,total_quta=total_quta, topics=topics, supervisor_id=supervisor_id, semester=semester)
 
 
 # Manager process all the selections
@@ -546,3 +553,35 @@ def edit(_type, id):
         return render_template('supervisor/topic/edit_topic.html', topic=topic, types=types)
     else:
         pass
+
+
+@bp.route('/semester/<graduation_year>/<num>/<start_time>')
+@require_manager
+def update_semester_start_date(graduation_year, num, start_time):
+    is_reset = request.args.get('isReset', 'false') == 'true'
+
+    if is_reset:
+        existing_semester = Semester.query.filter_by(graduation_year=graduation_year).first()
+        if existing_semester:
+            if num == '1':
+                existing_semester.update(first_semester_start_date=None)
+            else:
+                existing_semester.update(second_semester_start_date=None)
+            return Result.success(f"Semester {num} start date reset successfully for year {graduation_year}.")
+        else:
+            return Result.error(f"No semester found for year {graduation_year}.")
+
+    existing_semester = Semester.query.filter_by(graduation_year=graduation_year).first()
+    if existing_semester is None:
+        if num == '1':
+            semester = Semester(graduation_year, start_time, None)
+        else:
+            semester = Semester(graduation_year, None, start_time)
+        semester.add()
+    else:
+        if num == '1':
+            existing_semester.update(first_semester_start_date=start_time)
+        else:
+            existing_semester.update(second_semester_start_date=start_time)
+
+    return Result.success(f"Semester {num} start date updated successfully for year {graduation_year}.")

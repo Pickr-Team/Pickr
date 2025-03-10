@@ -100,6 +100,30 @@
         </div>
     </div>
     <div class="_20px_height"></div>
+
+    <h2 class="third_title-2 accent semester-setting"></h2>
+    <div class="text-block">This setting is used for students weekly report</div>
+    <div class="w-layout-blockcontainer w-container" style="max-width: none;">
+        <div class="w-form">
+            <div class="text-block _10button_spac">Semester 1</div>
+            <form id="semester-form-1" class="student_submit_form">
+                <input type="text" class="deadline_field w-input" placeholder="Semester 1 Start Time"
+                       id="semester-1" required="required"/>
+                <input id="semester-1-submit" type="submit" value="Save" data-wait="Please wait..."
+                       class="submit-button w-button"/>
+            </form>
+        </div>
+        <div class="w-form">
+            <div class="text-block _10button_spac">Semester 2</div>
+            <form id="semester-form-2" class="student_submit_form">
+                <input type="text" class="deadline_field w-input" placeholder="Semester 2 Start Time"
+                       id="semester-2" required="required"/>
+                <input id="semester-2-submit" type="submit" value="Save" data-wait="Please wait..."
+                       class="submit-button w-button"/>
+            </form>
+        </div>
+    </div>
+
     <h2 class="third_title-2 accent">Deadline Setting</h2>
     <div class="w-layout-blockcontainer w-container" style="max-width: none;">
         <div class="w-form">
@@ -173,7 +197,7 @@
 
 <script>
     // Deadline time picker
-    window.addEventListener('DOMContentLoaded', (event) => {
+    document.addEventListener('DOMContentLoaded', (event) => {
         flatpickr("#round1-submit", {
             enableTime: true,
             dateFormat: "Y-m-d H:i",
@@ -197,9 +221,20 @@
             dateFormat: "Y-m-d H:i",
             time_24hr: true
         });
+
+        flatpickr("#semester-1", {
+            dateFormat: "Y-m-d",
+        });
+
+        flatpickr("#semester-2", {
+            dateFormat: "Y-m-d",
+        });
     });
 
-    //Display exist deadlines
+    // graduation year
+    let graduationYear;
+
+    //Display exist deadlines and semester settings
     $(document).ready(function () {
         if ('{{ deadline_1.submit_time }}' !== 'None') {
             $('#round1-submit').val('{{ deadline_1.submit_time }}').prop('disabled', true).addClass('disabled-color');
@@ -213,6 +248,23 @@
             $('#round2-title').val('{{ deadline_2.note }}').prop('disabled', true).addClass('disabled-color');
             $('#deadline-form-2 .submit-button').val('Reset');
         }
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
+        graduationYear = currentYear + (currentMonth >= 9 ? 1 : 0);
+        document.querySelector('.semester-setting').innerText = `Class of ${graduationYear} Semester Setting`
+        if(parseInt({{ semester.graduation_year }}) === graduationYear) {
+            if ('{{  semester.first_semester_start_date }}' !== 'None') {
+                $('#semester-1').val('{{ semester.first_semester_start_date }}').prop('disabled', true).addClass('disabled-color');
+                $('#semester-1-submit').val('Reset');
+            }
+            if ('{{ semester.second_semester_start_date }}' !== 'None') {
+                $('#semester-2').val('{{ semester.second_semester_start_date }}').prop('disabled', true).addClass('disabled-color');
+                $('#semester-2-submit').val('Reset');
+            }
+        }
+
     });
 
     //Deadline form submit
@@ -224,7 +276,6 @@
         var result_time = $('#round' + roundNumber + '-result').val();
         var note = $('#round' + roundNumber + '-title').val();
         var isReset = $('#round' + roundNumber + '-submit-button').val() === 'Reset';
-        console.log(isReset)
 
         if (isReset) {
             resetForm(roundNumber);
@@ -268,6 +319,37 @@
     })
 
 
+    // semester setting
+    $('#semester-form-1, #semester-form-2').submit(function (e){
+        e.preventDefault()
+        const formId =  $(this).attr('id').slice(-1)
+        const semesterStartTime = $('#semester-' + formId).val() // 2025-03-11
+        const btnText = $('#semester-' + formId + '-submit').val()
+        const isReset = btnText === 'Reset'
+        if(!semesterStartTime) return
+        if(isReset){
+            $.ajax({
+            url: `/manager/semester/${graduationYear}/${formId}/${semesterStartTime}?isReset=true`,
+                success: function (result) {
+                    $('#semester' + formId).val('')
+                    $('#semester' + formId + 'submit').val('Submit');
+                    location.reload()
+                }
+            })
+            return;
+        }
+        $.ajax({
+            url: `/manager/semester/${graduationYear}/${formId}/${semesterStartTime}`,
+            success: function (result) {
+                $('#semester' + formId).val(semesterStartTime).prop('disabled', true).addClass('disabled-color');
+                $('#semester' + formId + 'submit').val('Reset');
+                location.reload()
+            }
+        })
+        {#TODO: location.reload() is not user friendly#}
+    })
+
+    {#TODO: clear weekly reports#}
     //reset system
     $('#reset-system').click(function (e) {
         e.preventDefault()
@@ -326,5 +408,4 @@
             modal.style.display = "none";
         }
     }
-
 </script>

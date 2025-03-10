@@ -3,9 +3,9 @@ from flask import jsonify
 
 class Result:
     @staticmethod
-    def success(message, data=None):
+    def success(message='success', data=None):
         return jsonify({
-            'status': 'success',  # code: 200
+            'code': 200,
             'message': message,
             'data': data
         })
@@ -13,6 +13,6 @@ class Result:
     @staticmethod
     def error(message):
         return jsonify({
-            'status': 'error',
+            'code': 500,
             'message': message,
         })

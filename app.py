@@ -1,3 +1,5 @@
+from datetime import timedelta, datetime
+
 from flask import Flask, render_template
 from exts import db
 # import data model
@@ -7,6 +9,8 @@ from models.selection import Selection
 from models.topic import Topic
 from models.type import Type
 from models.deadline import Deadline
+from models.semester import Semester
+from models.report import Report
 # import data migration tool
 from flask_migrate import Migrate
 # import blueprints
@@ -51,6 +55,9 @@ app.register_blueprint(supervisor_bp)
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
+
+app.jinja_env.globals['timedelta'] = timedelta
+app.jinja_env.globals['datetime'] = datetime
 
 
 # Catch 404 error

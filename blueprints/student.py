@@ -1,5 +1,9 @@
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify
 from functools import wraps
+
+from models.report import Report
+from models.result import Result
+from models.semester import Semester
 from models.student import Student
 from models.supervisor import Supervisor
 from models.selection import Selection
@@ -20,6 +24,7 @@ def require_student(f):
         if 'user_name' not in session or session['user_type'] != 'student':
             return redirect(url_for('base.login'))
         return f(*args, **kwargs)
+
     return decorated_function
 
 
@@ -38,8 +43,36 @@ def index():
     types = Type.get_all()
     error = request.args.get('error')
     deadlines = Deadline.get_all()
-    return render_template('student/index.html', name=session['user_name'], selection=selection, supervisors=supervisors,
-                           types=types, deadlines=deadlines, now=datetime.now(), error=error)
+
+    semester = Semester.get_latest()
+    graduation_year = get_graduation_year()
+    if graduation_year == semester.graduation_year:
+        _semester = semester
+    else:
+        _semester = None
+    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    reports = Report.get_by_student_id(student_id)
+    # group reports by (semester, week)
+    report_dict = {}
+    for report in reports:
+        key = (report.semester, report.week)
+        report_dict[key] = report
+
+    return render_template('student/index.html', name=session['user_name'], selection=selection,
+                           supervisors=supervisors,
+                           types=types, deadlines=deadlines, now=datetime.now(), error=error, semester=_semester,
+                           current_date=current_date, reports=report_dict)
+
+
+def get_graduation_year():
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+    if current_month >= 7:
+        return current_year + 1
+    else:
+        return current_year
 
 
 # Student submit their selection
@@ -158,3 +191,58 @@ def update_selection():
     # else:
     #     return json.dumps({'success': False, 'error': 'Topic does not exist'})
 
+
+@bp.route('/handle_report', methods=['POST'])
+@require_student
+def handle_report():
+    data = request.form
+    required_fields = ['action', 'semester', 'week', 'current_plan', 'next_plan', 'issues', 'feedback']
+
+    for field in required_fields:
+        if field not in data or not data[field]:
+            return Result.error(f"Missing or empty field: {field}"), 400
+
+    student_id = Student.get_id_by_english_name(english_name=session['user_name'])
+    semester = int(data['semester'])
+    week = int(data['week'])
+    action = data['action']
+
+    report = Report.query.filter_by(
+        student_id=student_id,
+        semester=semester,
+        week=week
+    ).first()
+
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    if action == 'create':
+        if report:
+            return Result.error("Report already exists. Use update instead."), 400
+        new_report = Report(
+            student_id=student_id,
+            submit_time=current_time,
+            update_time=current_time,
+            semester=semester,
+            week=week,
+            current_plan=data['current_plan'],
+            next_plan=data['next_plan'],
+            issues=data['issues'],
+            feedback=data['feedback']
+        )
+        new_report.add()
+        return redirect(url_for('student.index'))
+
+    elif action == 'update':
+        if not report:
+            return Result.error("Report not found. Create it first."), 404
+        report.update(
+            current_plan=data['current_plan'],
+            next_plan=data['next_plan'],
+            issues=data['issues'],
+            feedback=data['feedback'],
+            update_time=current_time
+        )
+        return redirect(url_for('student.index'))
+
+    else:
+        return Result.error("Invalid action"), 400

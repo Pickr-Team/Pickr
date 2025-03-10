@@ -13,6 +13,7 @@ class Selection(BaseModel):
     second_topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
     third_topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
     final_topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
+
     first_topic = db.relationship('Topic', foreign_keys=[first_topic_id])
     second_topic = db.relationship('Topic', foreign_keys=[second_topic_id])
     third_topic = db.relationship('Topic', foreign_keys=[third_topic_id])

@@ -1,133 +1,119 @@
 {% from 'macro/report_table.html' import report_table %}
 
-
 <div style="margin-top: 20px"></div>
 
-{#TODO:如果当前在哪周，tab直接active到那一周#}
+{% if semester %}
+    {% set semesters = [
+  {"id": "s1", "name": "Semester 1", "start_date": semester.first_semester_start_date},
+  {"id": "s2", "name": "Semester 2", "start_date": semester.second_semester_start_date}
+] %}
 
-<div class="d-flex align-items-start report-container">
-  <div class="nav flex-column nav-pills me-3 report-tab" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="width: 200px;">
-{#      semester 1#}
-      <div class="accordion-item" style="border: none">
-        <div class="accordion-header">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#s1" aria-expanded="true" aria-controls="s1">
-            Semester 1
-          </button>
+    {% set current_date_obj = datetime.strptime(current_date, "%Y-%m-%d").date() %}
+
+    <div class="d-flex align-items-start report-container">
+        {# Week Tab #}
+        <div class="nav flex-column nav-pills me-3 report-tab" id="v-pills-tab" role="tablist"
+             aria-orientation="vertical" style="width: 200px;">
+            {% for semester_info in semesters %}
+                {% set semester_start = datetime.strptime(semester_info.start_date, "%Y-%m-%d") %}
+                <div class="accordion-item" style="border: none">
+                    <div class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#{{ semester_info.id }}"
+                                aria-expanded="true"
+                                aria-controls="{{ semester_info.id }}">
+                            {{ semester_info.name }}
+                        </button>
+                    </div>
+                    <div id="{{ semester_info.id }}" class="accordion-collapse collapse show">
+                        <div class="accordion-body" style="padding: unset; background-color: black">
+                            {% for week in range(12) %}
+                                {% set week_start = semester_start + timedelta(weeks=week) %}
+                                {% set week_start_date = week_start.date() %}
+                                {% set week_end_date = week_start_date + timedelta(weeks=1) %}
+
+                                {# is current week #}
+                                {% set is_active = current_date_obj >= week_start_date and current_date_obj < week_end_date %}
+
+                                {# disable future week #}
+                                {% set is_disabled = week_start_date > current_date_obj %}
+
+                                <button class="nav-link {% if is_active %}active{% endif %} {% if is_disabled %}disabled-button{% endif %}"
+                                        id="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#v-pills-{{ semester_info.id }}-week-{{ week + 1 }}"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}"
+                                        aria-selected="{% if is_active %}true{% else %}false{% endif %}"
+                                        data-date="{{ week_start.strftime('%Y-%m-%d') }}"
+                                        {% if is_disabled %}disabled
+                                        style="color: gray; cursor: not-allowed;"{% endif %}>
+                                    Week {{ week + 1 }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        <div id="s1" class="accordion-collapse collapse show">
-          <div class="accordion-body" style="padding: unset; background-color: black">
-            <button class="nav-link" id="v-pills-1st-tab" data-bs-toggle="pill" data-bs-target="#v-pills-1st" type="button" role="tab" aria-controls="v-pills-1st" aria-selected="true">1st Week ✘</button>
-            <button class="nav-link" id="v-pills-2nd-tab" data-bs-toggle="pill" data-bs-target="#v-pills-2nd" type="button" role="tab" aria-controls="v-pills-2nd" aria-selected="false">2nd Week ✔</button>
-              <button class="nav-link active" id="v-pills-3rd-tab" data-bs-toggle="pill" data-bs-target="#v-pills-3rd" type="button" role="tab" aria-controls="v-pills-3rd" aria-selected="false">3rd Week</button>
-            <button class="nav-link" id="v-pills-4th-tab" data-bs-toggle="pill" data-bs-target="#v-pills-4th" type="button" role="tab" aria-controls="v-pills-4th" aria-selected="false" disabled style="color: gray">4th Week</button>
-            <button class="nav-link" id="v-pills-5th-tab" data-bs-toggle="pill" data-bs-target="#v-pills-5th" type="button" role="tab" aria-controls="v-pills-5th" aria-selected="false" disabled style="color: gray">5th Week</button>
-          </div>
-        </div>
-      </div>
-{#      semester 2#}
-      <div class="accordion-item" style="border: none">
-        <div class="accordion-header">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#s2" aria-expanded="true" aria-controls="s2" disabled style="background-color:gray;">
-            Semester 2
-          </button>
-        </div>
-        <div id="s2" class="accordion-collapse collapse">
-          <div class="accordion-body" style="padding: unset; background-color: black">
-            <button class="nav-link" disabled style="color: gray">1st Week</button>
-            <button class="nav-link" disabled style="color: gray">2nd Week</button>
-          </div>
-        </div>
-      </div>
-  </div>
 
-  <div class="tab-content" id="v-pills-tabContent" style="width: 100%">
-    <div class="tab-pane " id="v-pills-1st" role="tabpanel" aria-labelledby="v-pills-1st-tab" style="width: 100%">
+        {# Report Panel #}
+        <div class="tab-content" id="v-pills-tabContent" style="width: 100%">
+            {% for semester_info in semesters %}
+                {% for week in range(12) %}
+                    {% set week_start = datetime.strptime(semester_info.start_date, "%Y-%m-%d") + timedelta(weeks=week) %}
+                    {% set week_end = week_start + timedelta(weeks=1) %}
+                    {% set is_active = current_date >= week_start.strftime('%Y-%m-%d') and current_date < week_end.strftime('%Y-%m-%d') %}
 
+                    {# "Semester 1" -> 1 #}
+                    {% set semester_num = semester_info.name.split()[-1] | int %}
 
-    <div style="background-color:#f8d7da; color: #58151c; padding: 10px; border-radius: 0.375rem; margin-bottom: 10px;">
-        <svg t="1735716870392" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7183" width="18" height="18"><path d="M512 0C229.205333 0 0 229.205333 0 512s229.205333 512 512 512 512-229.205333 512-512S794.794667 0 512 0z m0 796.458667A56.917333 56.917333 0 1 1 511.957333 682.666667 56.917333 56.917333 0 0 1 512 796.458667z m54.186667-227.797334h0.128a60.501333 60.501333 0 0 1-53.802667 55.893334c2.048 0.256 3.882667 1.152 5.973333 1.152h-11.818666c2.048 0 3.84-0.981333 5.845333-1.109334a59.093333 59.093333 0 0 1-53.162667-55.893333l-13.056-284.16a54.314667 54.314667 0 0 1 54.613334-57.045333h26.282666a52.992 52.992 0 0 1 54.186667 57.002666l-15.146667 284.16z" fill="#d81e06" p-id="7184"></path></svg>
-        You did not complete the report this week!
-    </div>
+                    {# check is report existed #}
+                    {% set report = reports.get((semester_num, week + 1)) %}
 
-
-    </div>
-    <div class="tab-pane" id="v-pills-2nd" role="tabpanel" aria-labelledby="v-pills-2nd-tab">
-        <div style="background-color:#a3cfbb; color: #fff; padding: 10px; border-radius: 0.375rem; margin-bottom: 10px;">
-            <svg t="1735716713350" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5130" width="22" height="22"><path d="M512 914.285714C734.176265 914.285714 914.285714 734.176265 914.285714 512 914.285714 289.823735 734.176265 109.714286 512 109.714286 289.823735 109.714286 109.714286 289.823735 109.714286 512 109.714286 734.176265 289.823735 914.285714 512 914.285714ZM297.44762 548.538807C314.115747 533.991055 373.957573 521.41293 392.745988 521.41293 399.693875 536.569179 445.283653 573.742576 445.283653 573.742576 445.283653 573.742576 522.616095 380.331774 726.55238 351.085714 626.118672 400.748145 543.136775 513.366307 493.705322 653.508805 409.743239 681.941067 399.693873 674.865518 399.693873 674.865518 399.693873 674.865518 334.075109 573.742579 297.44762 548.538807Z" fill="#0a3622" p-id="5131"></path></svg>
-            You completed the report this week!
-        </div>
-        {{ report_table() }}
-    </div>
-    <div class="tab-pane show active" id="v-pills-3rd" role="tabpanel" aria-labelledby="v-pills-3rd-tab">
-        <div style="background-color:#fff3cd; color: #664d03; padding: 10px; border-radius: 0.375rem; margin-bottom: 10px;">
-            <svg t="1735717205977" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8694" width="20" height="20"><path d="M934.4 770.133333L605.866667 181.333333C586.666667 147.2 550.4 128 512 128c-38.4 0-74.666667 21.333333-93.866667 53.333333L89.6 770.133333c-19.2 34.133333-19.2 76.8 0 110.933334S145.066667 938.666667 183.466667 938.666667h657.066666c38.4 0 74.666667-21.333333 93.866667-57.6 19.2-34.133333 19.2-76.8 0-110.933334z m-55.466667 81.066667c-8.533333 14.933333-23.466667 23.466667-38.4 23.466667H183.466667c-14.933333 0-29.866667-8.533333-38.4-23.466667-8.533333-14.933333-8.533333-34.133333 0-49.066667L473.6 213.333333c8.533333-12.8 23.466667-21.333333 38.4-21.333333s29.866667 8.533333 38.4 21.333333l328.533333 588.8c8.533333 14.933333 8.533333 32 0 49.066667z" fill="#e6960c" p-id="8695"></path><path d="M512 746.666667m-42.666667 0a42.666667 42.666667 0 1 0 85.333334 0 42.666667 42.666667 0 1 0-85.333334 0Z" fill="#e6960c" p-id="8696"></path><path d="M512 629.333333c17.066667 0 32-14.933333 32-32v-192c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v192c0 17.066667 14.933333 32 32 32z" fill="#e6960c" p-id="8697"></path></svg>
-            You have 1 hour left to complete this week's report.
-        </div>
-        <table style="width: 100%">
-            <tr>
-                <td>STUDENT NAME:</td>
-                <td>Crystal</td>
-            </tr>
-            <tr>
-                <td>SUPERVISOR NAME:</td>
-                <td>Clivia Li</td>
-            </tr>
-            <tr>
-                <td>PROJECT NAME:</td>
-                <td>Graduation Project Management System</td>
-            </tr>
-            <tr>
-                <td>WEEK NUMBER:</td>
-                <td>1</td>
-            </tr>
-            <tr>
-                <td>DATE:</td>
-                <td>2024/01/01 - 2024/01/07</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Action plan for the current week:
-                    <textarea class="text-field text-area w-input" name="" id="" cols="30" rows="10"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Challenges and issues encountered in the week:
-                    <textarea class="text-field text-area w-input" name="" id="" cols="30" rows="10"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Action plan for the next week:
-                    <textarea class="text-field text-area w-input" name="" id="" cols="30" rows="10"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Supervisor Feedback:
-                    <textarea class="text-field text-area w-input" name="" id="" cols="30" rows="10"></textarea>
-                </td>
-            </tr>
-
-        </table>
-        <div style="margin-top: 15px;">
-            <a href="#" class="submit-button w-button">Submit ↑</a>
-            <a href="#" class="submit-button w-button">Export as PDF →</a>
-            <span style="float: right" class="last-update-span">Last Update: 2024/01/01 23:00:00</span>
+                    <div class="tab-pane fade {% if is_active %}show active{% endif %}"
+                         id="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}"
+                         role="tabpanel"
+                         aria-labelledby="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}-tab">
+                        {% if report %}
+                        <div style="background-color:#a3cfbb; color: #fff; padding: 10px; border-radius: 0.375rem; margin-bottom: 10px;">
+                            <svg t="1735716713350" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5130" width="22" height="22"><path d="M512 914.285714C734.176265 914.285714 914.285714 734.176265 914.285714 512 914.285714 289.823735 734.176265 109.714286 512 109.714286 289.823735 109.714286 109.714286 289.823735 109.714286 512 109.714286 734.176265 289.823735 914.285714 512 914.285714ZM297.44762 548.538807C314.115747 533.991055 373.957573 521.41293 392.745988 521.41293 399.693875 536.569179 445.283653 573.742576 445.283653 573.742576 445.283653 573.742576 522.616095 380.331774 726.55238 351.085714 626.118672 400.748145 543.136775 513.366307 493.705322 653.508805 409.743239 681.941067 399.693873 674.865518 399.693873 674.865518 399.693873 674.865518 334.075109 573.742579 297.44762 548.538807Z" fill="#0a3622" p-id="5131"></path></svg>
+                            You completed the report this week!
+                        </div>
+                        {% else %}
+                        <div style="background-color:#f8d7da; color: #58151c; padding: 10px; border-radius: 0.375rem; margin-bottom: 10px;">
+                            <svg t="1735716870392" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7183" width="18" height="18"><path d="M512 0C229.205333 0 0 229.205333 0 512s229.205333 512 512 512 512-229.205333 512-512S794.794667 0 512 0z m0 796.458667A56.917333 56.917333 0 1 1 511.957333 682.666667 56.917333 56.917333 0 0 1 512 796.458667z m54.186667-227.797334h0.128a60.501333 60.501333 0 0 1-53.802667 55.893334c2.048 0.256 3.882667 1.152 5.973333 1.152h-11.818666c2.048 0 3.84-0.981333 5.845333-1.109334a59.093333 59.093333 0 0 1-53.162667-55.893333l-13.056-284.16a54.314667 54.314667 0 0 1 54.613334-57.045333h26.282666a52.992 52.992 0 0 1 54.186667 57.002666l-15.146667 284.16z" fill="#d81e06" p-id="7184"></path></svg>
+                                You did not complete the report this week!
+                        </div>
+                        {% endif %}
+                        <div style="width: 100%">
+                            {{ report_table(
+                            semester.graduation_year,
+                            semester_num,
+                            week + 1,
+                            week_start.strftime('%Y-%m-%d'),
+                            name,
+                            selection.final_topic_supervisor_name,
+                            selection.final_topic_name,
+                            report=report
+                        ) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
         </div>
     </div>
-    <div class="tab-pane" id="v-pills-4th" role="tabpanel" aria-labelledby="v-pills-4th-tab">444</div>
-    <div class="tab-pane" id="v-pills-5th" role="tabpanel" aria-labelledby="v-pills-5th-tab">555</div>
-  </div>
-</div>
-
+{% else %}
+    <p>Waiting for Start</p>
+{% endif %}
 
 
 {% block script %}
     <script>
         const weekTabs = document.querySelectorAll('.nav-link');
         weekTabs.forEach((tab) => {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', function () {
                 weekTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
             });
