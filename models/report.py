@@ -41,7 +41,6 @@ class Report(BaseModel):
         supervisor = Supervisor.get_by_id(supervisor_id)
         # 1. Get finalized selections for this supervisor
         selections = supervisor.get_total_selected_selections()
-        print('selections', selections) # selections [[<Selection 1>], []]
         all_reports = []
         # 2. Get student IDs from these selections
         for selection in selections:

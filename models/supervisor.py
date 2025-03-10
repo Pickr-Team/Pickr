@@ -89,5 +89,12 @@ class Supervisor(BaseModel):
                     all_final_selections.append(s)
         return all_final_selections
 
+    def get_all_students(self):
+        selections = self.get_total_selected_selections()
+        students = []
+        for s in selections:
+            students.append(s.student)
+        return students
+
     def __repr__(self):
         return f'<Supervisor {self.id}>'

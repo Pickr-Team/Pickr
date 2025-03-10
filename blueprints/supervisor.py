@@ -57,10 +57,11 @@ def index():
         total_quta += topic.quota
 
     reports = Report.get_all_reports_by_supervisor_id(supervisor_id)
-    print('reports', reports)
+    students = supervisor.get_all_students()
+
     return render_template('supervisor/index.html', topics=topics, supervisor=supervisor, total_quta=total_quta,
                            not_custom_selections=not_custom_selections, custom_selections=custom_selections,
-                           reports=reports)
+                           reports=reports, students=students)
 
 
 # Supervisor create new topic
