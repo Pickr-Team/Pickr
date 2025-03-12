@@ -21,7 +21,7 @@
 
     <div data-current="System" data-easing="ease" data-duration-in="300" data-duration-out="100" class="w-tabs">
         <address style="display: flex;overflow-x: auto">
-            <a data-w-tab="System" class="tab_link w-inline-block w-tab-link w--current"
+            <a data-w-tab="System" class="tab_link w-inline-block w-tab-link"
                onclick="sessionStorage.setItem('pre','system')">
                 <div>System</div>
             </a>
@@ -41,6 +41,10 @@
                onclick="sessionStorage.setItem('pre','stuTopic')">
                 <div>Student Topics</div>
             </a>
+            <a data-w-tab="Reports" class="tab_link w-inline-block w-tab-link"
+               onclick="sessionStorage.setItem('pre','reports')">
+                <div>Weekly Reports</div>
+            </a>
         </address>
 
         <div class="w-tab-content">
@@ -58,6 +62,9 @@
             </div>
             <div data-w-tab="Topics" class="w-tab-pane">
                 {{ pickr_table('Student Topics', custom_selections, 'topic', 'Topic title, Student name, Supervisor name') }}
+            </div>
+            <div data-w-tab="Reports" class="w-tab-pane">
+                {% include 'manager/report/report.html' %}
             </div>
         </div>
     </div>
@@ -87,7 +94,9 @@
                 $('.tab_link[data-w-tab="Topics"]').click();
             } else if (_pre === 'supTopic') {
                 $('.tab_link[data-w-tab="SupTopics"]').click();
-            } else {
+            } else if (_pre === 'reports') {
+                $('.tab_link[data-w-tab="Reports"]').click();
+            }else {
                 $('.tab_link').first().click();
             }
         })

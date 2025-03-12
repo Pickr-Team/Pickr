@@ -1,6 +1,7 @@
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, send_from_directory, flash
 from functools import wraps
 
+from models.report import Report
 from models.result import Result
 from models.semester import Semester
 from models.student import Student
@@ -62,13 +63,15 @@ def index():
     static_topic_num = Selection.get_num_of_status_4()
 
     semester = Semester.get_latest()
+    all_reports = Report.get_all()
 
     return render_template('manager/index.html', supervisor=supervisor, deadline_1=deadline_1, deadline_2=deadline_2,
                            notes=notes, students=students, supervisors=supervisors,
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
                            custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
                            num_process=num_process, num_verify=num_verify, num_fail=num_fail,
-                           static_topic_num=static_topic_num, pre=pre,total_quta=total_quta, topics=topics, supervisor_id=supervisor_id, semester=semester)
+                           static_topic_num=static_topic_num, pre=pre, total_quta=total_quta, topics=topics,
+                           supervisor_id=supervisor_id, semester=semester, all_reports=all_reports)
 
 
 # Manager process all the selections
@@ -234,7 +237,6 @@ def reset_password():
         return jsonify(status='success')
 
 
-
 # Manager create new note
 @bp.route('/new_note')
 @require_manager
@@ -348,7 +350,7 @@ def detail(_type, id):
         types = Type.get_all()
         return render_template('manager/selection/check_custom_selection.html', selection=selection,
                                supervisors=supervisors, types=types)
-    else: # elif _type == 'supTopic':
+    else:  # elif _type == 'supTopic':
         topic = Topic.get_by_id(id)
         return render_template('base/topic_detail.html', topic=topic)
 
@@ -498,7 +500,8 @@ def add_supervisor():
     expertise = request.form.get('expertise')
 
     _new_supervisor = Supervisor(first_name=first_name, last_name=last_name, position=position,
-                                 user_name=user_name, password=password, email=email, is_admin=False, expertise=expertise)
+                                 user_name=user_name, password=password, email=email, is_admin=False,
+                                 expertise=expertise)
     _new_supervisor.add()
     return redirect(url_for('manager.index', pre='supervisor'))
 

@@ -14,12 +14,34 @@
             min-width: 40px;
             text-align: center;
         }
+
+        .filter-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #filterForm {
+            display: flex;
+        }
+
+        #filterForm .select-box {
+            margin-right: 20px;
+        }
+
+        #filterForm .select-box label {
+            color: white;
+        }
+
+        #filterForm a {
+            display: inline-block;
+        }
     </style>
 {% endblock %}
 
 <div class="report" style="width: 100%; margin-top: 30px;">
-    <div class="filter-box">
-        <form id="filterForm" style="display: contents;">
+    <div class="filter-box" >
+        <form id="filterForm">
             <div class="select-box">
                 <label class="yang-label" for="semester">Semester:</label>
                 <select class="form-select" id="semester">
@@ -28,7 +50,6 @@
                     <option value="2">2nd</option>
                 </select>
             </div>
-
             <div class="select-box">
                 <label class="yang-label" for="week">Week:</label>
                 <select class="form-select" id="week" style="width: 150px">
@@ -38,7 +59,6 @@
                     {% endfor %}
                 </select>
             </div>
-
             <div class="select-box">
                 <label class="yang-label" for="student">Student:</label>
                 <select class="form-select" id="student">
@@ -50,7 +70,7 @@
             </div>
         </form>
 
-        <a class="pickr-btn analysis-btn" style="margin-left: auto;" href="{{ url_for('supervisor.report_analysis') }}">
+        <a class="pickr-btn analysis-btn" href="{{ url_for('supervisor.report_analysis') }}">
             <svg t="1735627888269" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
                  p-id="6054" width="22" height="22">
                 <path d="M939.33 70c17.672 0 32 14.327 32 32v792.679c0 3.063-0.431 6.025-1.235 8.83a31.994 31.994 0 0 1 1.234 8.829c0 17.496-14.042 31.713-31.47 31.995l-0.53 0.005H278.075c-17.673 0-32-14.327-32-32 0-17.497 14.042-31.713 31.47-31.996l0.53-0.004 629.254-0.001V389.896H117.67v248.887c0 17.673-14.327 32-32 32-17.497 0-31.713-14.042-31.996-31.471l-0.004-0.53V102c0-17.673 14.327-32 32-32zM679.534 547.859l0.378 0.362 95.618 93.146c12.66 12.332 12.925 32.592 0.593 45.251-12.209 12.533-32.188 12.918-44.87 0.959l-0.381-0.366-73.023-71.135-149.322 148.961c-12.184 12.154-31.768 12.478-44.345 0.822l-0.379-0.357-117.689-112.618-237.71 239.967c-12.314 12.43-32.295 12.648-44.876 0.583l-0.379-0.37c-12.43-12.313-12.648-32.294-0.583-44.875l0.37-0.38L322.782 585.5c12.163-12.278 31.847-12.662 44.477-0.958l0.381 0.359 117.822 112.746 149.522-149.158c12.261-12.232 31.998-12.47 44.55-0.63zM907.329 134H117.67v191.896h789.659V134z m-96.048 63.948c17.673 0 32 14.327 32 32 0 17.496-14.042 31.713-31.471 31.996l-0.53 0.004H363.11c-17.673 0-32-14.327-32-32 0-17.496 14.042-31.713 31.47-31.996l0.53-0.004h448.17z m-576.22-0.072c17.673 0 32 14.326 32 32 0 17.496-14.041 31.713-31.47 31.995l-0.53 0.005H213.72c-17.673 0-32-14.327-32-32 0-17.497 14.042-31.714 31.471-31.996l0.53-0.004h21.341z"
@@ -60,7 +80,7 @@
         </a>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive" style="margin-top: 20px">
         <table class="table align-middle" style="color: white;">
             <thead>
             <tr>
@@ -70,7 +90,6 @@
                 <th scope="col">Week</th>
                 <th scope="col">Submit Time</th>
                 <th scope="col">Last Updated</th>
-                <th scope="col">Status</th>
                 <th scope="col">Operation</th>
             </tr>
             </thead>
@@ -101,7 +120,7 @@
             let filteredData = [];
 
             const allReports = [
-                {% for report in reports %}
+                {% for report in all_reports %}
                     {
                         id: {{ report.id }},
                         studentId: {{ report.student.id }},
@@ -111,7 +130,6 @@
                         chineseName: "{{ report.student.chinese_name }}",
                         submitTime: "{{ report.submit_time }}",
                         updateTime: "{{ report.update_time }}",
-                        isRead: {{ report.is_read|lower }},
                         detailUrl: "{{ url_for('supervisor.review_weekly_report', report_id=report.id) }}"
                     },
                 {% endfor %}
@@ -145,34 +163,14 @@
                         <td>${report.submitTime}</td>
                         <td>${report.updateTime}</td>
                         <td>
-                            ${report.isRead
-                    ? '<span style="color:green">Read</span>'
-                    : '<span style="color:var(--accent)">Unread</span>'}
-                        </td>
-                        <td>
                             <a href="${report.detailUrl}"
                                class="pickr-btn report-detail"
-                               data-report-id="${report.id}"
-                               data-status-cell="${report.isRead ? 'read' : 'unread'}">
+                               data-report-id="${report.id}">
                                 Report Detail
                             </a>
                         </td>
                     </tr>
                 `).join('') || '<tr><td colspan="8" class="text-center">No reports found</td></tr>';
-
-                document.querySelectorAll('.report-detail').forEach(a => {
-                    a.addEventListener('click', function (e) {
-                        const link = e.currentTarget;
-                        e.preventDefault();
-                        const statusCell = link.closest('tr').querySelector('td:nth-child(7)');
-                        if (link.dataset.statusCell === 'unread') {
-                            statusCell.innerHTML = '<span style="color:green">Read</span>';
-                        }
-                        setTimeout(() => {
-                            window.location.href = link.href;
-                        }, 1);
-                    });
-                });
 
                 renderPagination();
             }

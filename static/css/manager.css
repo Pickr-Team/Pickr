@@ -111,6 +111,16 @@
     border-color: #e16c63;
 }
 
+address a {
+    flex-shrink: 0;
+}
+
+address .tab_link {
+    width: unset;
+    padding: 10px 30px;
+    font-size: 18px;
+}
+
 @media (max-width: 1000px) {
     #w-node-manager-02,
     #w-node-manager-03 {
@@ -183,5 +193,9 @@
 
     .text-block-2.phone_button.phone_leading {
         margin-left: 10px;
+    }
+
+    address::-webkit-scrollbar {
+        display: none;
     }
 }

@@ -1,17 +1,33 @@
 {% from 'macro/report_table.html' import report_table %}
+{% from 'macro/empty.html' import empty %}
 
 <div style="margin-top: 20px"></div>
 
 {% if semester and selection and selection.final_topic_name %}
-    {% set semesters = [
-  {"id": "s1", "name": "Semester 1", "start_date": semester.first_semester_start_date},
-  {"id": "s2", "name": "Semester 2", "start_date": semester.second_semester_start_date}
-] %}
+
+    {# Build the semesters dynamically, including only those with a start date #}
+    {% set semesters = [] %}
+
+    {% if semester.first_semester_start_date %}
+        {% set _ = semesters.append({
+            "id": "s1",
+            "name": "Semester 1",
+            "start_date": semester.first_semester_start_date
+        }) %}
+    {% endif %}
+
+    {% if semester.second_semester_start_date %}
+        {% set _ = semesters.append({
+            "id": "s2",
+            "name": "Semester 2",
+            "start_date": semester.second_semester_start_date
+        }) %}
+    {% endif %}
 
     {% set current_date_obj = datetime.strptime(current_date, "%Y-%m-%d").date() %}
 
     <div class="d-flex align-items-start report-container">
-        {# Week Tab #}
+       {# Week Tab #}
         <div class="nav flex-column nav-pills me-3 report-tab" id="v-pills-tab" role="tablist"
              aria-orientation="vertical" style="width: 200px;">
             {% for semester_info in semesters %}
@@ -32,7 +48,7 @@
                                 {% set week_start_date = week_start.date() %}
                                 {% set week_end_date = week_start_date + timedelta(weeks=1) %}
 
-                                {# is current week #}
+                                {# active current week #}
                                 {% set is_active = current_date_obj >= week_start_date and current_date_obj < week_end_date %}
 
                                 {# disable future week #}
@@ -105,7 +121,7 @@
         </div>
     </div>
 {% else %}
-    <p>Waiting for Start</p>
+    {{ empty('Waiting for Start...') }}
 {% endif %}
 
 

@@ -257,7 +257,9 @@ def get_graduation_year():
 def review_weekly_report():
     report_id = request.args.get('report_id')
     report = Report.get_by_id(report_id)
-    report.mark_as_read()
+
+    if session['user_type'] == 'supervisor':
+        report.mark_as_read()
 
     supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     supervisor = Supervisor.get_by_id(id=supervisor_id)

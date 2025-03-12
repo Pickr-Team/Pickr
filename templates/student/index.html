@@ -23,13 +23,13 @@
         </div>
         <div class="tabs">
             <ul>
-                <li class="active">Topic Selection</li>
+                <li >Topic Selection</li>
                 <li >Weekly Report</li>
             </ul>
         </div>
     </div>
     <div class="panel">
-        <div class="sub-panel active">
+        <div class="sub-panel ">
             {% include 'student/index-subpage/topic_selection.html' %}
         </div>
         <div class="sub-panel report-panel ">
@@ -40,28 +40,45 @@
 
 {% block script %}
     <script>
-        const tabs = document.querySelectorAll('.tabs li');
-        const descList = document.querySelectorAll('.tab-desc span');
-        const panels = document.querySelectorAll('.sub-panel');
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tabs li');
+            const descList = document.querySelectorAll('.tab-desc span');
+            const panels = document.querySelectorAll('.sub-panel');
 
-        tabs.forEach((tab, index) => {
-            tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    // Remove active class from all panels
-                    panels.forEach(p => p.classList.remove('active'));
-                    descList.forEach(d => d.classList.remove('active'));
+            let activeTabIndex = (() => {
+                try {
+                    const stored = sessionStorage.getItem('activeTabIndex');
+                    const parsed = stored ? Math.floor(Number(stored)) : 0;
+                    // limited in 0 and 1 strictly
+                    // 0:topic selection
+                    // 1:weekly report
+                    return (parsed === 0 || parsed === 1) ? parsed : 0;
+                } catch {
+                    return 0;
+                }
+            })();
 
-                    // Add active class to the clicked tab
-                    tab.classList.add('active');
-                    // Add active class to the corresponding panel
-                    panels[index].classList.add('active');
-                    descList[index].classList.add('active');
-                });
+            function setActiveTab(index) {
+                const validIndex = Number.isInteger(index) && index >= 0 && index <= 1 ? index : 0;
+
+                tabs.forEach(t => t.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+                descList.forEach(d => d.classList.remove('active'));
+
+                if (tabs[validIndex]) tabs[validIndex].classList.add('active');
+                if (panels[validIndex]) panels[validIndex].classList.add('active');
+                if (descList[validIndex]) descList[validIndex].classList.add('active');
+
+                sessionStorage.setItem('activeTabIndex', validIndex);
+            }
+
+            setActiveTab(activeTabIndex);
+
+            tabs.forEach((tab, index) => {
+                if (index > 1) return;
+                tab.addEventListener('click', () => setActiveTab(index));
+            });
         });
     </script>
-
-
 {% endblock %}
-
 
