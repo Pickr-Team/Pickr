@@ -16,7 +16,7 @@ class Supervisor(BaseModel):
     email = db.Column(db.String(30))
     expertise = db.Column(db.String(255))
 
-    def __init__(self, first_name, last_name, is_admin, position, user_name, password, email, expertise):
+    def __init__(self, first_name, last_name, is_admin, position, user_name, password, email, expertise=None):
         self.expertise = expertise
         self.first_name = first_name
         self.last_name = last_name

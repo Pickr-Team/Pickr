@@ -46,14 +46,17 @@
     <section class="section">
         <div class="w-layout-blockcontainer container center w-container"><h1 class="biggest_title">Oops!</h1>
             {% if message %}
-                <h2 class="accent">{{ message }}</h2>
+                <h2 class="accent">
+                    Internal server error:  <br>
+                    <p class="accent" style="margin: 20px 0">{{ message }}</p>
+                </h2>
             {% else %}
                 <h2 class="accent">Something was wrong</h2>
             {% endif %}
             <div class="w-layout-blockcontainer _20px_height w-container"></div>
             <h4 class="heading-2 oops">
-                Please contact the system administrator. If you need further assistance, please be
-                kindly contact Chengxin Zhao by E-mail.
+                Please contact the system administrator. <br>
+                If you need further assistance, please be kindly contact Zhaoxin Cheng by E-mail.
             </h4>
         </div>
     </section>

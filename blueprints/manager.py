@@ -271,6 +271,7 @@ def import_file(_type):
     file = request.files['file']
     if file:
         df = pd.read_excel(file)
+        df.columns = df.columns.str.strip()
         if _type == 'student':
             for _index, row in df.iterrows():
                 cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
@@ -294,7 +295,6 @@ def import_file(_type):
                     user_name=cleaned_row['user_name'],
                     password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
                     email=cleaned_row['email'],
-                    expertise=cleaned_row['expertise'],
                     is_admin=False
                 )
                 db.session.add(_new_supervisor)
@@ -304,7 +304,8 @@ def import_file(_type):
                 cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
                 supervisor_name = cleaned_row['Staff member']
                 supervisor = Supervisor.get_by_name(supervisor_name)
-                # staff expertise is read in supervisor excel
+                expertise = cleaned_row['Staff Expertise (Projects/Research Interests)']
+                supervisor.update(expertise=expertise)
                 _new_topic = Topic(
                     name=cleaned_row['Proposed Titles'],
                     supervisor_id=supervisor.id,
@@ -438,12 +439,12 @@ def delete(_type, _id):
         return jsonify(success=False, message='Invalid Type')
 
 
-# Manager reset the selections and students
+# Manager reset the selections, students and reports
 @bp.route('/resetting')
 @require_manager
 def resetting():
     db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
-    tables = ['selections', 'students']
+    tables = ['selections', 'reports', 'students']
     for table in tables:
         db.session.execute(text(f'TRUNCATE TABLE {table};'))
     db.session.commit()

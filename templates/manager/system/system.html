@@ -102,10 +102,15 @@
     <div class="_20px_height"></div>
 
     <h2 class="third_title-2 accent semester-setting"></h2>
-    <div class="text-block">This setting is used for students weekly report</div>
+    <div class="text-block" style="color: gray; max-width: 1000px">
+        ⚠️Manager must configure the semester start date here.
+        The system uses this date to automatically calculate academic week numbers for student weekly reports.
+        If unset or incorrect, students cannot submit reports, and supervisors cannot track progress accurately.
+        We recommend completing this setup before the semester begins
+    </div>
     <div class="w-layout-blockcontainer w-container" style="max-width: none;">
         <div class="w-form">
-            <div class="text-block _10button_spac">Semester 1</div>
+            <div class="text-block _10button_spac">First Day of Semester 1</div>
             <form id="semester-form-1" class="student_submit_form">
                 <input type="text" class="deadline_field w-input" placeholder="Semester 1 Start Time"
                        id="semester-1" required="required"/>
@@ -114,7 +119,7 @@
             </form>
         </div>
         <div class="w-form">
-            <div class="text-block _10button_spac">Semester 2</div>
+            <div class="text-block _10button_spac">First Day of Semester 2</div>
             <form id="semester-form-2" class="student_submit_form">
                 <input type="text" class="deadline_field w-input" placeholder="Semester 2 Start Time"
                        id="semester-2" required="required"/>
@@ -124,7 +129,7 @@
         </div>
     </div>
 
-    <h2 class="third_title-2 accent">Deadline Setting</h2>
+    <h2 class="third_title-2 accent">Topic Selection Deadline Setting</h2>
     <div class="w-layout-blockcontainer w-container" style="max-width: none;">
         <div class="w-form">
             <div class="text-block _10button_spac">Round 1</div>
@@ -192,7 +197,14 @@
     <a href="{{ url_for('manager.new_type') }}" class="submit-button w-button">+ New Type</a>
     <br>
     <div class="_40px_height"></div>
-    <a href="#" class="submit-button delete_button w-button" id="reset-system">Reset System</a>
+    <h2 class="third_title-2 accent">Reset System</h2>
+    <div class="text-block" style="color: gray; max-width: 1000px; margin-bottom: 15px;">
+         ⚠️Warning: Resetting the system will permanently delete the following data: <br>
+        1.All students
+        2.All selections
+        3.All reports
+    </div>
+    <a href="#" class="submit-button w-button" id="reset-system">Reset System</a>
 </div>
 
 <script>
@@ -349,11 +361,10 @@
         {#TODO: location.reload() is not user friendly#}
     })
 
-    {#TODO: clear weekly reports#}
     //reset system
     $('#reset-system').click(function (e) {
         e.preventDefault()
-        var confirmed = confirm("Are you sure you want to reset the system? This operation will clean all SELECTIONS and STUDENTS data.");
+        const confirmed = confirm("Are you sure you want to reset the system? This operation will clean all SELECTIONS, STUDENTS and REPORTS.");
 
         if (confirmed) {
             $.ajax({

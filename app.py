@@ -77,7 +77,7 @@ def handle_generic_error(error):
     for line in stack_trace:
         logger.error(line.strip())
 
-    return render_template('base/error.html', message='Internal server error'), 500
+    return render_template('base/error.html', message=f'{error.__class__.__name__}, {error}'), 500
 
 
 if __name__ == '__main__':
