@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, Response
 from functools import wraps
 
+from blueprints.base import get_graduation_year
 from models.report import Report
 from models.student import Student
 from models.supervisor import Supervisor
@@ -242,24 +243,13 @@ def topic_poster():
     })
 
 
-def get_graduation_year():
-    now = datetime.now()
-    current_year = now.year
-    current_month = now.month
-    if current_month >= 7:
-        return current_year + 1
-    else:
-        return current_year
-
-
 @bp.route('/report')
 @require_supervisor_or_manager
 def review_weekly_report():
     report_id = request.args.get('report_id')
     report = Report.get_by_id(report_id)
 
-    if session['user_type'] == 'supervisor':
-        report.mark_as_read()
+    report.mark_as_read()
 
     supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
     supervisor = Supervisor.get_by_id(id=supervisor_id)

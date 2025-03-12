@@ -5,10 +5,10 @@
         <input type="hidden" name="action" value="{% if report %}update{% else %}create{% endif %}">
 
         <table style="width: 100%">
-{#            <h1 style="text-align: center">Chengdu University of Technology Oxford Brookes College Project Module (CHC#}
-{#                6096)</h1>#}
-{#            <h2 style="text-align: center; margin-bottom: 20px">Weekly Report Sheet - {{ year-1 }}/{{ year }} Academic#}
-{#                Year</h2>#}
+            {#            <h1 style="text-align: center">Chengdu University of Technology Oxford Brookes College Project Module (CHC#}
+            {#                6096)</h1>#}
+            {#            <h2 style="text-align: center; margin-bottom: 20px">Weekly Report Sheet - {{ year-1 }}/{{ year }} Academic#}
+            {#                Year</h2>#}
             <tr>
                 <td>STUDENT NAME:</td>
                 <td>{{ name }}</td>
@@ -42,118 +42,117 @@
             <tr>
                 <td colspan="2">
                     Action plan for the current week:
-                    <textarea class="text-field text-area w-input" name="current_plan" required>{{ report.current_plan if report else '' }}</textarea>
+                    <textarea class="text-field text-area w-input" name="current_plan"
+                              required>{{ report.current_plan if report else '' }}</textarea>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     Challenges and issues encountered in the week:
-                    <textarea class="text-field text-area w-input" name="issues" required>{{ report.issues if report else '' }}</textarea>
+                    <textarea class="text-field text-area w-input" name="issues"
+                              required>{{ report.issues if report else '' }}</textarea>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     Action plan for the next week:
-                    <textarea class="text-field text-area w-input" name="next_plan" required>{{ report.next_plan if report else '' }}</textarea>
+                    <textarea class="text-field text-area w-input" name="next_plan"
+                              required>{{ report.next_plan if report else '' }}</textarea>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     Supervisor Feedback:
-                    <textarea class="text-field text-area w-input" name="feedback" required>{{ report.feedback if report else '' }}</textarea>
+                    <textarea class="text-field text-area w-input" name="feedback"
+                              required>{{ report.feedback if report else '' }}</textarea>
                 </td>
             </tr>
         </table>
         <div style="margin-top: 15px;">
-            <a href="#" class="submit-button w-button">Export as PDF →</a>
             {% if report %}
-               <button type="submit" class="submit-button w-button">Update ↑</button>
+                <a href="{{ url_for('base.report_pdf', report_id=report.id) }}" class="submit-button w-button">Export as
+                    PDF →</a>
+                <button type="submit" class="submit-button w-button">Update ↑</button>
+                <span style="float: right">Last Update: {{ report.update_time }}</span>
             {% else %}
-               <button type="submit" class="submit-button w-button">Submit ↑</button>
+                <button type="submit" class="submit-button w-button">Submit ↑</button>
+                <span style="float: right">Last Update: Not submitted yet</span>
             {% endif %}
-            <span style="float: right">Last Update:
-                {% if report %}
-                    {{ report.update_time }}
-                {% else %}
-                    Not submitted yet
-                {% endif %}
-            </span>
         </div>
     </form>
 {% endmacro %}
 
 
 {% macro report_table_review(report, supervisor_name, graduation_year) %}
-        <table style="width: 100%">
-            <h1 style="text-align: center">
-                Chengdu University of Technology Oxford Brookes College Project Module (CHC6096)
-            </h1>
-            <h2 style="text-align: center; margin-bottom: 20px">
-                Weekly Report Sheet - {{ graduation_year - 1 }}/{{ graduation_year }} Academic Year
-            </h2>
-            <tr>
-                <td>STUDENT NAME:</td>
-                <td>{{ report.student.english_name }}</td>
-            </tr>
-            <tr>
-                <td>SUPERVISOR NAME:</td>
-                <td>{{ supervisor_name }}</td>
-            </tr>
-            <tr>
-                <td>PROJECT NAME:</td>
-                <td>{{ report.student.get_final_topic_name() }}</td>
-            </tr>
-            <tr>
-                <td>SEMESTER NUMBER:</td>
-                <td>{{ report.semester }}</td>
-            </tr>
-            <tr>
-                <td>WEEK NUMBER:</td>
-                <td>{{ report.week }}</td>
-            </tr>
-{#            <tr>#}
-{#                <td>START DATE:</td>#}
-{#                <td>{{ week_start }}</td>#}
-{#            </tr>#}
-            <tr>
-                <td>SUBMITTED TIME:</td>
-                <td>
-                    {% if report %}
-                        {{ report.submit_time }}
-                    {% else %}
-                        Not submitted yet
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Action plan for the current week:
-                    <textarea class="text-field text-area w-input" name="current_plan" disabled>{{ report.current_plan }}</textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Challenges and issues encountered in the week:
-                    <textarea class="text-field text-area w-input" name="issues" disabled>{{ report.issues }}</textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Action plan for the next week:
-                    <textarea class="text-field text-area w-input" name="next_plan" disabled>{{ report.next_plan }}</textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    Supervisor Feedback:
-                    <textarea class="text-field text-area w-input" name="feedback" disabled>{{ report.feedback }}</textarea>
-                </td>
-            </tr>
-        </table>
-        <div style="margin-top: 15px;">
-            <a href="#" class="submit-button w-button">Export as PDF →</a>
-            <span style="float: right">Last Update:
+    <table style="width: 100%">
+        <h1 style="text-align: center">
+            Chengdu University of Technology Oxford Brookes College Project Module (CHC6096)
+        </h1>
+        <h2 style="text-align: center; margin-bottom: 20px">
+            Weekly Report Sheet - {{ graduation_year - 1 }}/{{ graduation_year }} Academic Year
+        </h2>
+        <tr>
+            <td>STUDENT NAME:</td>
+            <td>{{ report.student.english_name }}</td>
+        </tr>
+        <tr>
+            <td>SUPERVISOR NAME:</td>
+            <td>{{ supervisor_name }}</td>
+        </tr>
+        <tr>
+            <td>PROJECT NAME:</td>
+            <td>{{ report.student.get_final_topic_name() }}</td>
+        </tr>
+        <tr>
+            <td>SEMESTER NUMBER:</td>
+            <td>{{ report.semester }}</td>
+        </tr>
+        <tr>
+            <td>WEEK NUMBER:</td>
+            <td>{{ report.week }}</td>
+        </tr>
+        <tr>
+            <td>SUBMITTED TIME:</td>
+            <td>
+                {% if report %}
+                    {{ report.submit_time }}
+                {% else %}
+                    Not submitted yet
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Action plan for the current week:
+                <textarea class="text-field text-area w-input" name="current_plan"
+                          disabled>{{ report.current_plan }}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Challenges and issues encountered in the week:
+                <textarea class="text-field text-area w-input" name="issues" disabled>{{ report.issues }}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Action plan for the next week:
+                <textarea class="text-field text-area w-input" name="next_plan"
+                          disabled>{{ report.next_plan }}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Supervisor Feedback:
+                <textarea class="text-field text-area w-input" name="feedback" disabled>{{ report.feedback }}</textarea>
+            </td>
+        </tr>
+    </table>
+    <div style="margin-top: 15px;">
+        <a href="{{ url_for('base.report_pdf', report_id=report.id) }}" class="submit-button w-button">Export as PDF
+            →</a>
+        <span style="float: right">Last Update:
                  {{ report.update_time }}
             </span>
-        </div>
+    </div>
 {% endmacro %}

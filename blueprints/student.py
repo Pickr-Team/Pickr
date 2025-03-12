@@ -1,6 +1,7 @@
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify
 from functools import wraps
 
+from blueprints.base import get_graduation_year
 from models.report import Report
 from models.result import Result
 from models.semester import Semester
@@ -63,16 +64,6 @@ def index():
                            supervisors=supervisors,
                            types=types, deadlines=deadlines, now=datetime.now(), error=error, semester=_semester,
                            current_date=current_date, reports=report_dict)
-
-
-def get_graduation_year():
-    now = datetime.now()
-    current_year = now.year
-    current_month = now.month
-    if current_month >= 7:
-        return current_year + 1
-    else:
-        return current_year
 
 
 # Student submit their selection

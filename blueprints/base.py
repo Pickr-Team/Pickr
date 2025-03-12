@@ -1,6 +1,8 @@
 # base and basic functions
-from flask import Blueprint, render_template, session, request, url_for, redirect, jsonify, flash
+from flask import Blueprint, render_template, session, request, url_for, redirect, jsonify, flash, Response
 
+from models.pdf_generator import generate_report_pdf
+from models.report import Report
 from models.result import Result
 from models.supervisor import Supervisor
 from models.student import Student
@@ -166,3 +168,26 @@ def delete_middle_ware(_type, _id):
     user_type = session['user_type']
     target_url = f'/{user_type}/delete/{_type}/{_id}'
     return redirect(target_url)
+
+
+def get_graduation_year():
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+    if current_month >= 7:
+        return current_year + 1
+    else:
+        return current_year
+
+
+@bp.route('/report_pdf/<report_id>')
+def report_pdf(report_id):
+    report = Report.get_by_id(report_id)
+    graduation_year = get_graduation_year()
+
+    pdf_buffer = generate_report_pdf(report, graduation_year)
+
+    return Response(pdf_buffer, headers={
+        'Content-Disposition': 'attachment;filename=topic_poster.pdf',
+        'Content-Type': 'application/pdf'
+    })

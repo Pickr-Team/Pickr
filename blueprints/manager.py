@@ -16,6 +16,7 @@ from sqlalchemy import text
 import json
 import pandas as pd
 import os
+from blueprints.base import get_graduation_year
 
 bp = Blueprint("manager", __name__, url_prefix="/manager")
 
@@ -592,3 +593,13 @@ def update_semester_start_date(graduation_year, num, start_time):
 @require_manager
 def switch_to_supervisor_page():
     return redirect(url_for('supervisor.index'))
+
+
+@bp.route('/report')
+@require_manager
+def review_weekly_report():
+    report_id = request.args.get('report_id')
+    report = Report.get_by_id(report_id)
+    supervisor_name = report.student.get_supervisor_name()
+    graduation_year = get_graduation_year()
+    return render_template('report/report_detail.html', report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)

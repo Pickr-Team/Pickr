@@ -54,5 +54,9 @@ class Student(BaseModel):
         selection = Selection.get_by_student_id(self.id)
         return selection.final_topic_name
 
+    def get_supervisor_name(self):
+        selection = Selection.get_by_student_id(self.id)
+        return selection.final_topic_supervisor_name
+
     def __repr__(self):
         return f'<Student {self.id}>'
