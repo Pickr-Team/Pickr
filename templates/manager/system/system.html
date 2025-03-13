@@ -205,7 +205,7 @@
         3.All reports
     </div>
     {#reset students, selctions, reports#}
-    <a href="#" class="submit-button w-button" id="reset-system">Reset System</a>
+    <button class="submit-button w-button" id="reset-system">Reset System</button>
 </div>
 
 <script>
@@ -331,7 +331,6 @@
         })
     })
 
-
     // semester setting
     $('#semester-form-1, #semester-form-2').submit(function (e){
         e.preventDefault()
@@ -363,23 +362,14 @@
     })
 
     //reset system
-    $('#reset-system').click(function (e) {
-        e.preventDefault()
-        const confirmed = confirm("Are you sure you want to reset the system? This operation will clean all SELECTIONS, STUDENTS and REPORTS.");
+    $('#reset-system').click(function () {
+        $confirmBtn.prop('disabled', false);
+        $confirmText.text('Confirm');
+        $loading.hide();
 
-        if (confirmed) {
-            $.ajax({
-                url: '{{ url_for('manager.resetting') }}',
-                method: 'GET',
-                success: function (response) {
-                    if (response.success) {
-                        location.reload()
-                    } else {
-                        alert(response.error)
-                    }
-                }
-            })
-        }
+        window.appState.operation = 'resetSystem'
+        $confirmModal.modal('show')
+        $('#confirmModal-body').text(`Are you sure to reset the system?`);
     })
 
 

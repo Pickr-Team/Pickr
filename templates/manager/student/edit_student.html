@@ -43,19 +43,18 @@
     <script>
         $(document).ready(function () {
             $("#reset").click(function () {
-                var r = confirm("Are you sure to reset the password?");
-                var user_id = {{ student.id }};
-                var user_type = "student";
-                if (r) {
-                    $.ajax({
-                        url: "{{ url_for('manager.reset_password') }}",
-                        type: "POST",
-                        data: {user_id: user_id, user_type: user_type},
-                        success: function (data) {
-                            alert("This student's password has been reset to 123456.");
-                        }
-                    });
+                $confirmBtn.prop('disabled', false);
+                $confirmText.text('Confirm');
+                $loading.hide();
+
+                window.appState.operation = 'resetPwd'
+                window.appState.params = {
+                    user_id: {{ student.id }},
+                    user_type: 'student'
                 }
+
+                $confirmModal.modal('show')
+                $('#confirmModal-body').text(`Are you sure to reset the password?`);
             });
 
             $('#new_student_form').on('submit', function (event) {

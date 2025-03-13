@@ -451,7 +451,7 @@ def resetting():
     for table in tables:
         db.session.execute(text(f'TRUNCATE TABLE {table};'))
     db.session.commit()
-    return jsonify(success=True)
+    return Result.success('Reset system success!')
 
 
 @bp.route('/fail_students')

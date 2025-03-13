@@ -107,7 +107,6 @@
             let currentPage = 1;
             const $table = $(`#table-${type}`)
             const tbody = document.querySelector(`#tbody-${type}`)
-            {#TODO bug: if there is not any data, disable last-page-button#}
             if (tbody == null) return;
             let data = tbody.getElementsByTagName('tr');
             let originalData = data;

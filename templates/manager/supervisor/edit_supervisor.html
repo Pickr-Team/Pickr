@@ -36,11 +36,12 @@
                        value="{{ supervisor.user_name }}"/>
                 <span style="display: none;color: red" id="u-alert">Please input username</span>
                 <label for="expertise" class="text-block _10button_spac">Expertise</label>
-                <textarea maxlength="5000" class="text-field text-area w-input" name="expertise" id="expertise">{{ supervisor.expertise }}</textarea>
+                <textarea maxlength="5000" class="text-field text-area w-input" name="expertise"
+                          id="expertise">{{ supervisor.expertise }}</textarea>
                 <span style="display: none;color: red" id="ex-alert">Please input expertise</span>
                 <div>
                     <input type="submit" value="Save Edit" data-wait="Please wait..."
-                       class="submit-button _20head_spacing w-button"/>
+                           class="submit-button _20head_spacing w-button"/>
                     <a class="submit-button delete_button w-button" id="reset">Reset Password</a>
                 </div>
             </form>
@@ -50,69 +51,68 @@
     <script>
         $(document).ready(function () {
             $("#reset").click(function () {
-                const r = confirm("Are you sure to reset the password?");
-                const user_id = {{ supervisor.id }};
-                const user_type = "supervisor";
-                if (r) {
-                    $.ajax({
-                        url: "{{ url_for('manager.reset_password') }}",
-                        type: "POST",
-                        data: {user_id: user_id, user_type: user_type},
-                        success: function (data) {
-                            alert("This supervisor's password has been reset to 123456.");
-                        }
-                    });
+                $confirmBtn.prop('disabled', false);
+                $confirmText.text('Confirm');
+                $loading.hide();
+
+                window.appState.operation = 'resetPwd'
+                window.appState.params = {
+                    user_id: {{ supervisor.id }},
+                    user_type: 'supervisor'
+                }
+
+                $confirmModal.modal('show')
+                $('#confirmModal-body').text(`Are you sure to reset the password?`);
+            });
+
+            $('#new_supervisor_form').on('submit', function (event) {
+                const firstName = $('#first_name').val().trim();
+                const lastName = $('#last_name').val().trim();
+                const position = $('#position').val().trim();
+                const email = $('#email').val().trim();
+                const username = $('#username').val().trim();
+                const expertise = $('#expertise').val().trim();
+
+                $('#f-alert, #l-alert, #p-alert, #e-alert, #u-alert, #ex-alert').hide();
+
+                let isValid = true;
+
+                if (firstName === '') {
+                    $('#f-alert').show();
+                    isValid = false;
+                }
+
+                if (lastName === '') {
+                    $('#l-alert').show();
+                    isValid = false;
+                }
+
+                // Assuming position should be a number and between 1 and 20
+                if (isNaN(position) || position < 1 || position > 20) {
+                    $('#p-alert').show();
+                    isValid = false;
+                }
+
+                if (email === '') {
+                    $('#e-alert').show();
+                    isValid = false;
+                }
+
+                if (username === '') {
+                    $('#u-alert').show();
+                    isValid = false;
+                }
+
+                if (expertise === '') {
+                    $('#ex-alert').show();
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
                 }
             });
-            $(document).ready(function () {
-                $('#new_supervisor_form').on('submit', function (event) {
-                    const firstName = $('#first_name').val().trim();
-                    const lastName = $('#last_name').val().trim();
-                    const position = $('#position').val().trim();
-                    const email = $('#email').val().trim();
-                    const username = $('#username').val().trim();
-                    const expertise = $('#expertise').val().trim();
 
-                    $('#f-alert, #l-alert, #p-alert, #e-alert, #u-alert, #ex-alert').hide();
-
-                    let isValid = true;
-
-                    if (firstName === '') {
-                        $('#f-alert').show();
-                        isValid = false;
-                    }
-
-                    if (lastName === '') {
-                        $('#l-alert').show();
-                        isValid = false;
-                    }
-
-                    // Assuming position should be a number and between 1 and 20
-                    if (isNaN(position) || position < 1 || position > 20) {
-                        $('#p-alert').show();
-                        isValid = false;
-                    }
-
-                    if (email === '') {
-                        $('#e-alert').show();
-                        isValid = false;
-                    }
-
-                    if (username === '') {
-                        $('#u-alert').show();
-                        isValid = false;
-                    }
-
-                    if (expertise === '') {
-                        $('#ex-alert').show();
-                        isValid = false;
-                    }
-
-                    if (!isValid) {
-                        event.preventDefault();
-                    }
-                });
-            });
 
         });
     </script>
