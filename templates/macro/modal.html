@@ -1,0 +1,59 @@
+{% macro confirm_modal(modal_id='confirmModal') %}
+    <div class="modal fade" id="{{ modal_id }}" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ title|default('Comfirm Operation') }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p class="confirm-message">{{ message|default('Are you sure you want to do this?') }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              {{ cancel_text|default('No') }}
+            </button>
+            <button type="button" class="btn {{ confirm_btn_class|default('btn-primary') }} confirm-button">
+              {{ confirm_text|default('Yes') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro result_modal(modal_id='resultModal') %}
+    <div class="modal fade" id="{{ modal_id }}">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body text-center py-4">
+            <div class="result-icon mb-3">
+              <i class="bi fs-1"></i>
+            </div>
+            <p class="result-message fs-5"></p>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+              {{ close_text|default('Yes') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endmacro %}
+
+<style>
+.confirm-modal .processing {
+  position: relative;
+  opacity: 0.8;
+}
+.confirm-modal .processing::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.5);
+}
+</style>

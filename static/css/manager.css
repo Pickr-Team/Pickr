@@ -120,7 +120,11 @@ address .tab_link {
     padding: 10px 30px;
     font-size: 18px;
 }
-
+.tab_link.w--current, a.tab_link:hover {
+    border: none;
+    background-color: #eb3939;
+    color: white;
+}
 @media (max-width: 1000px) {
     #w-node-manager-02,
     #w-node-manager-03 {

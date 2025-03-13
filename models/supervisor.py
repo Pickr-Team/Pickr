@@ -51,7 +51,13 @@ class Supervisor(BaseModel):
 
     @classmethod
     def get_by_name(cls, full_name):
-        first_name, last_name = full_name.split(' ')
+        parts = [p for p in full_name.strip().split() if p]
+
+        # - first + middle => first_name
+        # - last => last_name
+        first_name = ' '.join(parts[:-1])
+        last_name = parts[-1]
+
         return cls.query.filter(
             (cls.first_name == first_name) &
             (cls.last_name == last_name)

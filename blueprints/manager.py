@@ -304,6 +304,8 @@ def import_file(_type):
                 cleaned_row = {key: value.strip() if isinstance(value, str) else value for key, value in row.items()}
                 supervisor_name = cleaned_row['Staff member']
                 supervisor = Supervisor.get_by_name(supervisor_name)
+                if supervisor is None:
+                    return redirect(url_for('base.error', message=f'Supervisor:"{supervisor_name}" not found, please make sure the supervisor has been registered'))
                 expertise = cleaned_row['Staff Expertise (Projects/Research Interests)']
                 supervisor.update(expertise=expertise)
                 _new_topic = Topic(

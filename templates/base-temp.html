@@ -154,55 +154,54 @@
 <script>
     customAlert()
 
-    let _type;
-    let _id;
-    let _parentNode;
+    let _type, _id, _parentNode;
     const $confirmModal = $('#confirmModal')
     const $secondConfirmModal = $('#secondConfirmModal')
     const $secondConfirmModalBody = $('#secondConfirmModal-body')
 
     function del(type, id, parentDivClass) {
         if (type === 'topic') return
+
         _type = type;
         _id = id;
-        if(parentDivClass) {
-            //if it's not table, then find the parent node and remove it
-            _parentNode = document.querySelector(`button[data-${type}-id="${id}"]`).closest(parentDivClass)
-        } else {
-            _parentNode = document.querySelector(`button[data-${type}-id="${id}"]`).closest('tr')
-        }
+
+        const button = document.querySelector(`button[data-${type}-id="${id}"]`);
+        _parentNode = parentDivClass ? button.closest(parentDivClass) : button.closest('tr');
+
         $confirmModal.modal('show')
-        //TODO Optimize prompt words of deletion
-        //topic: title
-        //student/supervisor: name
         $('#confirmModal-body').text(`Are you sure to delete?`);
     }
 
     function confirmDel() {
-        $confirmModal.modal('hide')
+        $confirmModal.modal('hide');
+
         $.ajax({
             url: `/delete/${_type}/${_id}`,
             type: 'GET',
-            success: function (response) {1
-                $secondConfirmModal.modal('show');
-               if (response.success) {
-                    $secondConfirmModalBody.css('color', 'white');
-                    $secondConfirmModalBody.text(response.message);
-                    _parentNode.remove()
-                } else {
-                    $secondConfirmModalBody.css('color', 'var(--accent)');
-                    $secondConfirmModalBody.text(response.message);
-                }
+            success: function (response) {
+                $confirmModal.one('hidden.bs.modal', function() {
+                    if (response.success) {
+                        _parentNode.remove();
+                        $secondConfirmModalBody.text(response.message).css('color', 'white');
+                    } else {
+                        $secondConfirmModalBody.text(response.message).css('color', 'var(--accent)');
+                    }
+                    $secondConfirmModal.modal('show');
+                });
             },
             error: function (response) {
-                $secondConfirmModal.modal('show');
-                $secondConfirmModalBody.css('color', 'var(--accent)');
-                $secondConfirmModalBody.text(response.message);
+                $confirmModal.one('hidden.bs.modal', function() {
+                    const msg = xhr.responseJSON?.message || "Deletion failed.";
+                    $secondConfirmModalBody.text(msg).css('color', 'var(--accent)');
+                    $secondConfirmModal.modal('show');
+                });
             }
         });
     }
 
-    $('#secondConfirmModal .btn-secondary').on('click', function () {
+    $('#confirmModal .btn-danger').on('click', confirmDel);
+
+    $('#secondConfirmModal .btn-secondary').on('click', function() {
         $secondConfirmModal.modal('hide');
     });
 </script>
