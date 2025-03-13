@@ -22,6 +22,7 @@
 
     {% block style %}{% endblock %}
 
+    {% from 'macro/modals.html' import modals %}
 
     <style>
         .paragraph.i._10_head {
@@ -72,49 +73,7 @@
     {% endif %}
 {% endwith %}
 
-<div class="modal fade" id="confirmModal" aria-labelledby="confirmModal" tabindex="-1" aria-hidden="true"
-     style="z-index: 99">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <img src="{{ url_for('static',filename='image/icon.png') }}"
-                     style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Pickr</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="confirmModal-body" style="font-size: 18px">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button class="btn btn-danger" onclick="confirmDel()">Confirm
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="secondConfirmModal" aria-labelledby="secondConfirmModal" aria-hidden="true"
-     style="z-index: 100"
-     tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="justify-content: start">
-                <img src="{{ url_for('static',filename='image/icon.png') }}"
-                     style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Pickr</h1>
-            </div>
-            <div class="modal-body" id="secondConfirmModal-body" style="font-size: 18px">
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="ok-btn">
-                    Ok
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+{{ modals() }}
 
 <header class="head">
     <a href="{{ url_for('base.home') }}" aria-current="page" class="w-inline-block w--current">
@@ -151,60 +110,11 @@
         </div>
     </div>
 </footer>
-<script>
-    customAlert()
 
-    let _type, _id, _parentNode;
-    const $confirmModal = $('#confirmModal')
-    const $secondConfirmModal = $('#secondConfirmModal')
-    const $secondConfirmModalBody = $('#secondConfirmModal-body')
+<script> customAlert() </script>
 
-    function del(type, id, parentDivClass) {
-        if (type === 'topic') return
+<script src="{{ url_for('static',filename='js/modals.js') }}"></script>
 
-        _type = type;
-        _id = id;
-
-        const button = document.querySelector(`button[data-${type}-id="${id}"]`);
-        _parentNode = parentDivClass ? button.closest(parentDivClass) : button.closest('tr');
-
-        $confirmModal.modal('show')
-        $('#confirmModal-body').text(`Are you sure to delete?`);
-    }
-
-    function confirmDel() {
-        $confirmModal.modal('hide');
-
-        $.ajax({
-            url: `/delete/${_type}/${_id}`,
-            type: 'GET',
-            success: function (response) {
-                $confirmModal.one('hidden.bs.modal', function() {
-                    if (response.success) {
-                        _parentNode.remove();
-                        $secondConfirmModalBody.text(response.message).css('color', 'white');
-                    } else {
-                        $secondConfirmModalBody.text(response.message).css('color', 'var(--accent)');
-                    }
-                    $secondConfirmModal.modal('show');
-                });
-            },
-            error: function (response) {
-                $confirmModal.one('hidden.bs.modal', function() {
-                    const msg = xhr.responseJSON?.message || "Deletion failed.";
-                    $secondConfirmModalBody.text(msg).css('color', 'var(--accent)');
-                    $secondConfirmModal.modal('show');
-                });
-            }
-        });
-    }
-
-    $('#confirmModal .btn-danger').on('click', confirmDel);
-
-    $('#secondConfirmModal .btn-secondary').on('click', function() {
-        $secondConfirmModal.modal('hide');
-    });
-</script>
 {% block link_script %}{% endblock %}
 
 {% block script %}{% endblock %}

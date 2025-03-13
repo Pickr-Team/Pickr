@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, Response
 from functools import wraps
 
-from blueprints.base import get_graduation_year
+from blueprints.utils import get_graduation_year
 from models.report import Report
 from models.student import Student
 from models.supervisor import Supervisor

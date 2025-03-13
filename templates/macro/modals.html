@@ -1,0 +1,50 @@
+{% macro modals() %}
+{#    confirmModal#}
+    <div class="modal fade" id="confirmModal" aria-labelledby="confirmModal" tabindex="-1" aria-hidden="true"
+         style="z-index: 99">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img src="{{ url_for('static',filename='image/icon.png') }}"
+                         style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pickr</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="confirmModal-body" style="font-size: 18px">
+                    {#text#}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-danger" id="confirm-btn">
+                        <span id="confirm-text">Confirm</span>
+                        <span id="modal-loading" class="spinner-border spinner-border-sm text-warning"
+                              role="status" aria-hidden="true" style="display: none"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{#   resultModal#}
+    <div class="modal fade" id="secondConfirmModal" aria-labelledby="secondConfirmModal" aria-hidden="true"
+         style="z-index: 100"
+         tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="justify-content: start">
+                    <img src="{{ url_for('static',filename='image/icon.png') }}"
+                         style="margin-right: 5px; width: 2.5rem; border-radius: 5px"/>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pickr</h1>
+                </div>
+                <div class="modal-body" id="secondConfirmModal-body" style="font-size: 18px">
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="ok-btn">
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endmacro %}

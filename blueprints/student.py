@@ -1,7 +1,7 @@
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify
 from functools import wraps
 
-from blueprints.base import get_graduation_year
+from blueprints.utils import get_graduation_year
 from models.report import Report
 from models.result import Result
 from models.semester import Semester

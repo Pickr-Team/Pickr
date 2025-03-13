@@ -16,7 +16,7 @@ from sqlalchemy import text
 import json
 import pandas as pd
 import os
-from blueprints.base import get_graduation_year
+from blueprints.utils import get_graduation_year
 
 bp = Blueprint("manager", __name__, url_prefix="/manager")
 
@@ -384,7 +384,7 @@ def update_deadline():
     return json.dumps({'success': True})
 
 
-@bp.route('/delete/<string:_type>/<int:_id>')
+# @bp.route('/delete/<string:_type>/<int:_id>')
 @require_manager
 def delete(_type, _id):
     if _type == 'student':
@@ -432,6 +432,7 @@ def delete(_type, _id):
             return jsonify(success=False, message='Type does not exist')
     elif _type == 'note':
         note = Note.get_by_id(id=_id)
+        print('note', note)
         if note:
             note.delete()
             return jsonify(success=True, message='Delete Successfully')

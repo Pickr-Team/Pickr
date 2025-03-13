@@ -121,7 +121,7 @@ address .tab_link {
     font-size: 18px;
 }
 .tab_link.w--current, a.tab_link:hover {
-    border: none;
+    border: 1px solid #eb3939;
     background-color: #eb3939;
     color: white;
 }

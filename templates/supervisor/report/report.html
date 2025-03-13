@@ -14,6 +14,24 @@
             min-width: 40px;
             text-align: center;
         }
+
+        #pageIndicator {
+            background: transparent !important;
+            color: white !important;
+            pointer-events: none;
+        }
+
+        .page-item.disabled .page-link {
+            background-color: transparent !important;
+        }
+
+        .pagination {
+            margin: 0 !important;
+        }
+
+        .pagination-container{
+            margin-top: .3rem !important;
+        }
     </style>
 {% endblock %}
 
@@ -48,6 +66,22 @@
                     {% endfor %}
                 </select>
             </div>
+
+            <div class="pagination-container mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center" id="paginationList">
+                        <li class="page-item" id="pagePrev">
+                            <a class="page-link" href="#" data-page="prev">&laquo;</a>
+                        </li>
+                        <li class="page-item">
+                            <span class="page-link" id="pageIndicator" style="border: none">1/1</span>
+                        </li>
+                        <li class="page-item" id="pageNext">
+                            <a class="page-link" href="#" data-page="next">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </form>
     </div>
 
@@ -67,20 +101,6 @@
             </thead>
             <tbody id="reportTableBody"></tbody>
         </table>
-
-        <div class="pagination-container mt-4">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center" id="paginationList">
-                    <li class="page-item" id="pagePrev">
-                        <a class="page-link" href="#" data-page="prev">&laquo;</a>
-                    </li>
-                    <li class="page-item" id="pageNext">
-                        <a class="page-link" href="#" data-page="next">&raquo;</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
     </div>
 </div>
 
@@ -129,7 +149,7 @@
 
                 tbody.innerHTML = pageData.map((report, index) => `
                     <tr>
-                        <th scope="row">${index+1}</th>
+                        <th scope="row">${report.id}</th>
                         <td>${report.englishName}(${report.chineseName})</td>
                         <td>${report.semester}</td>
                         <td>${report.week}</td>
@@ -171,23 +191,9 @@
             function renderPagination() {
                 const totalItems = Math.max(filteredData.length, 1);
                 const totalPages = Math.ceil(totalItems / pageSize) || 1;
-                const paginationList = document.getElementById('paginationList');
 
-                const existingItems = [...paginationList.children];
-                existingItems.forEach(item => {
-                    if (!['pagePrev', 'pageNext'].includes(item.id)) {
-                        item.remove();
-                    }
-                });
-
-                const pageNext =  document.getElementById('pageNext')
-                for (let i = 0; i < totalPages; i++) {
-                    const page = i + 1;
-                    const li = document.createElement('li');
-                    li.className = `page-item ${page === currentPage ? 'active' : ''}`;
-                    li.innerHTML = `<a class="page-link" href="#" data-page="${page}">${page}</a>`;
-                    pageNext.before(li);
-                }
+                document.getElementById('pageIndicator').textContent =
+                    `${currentPage}/${totalPages}`;
 
                 document.getElementById('pagePrev').classList.toggle('disabled', currentPage === 1);
                 document.getElementById('pageNext').classList.toggle('disabled', currentPage === totalPages);

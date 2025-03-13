@@ -1,6 +1,7 @@
 # base and basic functions
 from flask import Blueprint, render_template, session, request, url_for, redirect, jsonify, flash, Response
 
+from blueprints.utils import get_graduation_year
 from models.pdf_generator import generate_report_pdf
 from models.report import Report
 from models.result import Result
@@ -13,6 +14,9 @@ from models.type import Type
 from datetime import datetime
 from functools import wraps
 import json
+from blueprints.manager import delete as manager_delete
+from blueprints.supervisor import delete as supervisor_delete
+
 
 bp = Blueprint("base", __name__)
 
@@ -166,18 +170,12 @@ def topic_detail_custom(topic_id):
 @bp.route('/delete/<_type>/<_id>')
 def delete_middle_ware(_type, _id):
     user_type = session['user_type']
-    target_url = f'/{user_type}/delete/{_type}/{_id}'
-    return redirect(target_url)
-
-
-def get_graduation_year():
-    now = datetime.now()
-    current_year = now.year
-    current_month = now.month
-    if current_month >= 7:
-        return current_year + 1
+    if user_type == 'manager':
+        return manager_delete(_type, _id)
+    elif user_type == 'supervisor':
+        return supervisor_delete(_type, _id)
     else:
-        return current_year
+        return Result.error("Permission denied")
 
 
 @bp.route('/report_pdf/<report_id>')
@@ -191,3 +189,9 @@ def report_pdf(report_id):
         'Content-Disposition': 'attachment;filename=topic_poster.pdf',
         'Content-Type': 'application/pdf'
     })
+
+
+@bp.route('/demo')
+def demo():
+    return render_template('demo.html')
+
