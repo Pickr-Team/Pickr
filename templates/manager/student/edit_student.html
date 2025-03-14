@@ -33,7 +33,7 @@
                 <span style="display: none;color: red" id="u-alert">Please input username</span>
                 <div>
                     <input type="submit" value="Save Edit" data-wait="Please wait..."
-                       class="submit-button _20head_spacing w-button"/>
+                           class="submit-button _20head_spacing w-button"/>
                     <a class="submit-button delete_button w-button" id="reset">Reset Password</a>
                 </div>
             </form>
@@ -43,18 +43,10 @@
     <script>
         $(document).ready(function () {
             $("#reset").click(function () {
-                $confirmBtn.prop('disabled', false);
-                $confirmText.text('Confirm');
-                $loading.hide();
-
-                window.appState.operation = 'resetPwd'
-                window.appState.params = {
+                initOperation('resetPwd', {
                     user_id: {{ student.id }},
                     user_type: 'student'
-                }
-
-                $confirmModal.modal('show')
-                $('#confirmModal-body').text(`Are you sure to reset the password?`);
+                })
             });
 
             $('#new_student_form').on('submit', function (event) {

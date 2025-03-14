@@ -363,13 +363,7 @@
 
     //reset system
     $('#reset-system').click(function () {
-        $confirmBtn.prop('disabled', false);
-        $confirmText.text('Confirm');
-        $loading.hide();
-
-        window.appState.operation = 'resetSystem'
-        $confirmModal.modal('show')
-        $('#confirmModal-body').text(`Are you sure to reset the system?`);
+        initOperation('resetSystem')
     })
 
 

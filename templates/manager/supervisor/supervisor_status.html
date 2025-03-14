@@ -22,7 +22,9 @@
         <div class="_30px_height">
             <div class="third_title accent">Position status</div>
             <div class="_20px_height"></div>
-            <div class="fourth_title">{{ supervisor.get_not_custom_topic_num()}}/{{ supervisor.position }} ({{ supervisor.get_total_final_selections() }} students in {{ supervisor.first_name }}'s team)</div>
+            <div class="fourth_title">{{ supervisor.get_not_custom_topic_num() }}/{{ supervisor.position }}
+                ({{ supervisor.get_total_final_selections() }} students in {{ supervisor.first_name }}'s team)
+            </div>
         </div>
         <div class="_30px_height">
             <div class="third_title accent">Expertise</div>
@@ -34,29 +36,33 @@
             <div class="_20px_height"></div>
         </div>
         <section style="margin-top: 20px;" id="topic-section">
-        {% if topics %}
-            {% for topic in topics %}
+            {% if topics %}
+                {% for topic in topics %}
                     <a href="{{ url_for('base.topic_detail', topic_id=topic.id ) }}" class="link-block w-inline-block"
                        data-topic-id="{{ topic.id }}"
                        data-type-id="{{ topic.type_id }}" data-supervisor-id="{{ topic.supervisor_id }}">
                         <div class="w-layout-hflex" style="align-items: center;">
                             <div class="w-layout-vflex flex-block-8">
-                                <h1 class="third_title no_head_spacing accent no_button_spacing">{{ topic.name }}{% if topic.is_custom == 1 %} (Custom){% endif %}</h1>
-                                <div class="text-block">By {{ topic.get_supervisor_name() }}</div>
-                                <div class="text-block _10head_spacing">{{ topic.get_type_name() }}</div>
+                                <h2 class="third_title no_head_spacing accent no_button_spacing">
+                                    {{ topic.name }}{% if topic.is_custom == 1 %} (Custom){% endif %}</h2>
+                                <div class="text-block _10head_spacing">
+                                    {{ topic.get_type_name() }}
+                                </div>
                                 <div class="w-layout-hflex">
-                                    <div class="text-block _10head_spacing _10button_spacing">{{ topic.get_selected_num_final() }}/{{ topic.quota }} Positions
+                                    <div class="text-block _10head_spacing _10button_spacing">{{ topic.get_selected_num_final() }}/{{ topic.quota }}
+                                        Positions
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <p class=" description description-{{ topic.id }}" style="width: 60vw;">{{ topic.description }}</p>
+                        <p class=" description description-{{ topic.id }}"
+                           style="width: 60vw; font-size: 20px;line-height: 30px">{{ topic.description }}</p>
                     </a>
-            {% endfor %}
-        {% else %}
-             <div class="fourth_title">Supervisor hasn't publish any topics yet</div>
-             <div class="_20px_height"></div>
-        {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="fourth_title">Supervisor hasn't publish any topics yet</div>
+                <div class="_20px_height"></div>
+            {% endif %}
             <script src="../static/js/topic_list.js"></script>
             <script>
                 {% for topic in topics %}

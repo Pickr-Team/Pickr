@@ -51,18 +51,10 @@
     <script>
         $(document).ready(function () {
             $("#reset").click(function () {
-                $confirmBtn.prop('disabled', false);
-                $confirmText.text('Confirm');
-                $loading.hide();
-
-                window.appState.operation = 'resetPwd'
-                window.appState.params = {
+                 initOperation('resetPwd', {
                     user_id: {{ supervisor.id }},
                     user_type: 'supervisor'
-                }
-
-                $confirmModal.modal('show')
-                $('#confirmModal-body').text(`Are you sure to reset the password?`);
+                })
             });
 
             $('#new_supervisor_form').on('submit', function (event) {
