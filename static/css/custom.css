@@ -160,7 +160,6 @@
                   margin-top: 30px;
                   padding-bottom: 0;
                   padding-right: 40px;
-                  font-family: Dank Mono, sans-serif;
                   font-size: 30px;
                   font-style: italic;
                   text-decoration: none;
@@ -215,7 +214,6 @@
 
       .page_hearder {
         border-bottom: 1px solid #fff;
-        border-right: 1px solid #000;
         margin-top: 0;
         margin-bottom: 0;
         padding-top: 115px;
@@ -242,9 +240,8 @@
 .text-block {
   color: white;
   font-size: 20px;
-  font-style: normal;
   text-align: justify;
-  line-height: 26px;}
+  line-height: 26px; }
   .text-block.italic-text {
     font-style: italic; }
     .text-block.italic-text.accent._0head {
@@ -423,7 +420,7 @@
 
         .footer {
           border-top: 1px solid white;
-          margin-top: 30px;
+          margin-top: 20px;
           padding-top: 20px;
           padding-bottom: 20px; }
 
@@ -530,10 +527,10 @@
         background-color: orange; }
 
         .down {
-          animation: slideDown 1s forwards; }
+          animation: slideDown 0.5s forwards; }
 
           .up {
-            animation: slideUp 1s forwards; }
+            animation: slideUp 0.5s forwards; }
 
             @keyframes slideDown {
               from {

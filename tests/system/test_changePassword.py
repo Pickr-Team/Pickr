@@ -53,5 +53,3 @@ class TestChangePassword(SeleniumTest):
         time.sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, ".submit-button").click()
         time.sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, "section:nth-child(4)").click()
-        time.sleep(1)

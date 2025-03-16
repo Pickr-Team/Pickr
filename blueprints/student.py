@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify
+from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, flash
 from functools import wraps
 
 from blueprints.utils import get_graduation_year
@@ -47,7 +47,9 @@ def index():
 
     semester = Semester.get_latest()
     graduation_year = get_graduation_year()
-    if graduation_year == semester.graduation_year:
+    if semester is None:
+        _semester = None
+    elif graduation_year == semester.graduation_year:
         _semester = semester
     else:
         _semester = None
@@ -155,6 +157,9 @@ def update_selection():
         return json.dumps({'success': True, 'reset': True})
 
     match = re.search(r'\d+', topic_id)
+    if match is None :
+        return json.dumps({'success': False, 'error': 'Topic id is invalid'})
+
     formatted_topic_id = int(match.group())
 
     if formatted_topic_id in [selection.first_topic_id, selection.second_topic_id, selection.third_topic_id]:

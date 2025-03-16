@@ -29,15 +29,28 @@
             margin: 0 !important;
         }
 
-        .pagination-container{
+        .pagination-container {
             margin-top: .3rem !important;
+        }
+
+        #filterForm {
+            display: contents;
+        }
+
+        @media (max-width: 479px) {
+            .report label {
+                line-height: 30px;
+            }
+            .page-link {
+                min-width: unset;
+            }
         }
     </style>
 {% endblock %}
 
 <div class="report" style="width: 100%; margin-top: 30px;">
     <div class="filter-box">
-        <form id="filterForm" style="display: contents;">
+        <form id="filterForm">
             <div class="select-box">
                 <label class="yang-label" for="semester">Semester:</label>
                 <select class="form-select" id="semester">
@@ -89,7 +102,6 @@
         <table class="table align-middle" style="color: white;">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Student Name</th>
                 <th scope="col">Semester</th>
                 <th scope="col">Week</th>
@@ -149,7 +161,6 @@
 
                 tbody.innerHTML = pageData.map((report, index) => `
                     <tr>
-                        <th scope="row">${report.id}</th>
                         <td>${report.englishName}(${report.chineseName})</td>
                         <td>${report.semester}</td>
                         <td>${report.week}</td>

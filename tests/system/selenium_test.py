@@ -6,15 +6,19 @@ from selenium.webdriver.chrome.service import Service
 
 class SeleniumTest:
     def __init__(self):
-        # todo: why doesn't relative path work here?
-        # chrome v131.xxx
-        self.absolute_path = 'C:/Users/20854/Desktop/Pickr/tests/system/chromedriver-win64/chromedriver.exe'
-        self.service = Service(executable_path=self.absolute_path)
-        self.driver = None
+        self.driver = webdriver.Chrome()
         self.vars = {}
 
-    def setUp(self):
-        self.driver = webdriver.Chrome(service=self.service)
+    # def __init__(self):
+    #     # bug: why doesn't relative path work here?
+    #     # chrome v131.xxx
+    #     self.absolute_path = 'C:/Users/20854/Desktop/Pickr/tests/system/chromedriver-win64/chromedriver.exe'
+    #     self.service = Service(executable_path=self.absolute_path)
+    #     self.driver = None
+    #     self.vars = {}
+    #
+    # def setUp(self):
+    #     self.driver = webdriver.Chrome(service=self.service)
 
     def login(self, username):
         self.driver.get("http://127.0.0.1:8000")
@@ -47,5 +51,5 @@ class SeleniumTest:
         self.driver.execute_script("window.scrollTo(0,0)")
         self.driver.find_element(By.LINK_TEXT, "My Pickr↗").click()
         time.sleep(1)
-        self.driver.find_element(By.XPATH, "//em[contains(.,\'Logout↗\')]").click()
+        self.driver.find_element(By.ID, "logout").click()
         self.driver.quit()

@@ -13,7 +13,7 @@
             <h1 class="first_title">Hi,{{ supervisor.first_name }} {{ supervisor.last_name }}! </h1>
             <a href="{{ url_for('manager.switch_to_supervisor_page') }}" class="pickr-btn" style="display: inline-block; margin: 20px 0">Go to Supervisor Page</a>
             <div class="_20px_height"></div>
-            <a href="{{ url_for('base.logout') }}" class="small_link accent"><em>Logout↗</em></a>
+            <a href="{{ url_for('base.logout') }}" class="small_link accent"><em id="logout">Logout↗</em></a>
             <a href="{{ url_for('base.change_password') }}" class="small_link accent" style="margin-left: 20px"><em>Change
                 Password↗</em></a>
             <div class="_20px_height"></div>
@@ -22,27 +22,27 @@
             <address style="display: flex;overflow-x: auto">
                 <a data-w-tab="System" class="tab_link w-inline-block w-tab-link"
                    onclick="sessionStorage.setItem('pre','system')">
-                    <div>System</div>
+                    System
                 </a>
                 <a data-w-tab="Students" class="tab_link w-inline-block w-tab-link"
                    onclick="sessionStorage.setItem('pre','student')">
-                    <div>Students</div>
+                    Students
                 </a>
                 <a data-w-tab="Supervisor" class="tab_link w-inline-block w-tab-link"
                    onclick="sessionStorage.setItem('pre','supervisor')">
-                    <div>Supervisors</div>
+                    Supervisors
                 </a>
                 <a data-w-tab="SupTopics" class="tab_link w-inline-block w-tab-link"
                    onclick="sessionStorage.setItem('pre','supTopic')">
-                    <div>Supervisor Topics</div>
+                    Supervisor Topics
                 </a>
                 <a data-w-tab="Topics" class="tab_link w-inline-block w-tab-link"
                    onclick="sessionStorage.setItem('pre','stuTopic')">
-                    <div>Student Topics</div>
+                    Student Topics
                 </a>
                 <a data-w-tab="Reports" class="tab_link w-inline-block w-tab-link"
                    onclick="sessionStorage.setItem('pre','reports')">
-                    <div>Weekly Reports</div>
+                    Weekly Reports
                 </a>
             </address>
 
@@ -72,7 +72,7 @@
 {% endblock %}
 
 {% block script %}
-<script>
+    <script>
         // Tab switch
         $(document).ready(function () {
             const _pre = sessionStorage.getItem('pre') || ''

@@ -1,6 +1,5 @@
 {% block style %}
     <style>
-
         .page-item.active .page-link {
             background-color: var(--accent);
             border-color: var(--accent);
@@ -10,10 +9,6 @@
             color: var(--accent);
             min-width: 40px;
             text-align: center;
-        }
-
-        #filterForm {
-            display: flex;
         }
 
         #filterForm .select-box {
@@ -100,7 +95,6 @@
         <table class="table align-middle" style="color: white;">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Student Name</th>
                 <th scope="col">Semester</th>
                 <th scope="col">Week</th>
@@ -158,7 +152,6 @@
 
                 tbody.innerHTML = pageData.map((report, index) => `
                     <tr>
-                        <th scope="row">${report.id}</th>
                         <td>${report.englishName}(${report.chineseName})</td>
                         <td>${report.semester}</td>
                         <td>${report.week}</td>

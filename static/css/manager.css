@@ -82,12 +82,12 @@
 }
 
 .text-block-2 {
-  color: #fff;
-  margin-top: 0;
-  margin-bottom: 0;
-  margin-right: 0;
-  font-size: 20px;
-  font-style: normal;
+    color: #fff;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    font-size: 20px;
+    font-style: normal;
 }
 
 .text-block-2.italic-text {
@@ -99,7 +99,7 @@
 }
 
 .text-block-2.back_space {
-   margin-right: 220px;
+    margin-right: 220px;
 }
 
 .page_hearder {
@@ -120,11 +120,32 @@ address .tab_link {
     padding: 10px 30px;
     font-size: 18px;
 }
+
 .tab_link.w--current, a.tab_link:hover {
     border: 1px solid #eb3939;
     background-color: #eb3939;
     color: white;
 }
+
+.modal-content-demo {
+    width: 25%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px
+}
+
+.info-box {
+    color: gray;
+    max-width: 1000px;
+}
+
+
+#filterForm {
+    display: flex;
+}
+
 @media (max-width: 1000px) {
     #w-node-manager-02,
     #w-node-manager-03 {
@@ -170,7 +191,15 @@ address .tab_link {
     }
 
     #w-node-global-01 {
-        grid-template-columns: 4fr 2fr;
+        display: block;
+    }
+
+    #w-node-global-01 .w-layout-cell:last-child {
+        display: block;
+    }
+
+    #w-node-global-01 .num {
+        text-align: right;
     }
 
     .student_submit_form {
@@ -201,5 +230,49 @@ address .tab_link {
 
     address::-webkit-scrollbar {
         display: none;
+    }
+
+    address .tab_link {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .modal-content-demo {
+        width: 95%;
+    !important;
+    }
+
+    .info-box {
+        font-size: 14px;
+        line-height: 16px;
+    }
+
+    .pickr-btn {
+        padding: 10px;
+    }
+
+    #filterForm {
+        display: block;
+    }
+
+    #filterForm .yang-label,
+    #filterForm .form-select {
+        font-size: .8rem;
+    }
+
+    #filterForm .select-box {
+        margin-right: 0 !important;
+    }
+
+    #filterForm .select-box:first-child {
+        float: left;
+    }
+
+    #filterForm .select-box:nth-child(2) {
+        float: right;
+    }
+
+    #filterForm .select-box:last-child {
+        clear: both;
     }
 }

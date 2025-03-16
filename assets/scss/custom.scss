@@ -724,10 +724,10 @@ input.w-button {
     background-color: orange;
 }
 .down {
-    animation: slideDown 1s forwards;
+    animation: slideDown .5s forwards;
 }
 .up {
-    animation: slideUp 1s forwards;
+    animation: slideUp .5s forwards;
 }
 @keyframes slideDown {
     from {

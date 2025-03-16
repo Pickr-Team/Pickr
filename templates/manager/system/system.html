@@ -8,7 +8,7 @@
             <div class="text-block"><em>◇</em> Student number</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ students|length }} ({{ num_success }} success)</div>
+            <div class="text-block num">{{ students|length }} ({{ num_success }} success)</div>
         </div>
     </div>
     <div id="w-node-global-01"
@@ -17,7 +17,7 @@
             <div class="text-block"><em>◇</em> Waiting for submit</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ num_waiting }}</div>
+            <div class="text-block num">{{ num_waiting }}</div>
         </div>
     </div>
     <div id="w-node-global-01"
@@ -26,7 +26,7 @@
             <div class="text-block"><em>◇</em> Waiting for system process</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ num_process }}</div>
+            <div class="text-block num">{{ num_process }}</div>
         </div>
     </div>
     <div id="w-node-global-01"
@@ -35,7 +35,7 @@
             <div class="text-block"><em>◇</em> Waiting for verify</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ num_verify }}</div>
+            <div class="text-block num">{{ num_verify }}</div>
         </div>
     </div>
     <div id="w-node-global-01"
@@ -43,16 +43,16 @@
         <div class="w-layout-cell">
             <div class="text-block"><em>◇</em> Fail</div>
         </div>
-        <div class="w-layout-cell">
+        <div class="w-layout-cell num">
             <a href="#" id="fail_students" class="small_link accent">{{ num_fail }}<em
                     class="italic-text">↗</em></a>
         </div>
     </div>
-    <!-- Floating window -->
+    <!-- Failed Students Modal -->
     <div id="modal" class="modal" style="display:none;">
         <!-- Contents -->
-        <div class="modal-content"
-             style="width: 25%; position: absolute; left: 50%;top: 50%;transform: translate(-50%, -50%);padding: 10px">
+        <div class="modal-content-demo"
+             style="">
             <span class="close" style=" position: absolute; right: 10px; top: 0; scale: 1.5">&times;</span>
             <p id="student-data">Loading...</p>
         </div>
@@ -61,6 +61,7 @@
     <a href="{{ url_for('manager.process') }}" class="submit-button delete_button w-button">Process</a>
     <a href="{{ url_for('manager.refresh') }}" class="w-button submit-button">Refresh</a>
     <div class="_20px_height"></div>
+
     <h2 class="third_title-2 accent">Supervisor & Topic Overview</h2>
     <div class="_20px_height"></div>
     <div id="w-node-global-01"
@@ -69,7 +70,7 @@
             <div class="text-block"><em>◇</em> Supervisor number</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ supervisors|length }}</div>
+            <div class="text-block num">{{ supervisors|length }}</div>
         </div>
     </div>
     <div id="w-node-global-01"
@@ -78,7 +79,7 @@
             <div class="text-block"><em>◇</em> Supervisor's Topic number</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ topic_num }}</div>
+            <div class="text-block num">{{ topic_num }}</div>
         </div>
     </div>
     <div id="w-node-global-01"
@@ -87,7 +88,7 @@
             <div class="text-block"><em>◇</em> Supervisors Position</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ static_topic_num }} / {{ total_quta }}</div>
+            <div class="text-block num">{{ static_topic_num }} / {{ total_quta }}</div>
         </div>
     </div>
     <div id="w-node-global-01"
@@ -96,13 +97,16 @@
             <div class="text-block"><em>◇</em> Custom Topic number</div>
         </div>
         <div class="w-layout-cell">
-            <div class="text-block">{{ custom_topic_num }}</div>
+            <div class="text-block num">{{ custom_topic_num }}</div>
         </div>
     </div>
     <div class="_20px_height"></div>
 
     <h2 class="third_title-2 accent semester-setting"></h2>
-    <div class="text-block" style="color: gray; max-width: 1000px">
+    <div class="text-block info-box">
+        ⚠️Time setting is unavailable on mobile devices. Please configure via desktop browser
+    </div>
+    <div class="text-block info-box">
         ⚠️Manager must configure the semester start date here.
         The system uses this date to automatically calculate academic week numbers for student weekly reports.
         If unset or incorrect, students cannot submit reports, and supervisors cannot track progress accurately.
@@ -129,7 +133,11 @@
         </div>
     </div>
 
+
     <h2 class="third_title-2 accent">Topic Selection Deadline Setting</h2>
+    <div class="text-block info-box">
+        ⚠️Time setting is unavailable on mobile devices. Please configure via desktop browser
+    </div>
     <div class="w-layout-blockcontainer w-container" style="max-width: none;">
         <div class="w-form">
             <div class="text-block _10button_spac">Round 1</div>
@@ -144,7 +152,6 @@
                        class="submit-button w-button"/>
             </form>
         </div>
-
         <div class="w-form">
             <div class="text-block _10button_spac">Round 2</div>
             <form id="deadline-form-2" class="student_submit_form">
@@ -160,6 +167,7 @@
         </div>
     </div>
     <div class="_20px_height"></div>
+
     <h2 class="third_title-2 accent">Notes Setting</h2>
     {% for note in notes %}
         <div class="w-node-manager-01 quick-stack-2 wf-layout-layout">
@@ -198,10 +206,10 @@
     <br>
     <div class="_40px_height"></div>
     <h2 class="third_title-2 accent">Reset System</h2>
-    <div class="text-block" style="color: gray; max-width: 1000px; margin-bottom: 15px;">
+    <div class="text-block info-box" style="margin-bottom: 15px;">
          ⚠️Warning: Resetting the system will permanently delete the following data: <br>
-        1.All students
-        2.All selections
+        1.All students <br>
+        2.All selections <br>
         3.All reports
     </div>
     {#reset students, selctions, reports#}
