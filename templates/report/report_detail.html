@@ -9,9 +9,11 @@
             padding-top: 100px;
             color: white;
         }
-        .w-input[disabled]:not(.w-input-disabled), .w-input[readonly]:not(.w-input-disabled), fieldset[disabled] .w-input:not(.w-input-disabled), .w-select[disabled]:not(.w-input-disabled), .w-select[readonly]:not(.w-input-disabled), fieldset[disabled] .w-select:not(.w-input-disabled){
+
+        .w-input[disabled]:not(.w-input-disabled), .w-input[readonly]:not(.w-input-disabled), fieldset[disabled] .w-input:not(.w-input-disabled), .w-select[disabled]:not(.w-input-disabled), .w-select[readonly]:not(.w-input-disabled), fieldset[disabled] .w-select:not(.w-input-disabled) {
             background-color: black;
         }
+
         .text-area {
             max-width: unset;
             border: none;
@@ -20,52 +22,90 @@
             resize: none;
             min-height: 50px;
         }
+
         .text-area:hover {
             border: unset;
             cursor: unset;
         }
-         td {
+
+        td {
             padding: 5px 10px;
             border-width: 1px
         }
-        .feedback-btn-group {
+
+        .back-btn {
             position: fixed;
             bottom: 100px;
             right: 40px;
         }
+
         .pickr-btn {
             color: black;
             background-color: white;
             border: 1px solid black;
             transition: all .4s;
+            border-radius: 10px;
         }
-        .pickr-btn:first-child {
-            border-right: none;
-            border-radius: 25px 0 0 25px;
-        }
-        .pickr-btn:last-child {
-            border-radius: 0 25px 25px 0;
-        }
+
         .pickr-btn:hover {
             color: white;
-            background-color: var(--accent) ;
+            background-color: var(--accent);
             border: 1px solid white;
         }
+
         .icon path {
             transition: .4s
         }
+
         .pickr-btn:hover .icon path {
             fill: white;
+        }
+
+        textarea[name="comments"] {
+            border-left: 10px solid var(--accent);
+            border-top: 1px solid white;
+            border-right: 1px solid white;
+            border-bottom: 1px solid white;
+            border-radius: 15px;
+            min-height: 140px !important;
+            color: var(--accent);
+            margin-top: 30px;
+        }
+
+        textarea[name="comments"]:hover, textarea[name="comments"]:focus {
+            border-left: 10px solid var(--accent);
+            border-top: 1px solid white;
+            border-right: 1px solid white;
+            border-bottom: 1px solid white;
+        }
+
+        @media (max-width: 600px) {
+            .report-title {
+                font-size: 30px;
+            }
+
+            .report-sub-title {
+                font-size: 25px;
+                margin-top: 0 !important;
+            }
         }
     </style>
 {% endblock %}
 
 {% block content %}
+    <div>
+        <button type="button" class="pickr-btn" onclick="history.back()">⮌ Go Back</button>
+    </div>
+
     {{ report_table_review(report, supervisor_name, graduation_year) }}
 
-    <div class="btn-group feedback-btn-group" role="group" aria-label="Basic example">
-      <button type="button" class="pickr-btn" onclick="history.back()">⮌ Go Back</button>
-    </div>
+    <textarea
+            placeholder="Provide your feedback on this report"
+            class="text-field text-area w-input"
+            name="comments" required>{% if report.comments != None %}{{ report.comments }}{% endif %}</textarea>
+    <button type="button" class="pickr-btn" id="comments-submit-btn" style="float: right">Submit Feedback</button>
+    <div style="clear: both"></div>
+
 {% endblock %}
 
 {% block script %}
@@ -84,9 +124,36 @@
         }
 
         window.addEventListener('resize', onWindowResize);
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             const textareas = document.querySelectorAll('textarea');
             textareas.forEach(adjustTextareaHeight);
         });
+
+        function handleCommentsSubmit() {
+            const comments = document.querySelector('[name="comments"]').value;
+            if (!comments) {
+                pickrAlert('Please input comments', 'danger')
+                return
+            }
+            fetch('{{ url_for('supervisor.comment_on_reports') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({'report_id': {{ report.id }}, 'comments': comments}),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        pickrAlert('Comment submitted successfully', 'success');
+                    } else {
+                        pickrAlert('Failed to submit comment', 'danger');
+                    }
+                })
+                .catch(() => {
+                    pickrAlert('Network error', 'danger');
+                });
+        }
+
+        document.querySelector('#comments-submit-btn').addEventListener('click', _.debounce(handleCommentsSubmit, 500))
     </script>
 {% endblock %}

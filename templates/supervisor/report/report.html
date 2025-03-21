@@ -41,8 +41,13 @@
             .report label {
                 line-height: 30px;
             }
+
             .page-link {
                 min-width: unset;
+            }
+
+            .pagination-container {
+                width: 100%;
             }
         }
     </style>
@@ -168,7 +173,7 @@
                         <td>${report.updateTime}</td>
                         <td>
                             ${report.isRead
-                    ? '<span style="color:green">Read</span>'
+                    ? '<span style="color:#5bbf5b">Read</span>'
                     : '<span style="color:var(--accent)">Unread</span>'}
                         </td>
                         <td>
@@ -186,9 +191,9 @@
                     a.addEventListener('click', function (e) {
                         const link = e.currentTarget;
                         e.preventDefault();
-                        const statusCell = link.closest('tr').querySelector('td:nth-child(7)');
+                        const statusCell = link.closest('tr').querySelector('td:nth-child(6)');
                         if (link.dataset.statusCell === 'unread') {
-                            statusCell.innerHTML = '<span style="color:green">Read</span>';
+                            statusCell.innerHTML = '<span style="color:#5bbf5b">Read</span>';
                         }
                         setTimeout(() => {
                             window.location.href = link.href;

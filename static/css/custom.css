@@ -507,7 +507,7 @@
 
 .alert {
   color: white;
-  position: absolute;
+  position: fixed;
   top: -100px;
   left: 50%;
   opacity: 0;

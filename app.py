@@ -9,6 +9,7 @@ from models.selection import Selection
 from models.topic import Topic
 from models.type import Type
 from models.deadline import Deadline
+from models.note import Note
 from models.semester import Semester
 from models.report import Report
 # import data migration tool

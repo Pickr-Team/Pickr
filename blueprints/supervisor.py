@@ -5,6 +5,7 @@ from functools import wraps
 
 from blueprints.utils import get_graduation_year
 from models.report import Report
+from models.result import Result
 from models.student import Student
 from models.supervisor import Supervisor
 from models.selection import Selection
@@ -257,3 +258,13 @@ def review_weekly_report():
 
     graduation_year = get_graduation_year()
     return render_template('report/report_detail.html', report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
+
+
+@bp.route('/report/comments', methods=['POST'])
+@require_supervisor_or_manager
+def comment_on_reports():
+    data = request.get_json()
+    report_id = data.get('report_id')
+    comments = data.get('comments')
+    Report.get_by_id(report_id).update(comments=comments)
+    return Result.success('Provide feedback successfully!')

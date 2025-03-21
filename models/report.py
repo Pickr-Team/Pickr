@@ -17,9 +17,10 @@ class Report(BaseModel):
     semester = db.Column(db.Integer, nullable=False)  # 1, 2
     week = db.Column(db.Integer, nullable=False)  # 1 - 12
     is_read = db.Column(db.Integer, nullable=False)  # 0-not read, 1-read
+    comments = db.Column(db.Text, nullable=True)
 
     def __init__(self, student_id, submit_time, update_time, semester, week,
-                 current_plan=None, next_plan=None, issues=None, feedback=None, is_read=0):
+                 current_plan=None, next_plan=None, issues=None, feedback=None, is_read=0, comments=None):
         self.student_id = student_id
         self.submit_time = submit_time
         self.update_time = update_time
@@ -30,6 +31,7 @@ class Report(BaseModel):
         self.issues = issues
         self.feedback = feedback
         self.is_read = is_read
+        self.comments = comments
 
     @classmethod
     def get_by_student_id(cls, student_id):
