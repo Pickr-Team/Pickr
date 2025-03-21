@@ -31,6 +31,10 @@ class Supervisor(BaseModel):
         db.session.commit()
 
     @property
+    def full_name(self):
+        return self.first_name + ' ' + self.last_name
+
+    @property
     def has_topics(self):
         return db.session.query(Topic.id).filter_by(supervisor_id=self.id).first() is not None
 

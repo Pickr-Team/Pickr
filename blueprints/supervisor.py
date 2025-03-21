@@ -257,7 +257,7 @@ def review_weekly_report():
     supervisor_name = supervisor.first_name + ' ' + supervisor.last_name
 
     graduation_year = get_graduation_year()
-    return render_template('report/report_detail.html', report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
+    return render_template('report/report_detail.html', supervisor_id=supervisor_id, report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
 
 
 @bp.route('/report/comments', methods=['POST'])

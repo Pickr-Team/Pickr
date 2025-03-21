@@ -72,6 +72,15 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="select-box">
+                <label class="yang-label" for="supervisor">Supervisor:</label>
+                <select class="form-select" id="supervisor">
+                    <option value="">All Supervisors</option>
+                    {% for s in supervisors %}
+                        <option value="{{ s.id }}">{{ s.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
             <div class="pagination-container mt-4">
                 <nav aria-label="Page navigation">
@@ -126,7 +135,8 @@
                         chineseName: "{{ report.student.chinese_name }}",
                         submitTime: "{{ report.submit_time }}",
                         updateTime: "{{ report.update_time }}",
-                        detailUrl: "{{ url_for('manager.review_weekly_report', report_id=report.id) }}"
+                        detailUrl: "{{ url_for('manager.review_weekly_report', report_id=report.id) }}",
+                        supervisorId: "{{ report.student.supervisor.id }}"
                     },
                 {% endfor %}
             ];
@@ -134,7 +144,8 @@
             const filters = {
                 semester: document.getElementById('semester'),
                 week: document.getElementById('week'),
-                student: document.getElementById('student')
+                student: document.getElementById('student'),
+                supervisor: document.getElementById('supervisor')
             };
 
             function renderTable() {
@@ -142,7 +153,8 @@
                     return (
                         (!filters.semester.value || report.semester == filters.semester.value) &&
                         (!filters.week.value || report.week == filters.week.value) &&
-                        (!filters.student.value || report.studentId == filters.student.value)
+                        (!filters.student.value || report.studentId == filters.student.value) &&
+                        (!filters.supervisor.value || report.supervisorId == filters.supervisor.value) // Uncaught SyntaxError: Unexpected identifier 'supervisorId'
                     );
                 });
 

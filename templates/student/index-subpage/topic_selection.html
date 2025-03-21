@@ -478,13 +478,11 @@
 
             // if reset
             if (isReset) {
-                console.log('reset')
                 resetCustomTopic();
                 return;
             }
 
             function resetCustomTopic() {
-                console.log('reset')
                 $.ajax({
                     url: '{{ url_for('student.update_custom_topic') }}',
                     method: 'POST',
@@ -516,7 +514,6 @@
                 success: function (response) {
                     var data = JSON.parse(response);
                     if (data.success) {
-                        console.log('success')
                         if (data.reset) {
                             $('#custom_form #custom_topic_name').val('');
                             $('#supervisor_id').val('');
@@ -554,9 +551,6 @@
                 },
             {% endfor %}
         ];
-
-        {#console.log('deadlines[0]>>>', deadlines[0]) // second round#}
-        {#console.log('deadlines[1]>>>', deadlines[1]) // first round#}
 
         function formatTimeLeft(timeLeft) {
             var hours = Math.floor(timeLeft / 3600);

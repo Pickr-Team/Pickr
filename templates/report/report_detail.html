@@ -99,12 +99,18 @@
 
     {{ report_table_review(report, supervisor_name, graduation_year) }}
 
-    <textarea
+    {% if report.student.supervisor.id == supervisor_id %}
+        <textarea
             placeholder="Provide your feedback on this report"
-            class="text-field text-area w-input"
-            name="comments" required>{% if report.comments != None %}{{ report.comments }}{% endif %}</textarea>
-    <button type="button" class="pickr-btn" id="comments-submit-btn" style="float: right">Submit Feedback</button>
-    <div style="clear: both"></div>
+                class="text-field text-area w-input"
+                name="comments" required>{% if report.comments != None %}{{ report.comments }}{% endif %}</textarea>
+        <button type="button" class="pickr-btn" id="comments-submit-btn" style="float: right">Submit Feedback</button>
+        <div style="clear: both"></div>
+    {% else %}
+        <textarea placeholder="Supervisor hasn't provide his/her feedback on this report" class="text-field text-area w-input" name="comments" disabled>{% if report.comments != None %}{{ report.comments }}{% endif %}</textarea>
+        <div style="clear: both"></div>
+    {% endif %}
+
 
 {% endblock %}
 

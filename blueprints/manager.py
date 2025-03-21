@@ -446,6 +446,7 @@ def delete(_type, _id):
 @bp.route('/resetting')
 @require_manager
 def resetting():
+    current_graduation_year = get_graduation_year()
     db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
     tables = ['selections', 'reports', 'students']
     for table in tables:
@@ -606,4 +607,6 @@ def review_weekly_report():
     report = Report.get_by_id(report_id)
     supervisor_name = report.student.get_supervisor_name()
     graduation_year = get_graduation_year()
-    return render_template('report/report_detail.html', report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
+    supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
+
+    return render_template('report/report_detail.html',supervisor_id=supervisor_id, report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
