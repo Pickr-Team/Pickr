@@ -51,7 +51,7 @@
     <script>
         $(document).ready(function () {
             $("#reset").click(function () {
-                 initOperation('resetPwd', {
+                 initModal('resetPwd', {
                     user_id: {{ supervisor.id }},
                     user_type: 'supervisor'
                 })

@@ -285,7 +285,6 @@
                 $('#semester-2-submit').val('Reset');
             }
         }
-
     });
 
     //Deadline form submit
@@ -369,9 +368,15 @@
         {#TODO: location.reload() is not user friendly#}
     })
 
-    //reset system
+    // reset system
     $('#reset-system').click(function () {
-        initOperation('resetSystem')
+        // todo: 在当前学年时不能删除（即26届才删删除25届的）
+        // q: 如何判断数据是25届的
+        // student: 添加一个create_time吧
+        // selection
+        // report
+
+        initModal('resetSystem')
     })
 
 

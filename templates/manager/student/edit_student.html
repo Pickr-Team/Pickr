@@ -31,6 +31,9 @@
                 <input type="text" class="text-field creatnew w-input" name="username" id="username"
                        value="{{ student.user_name }}"/>
                 <span style="display: none;color: red" id="u-alert">Please input username</span>
+                <label for="createTime" class="text-block _10button_spac">Create Time</label>
+                <input type="text" class="text-field creatnew w-input" disabled id="createTime"
+                       value="{{ student.create_time }}" style="background-color: transparent"/>
                 <div>
                     <input type="submit" value="Save Edit" data-wait="Please wait..."
                            class="submit-button _20head_spacing w-button"/>
@@ -43,7 +46,7 @@
     <script>
         $(document).ready(function () {
             $("#reset").click(function () {
-                initOperation('resetPwd', {
+                initModal('resetPwd', {
                     user_id: {{ student.id }},
                     user_type: 'student'
                 })

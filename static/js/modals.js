@@ -75,7 +75,7 @@ function showResultModal(message, isSuccess = true) {
     $secondConfirmModal.modal('show')
 }
 
-function initOperation(type, params = {}) {
+function initModal(type, params = {}) {
     $confirmBtn.prop('disabled', false);
     $confirmText.text('Confirm');
     $loading.hide();
@@ -98,7 +98,7 @@ function del(type, id, parentDivClass) {
     const button = document.querySelector(`button[data-${type}-id="${id}"]`)
     _parentNode = parentDivClass ? button.closest(parentDivClass) : button.closest('tr')
 
-    initOperation('del')
+    initModal('del')
 }
 
 $('#confirmModal .btn-danger').on('click', () => {

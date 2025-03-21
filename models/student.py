@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from exts import db
 from models.base import BaseModel
 from models.selection import Selection
@@ -12,6 +14,7 @@ class Student(BaseModel):
     email = db.Column(db.String(100))
     password = db.Column(db.String(100))
     user_name = db.Column(db.String(20))
+    create_time = db.Column(db.String(20), nullable=False)
 
     def __init__(self, chinese_name, english_name, email, password, user_name, class_number):
         self.chinese_name = chinese_name
@@ -20,6 +23,7 @@ class Student(BaseModel):
         self.password = password
         self.user_name = user_name
         self.class_number = class_number
+        self.create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     def update_pwd(self, pwd):
         self.password = pwd
