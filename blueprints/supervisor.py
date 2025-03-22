@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, Response
 from functools import wraps
 
-from blueprints.utils import get_graduation_year
+from blueprints.utils import get_current_graduation_year
 from models.report import Report
 from models.result import Result
 from models.student import Student
@@ -256,7 +256,7 @@ def review_weekly_report():
     supervisor = Supervisor.get_by_id(id=supervisor_id)
     supervisor_name = supervisor.first_name + ' ' + supervisor.last_name
 
-    graduation_year = get_graduation_year()
+    graduation_year = get_current_graduation_year()
     return render_template('report/report_detail.html', supervisor_id=supervisor_id, report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
 
 

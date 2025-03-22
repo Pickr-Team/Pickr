@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from blueprints.utils import get_graduation_year
+from blueprints.utils import get_current_graduation_year
 from exts import db
 from models.base import BaseModel
 from models.selection import Selection
@@ -15,18 +15,16 @@ class Student(BaseModel):
     email = db.Column(db.String(100))
     password = db.Column(db.String(100))
     user_name = db.Column(db.String(20))
-    create_time = db.Column(db.String(20), nullable=False)
-    # graduation_year = db.Column(db.Integer) # should excel add this field ?
+    graduation_year = db.Column(db.Integer) # should excel add this field ?
 
-    def __init__(self, chinese_name, english_name, email, password, user_name, class_number):
+    def __init__(self, chinese_name, english_name, email, password, user_name, class_number, graduation_year):
         self.chinese_name = chinese_name
         self.english_name = english_name
         self.email = email
         self.password = password
         self.user_name = user_name
         self.class_number = class_number
-        self.create_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # self.graduation_year = get_graduation_year()
+        self.graduation_year = graduation_year
 
     def update_pwd(self, pwd):
         self.password = pwd

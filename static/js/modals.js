@@ -25,9 +25,6 @@ const operationHandlers = {
             url: '/manager/resetting',
             method: 'GET',
             successHandler: (response) => {
-                if (response.code === 200) {
-                    setTimeout(() => location.reload(), 1000)
-                }
                 return response.message || response.error
             }
         })
@@ -107,5 +104,8 @@ $('#confirmModal .btn-danger').on('click', () => {
 })
 
 $('#secondConfirmModal .btn-secondary').on('click', () => {
+    if(window.appState.operation === 'resetSystem'){
+        location.reload()
+    }
     $secondConfirmModal.modal('hide')
 })

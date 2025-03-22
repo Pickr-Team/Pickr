@@ -16,7 +16,7 @@ from sqlalchemy import text
 import json
 import pandas as pd
 import os
-from blueprints.utils import get_graduation_year
+from blueprints.utils import get_current_graduation_year
 
 bp = Blueprint("manager", __name__, url_prefix="/manager")
 
@@ -184,9 +184,10 @@ def update_student(student_id):
     class_number = request.form.get('class_number')
     email = request.form.get('email')
     user_name = request.form.get('username')
+    graduation_year = request.form.get('graduation_year')
 
     student.update(chinese_name=chinese_name, english_name=english_name, class_number=class_number, email=email,
-                   user_name=user_name)
+                   user_name=user_name, graduation_year=graduation_year)
     return redirect(url_for('manager.index', pre='student'))
 
 
@@ -281,7 +282,8 @@ def import_file(_type):
                     class_number=cleaned_row['class_number'],
                     email=cleaned_row['email'],
                     password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
-                    user_name=cleaned_row['user_name']
+                    user_name=cleaned_row['user_name'],
+                    graduation_year = cleaned_row['graduation_year'],
                 )
                 db.session.add(_new_student)
             db.session.commit()
@@ -442,17 +444,36 @@ def delete(_type, _id):
         return jsonify(success=False, message='Invalid Type')
 
 
-# Manager reset the selections, students and reports
 @bp.route('/resetting')
 @require_manager
 def resetting():
-    current_graduation_year = get_graduation_year()
+    current_graduation_year = get_current_graduation_year()
+    previous_graduation_year = current_graduation_year - 1
+
     db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
+
+    deleted_counts = {}  # Number of rows deleted
+
     tables = ['selections', 'reports', 'students']
     for table in tables:
-        db.session.execute(text(f'TRUNCATE TABLE {table};'))
+        if table == 'students':
+            result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year = :year;'), {'year': previous_graduation_year})
+            deleted_counts[table] = result.rowcount
+        else:
+            result = db.session.execute(text(f'DELETE FROM {table} WHERE student_id IN (SELECT id FROM students WHERE graduation_year = :year);'), {'year': previous_graduation_year})
+            deleted_counts[table] = result.rowcount
+
     db.session.commit()
-    return Result.success('Reset system success! Refresh now!')
+
+    db.session.execute(text('SET FOREIGN_KEY_CHECKS = 1;'))
+
+    message = f"Deleted data from last academical year: "
+    for table, count in deleted_counts.items():
+        message += f"{table}: {count}, "
+    message = message.rstrip(", ")
+    message += ". Click 'Ok' to refresh!"
+
+    return Result.success(message)
 
 
 @bp.route('/fail_students')
@@ -486,9 +507,10 @@ def add_student():
     class_number = request.form.get('class_number')
     email = request.form.get('email')
     user_name = request.form.get('username')
+    graduation_year = request.form.get('graduation_year')
     password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'  # 123456
     _new_student = Student(chinese_name=chinese_name, english_name=english_name, class_number=class_number,
-                           email=email, password=password, user_name=user_name)
+                           email=email, password=password, user_name=user_name, graduation_year=graduation_year)
     _new_student.add()
     return redirect(url_for('manager.index', pre='student'))
 
@@ -606,7 +628,7 @@ def review_weekly_report():
     report_id = request.args.get('report_id')
     report = Report.get_by_id(report_id)
     supervisor_name = report.student.get_supervisor_name()
-    graduation_year = get_graduation_year()
+    graduation_year = get_current_graduation_year()
     supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
 
     return render_template('report/report_detail.html',supervisor_id=supervisor_id, report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)

@@ -1,7 +1,7 @@
 # base and basic functions
 from flask import Blueprint, render_template, session, request, url_for, redirect, jsonify, flash, Response
 
-from blueprints.utils import get_graduation_year
+from blueprints.utils import get_current_graduation_year
 from models.pdf_generator import generate_report_pdf
 from models.report import Report
 from models.result import Result
@@ -181,7 +181,7 @@ def delete_middle_ware(_type, _id):
 @bp.route('/report_pdf/<report_id>')
 def report_pdf(report_id):
     report = Report.get_by_id(report_id)
-    graduation_year = get_graduation_year()
+    graduation_year = get_current_graduation_year()
 
     pdf_buffer = generate_report_pdf(report, graduation_year)
 

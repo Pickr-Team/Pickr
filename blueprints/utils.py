@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-def get_graduation_year():
+def get_current_graduation_year():
     now = datetime.now()
     current_year = now.year
     current_month = now.month

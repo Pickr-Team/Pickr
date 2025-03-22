@@ -207,7 +207,7 @@
     <div class="_40px_height"></div>
     <h2 class="third_title-2 accent">Reset System</h2>
     <div class="text-block info-box" style="margin-bottom: 15px;">
-         ⚠️Warning: Resetting the system will permanently delete the following data: <br>
+         ⚠️Warning: Resetting the system will permanently delete the following data <i>"from the past academic year"</i>: <br>
         1.All students <br>
         2.All selections <br>
         3.All reports
@@ -370,12 +370,6 @@
 
     // reset system
     $('#reset-system').click(function () {
-        // todo: 当前学年的数据不能删除（即26届时才能删除25届的）
-        // q: 如何判断数据是25届的
-        // student: create_time/graduation_year?
-        // selection
-        // report
-
         initModal('resetSystem')
     })
 

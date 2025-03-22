@@ -31,9 +31,10 @@
                 <input type="text" class="text-field creatnew w-input" name="username" id="username"
                        value="{{ student.user_name }}"/>
                 <span style="display: none;color: red" id="u-alert">Please input username</span>
-                <label for="createTime" class="text-block _10button_spac">Create Time</label>
-                <input type="text" class="text-field creatnew w-input" disabled id="createTime"
-                       value="{{ student.create_time }}" style="background-color: transparent"/>
+                <label for="graduation" class="text-block _10button_spac">Graduation Year</label>
+                <input type="number" class="text-field creatnew w-input" name="graduation_year" id="graduation" value="{{ student.graduation_year }}"/>
+                <span style="display: none;color: red" id="g-alert">Please input graduation year</span>
+
                 <div>
                     <input type="submit" value="Save Edit" data-wait="Please wait..."
                            class="submit-button _20head_spacing w-button"/>
@@ -58,7 +59,8 @@
                 const num = $('#class_number').val().trim();
                 const email = $('#email').val().trim();
                 const username = $('#username').val().trim();
-                $('#c-alert, #eng-alert, #n-alert, #e-alert, #u-alert').hide();
+                const graduation = $('#graduation').val().trim();
+                $('#c-alert, #eng-alert, #n-alert, #e-alert, #u-alert,#g-alert').hide();
                 let isValid = true;
                 if (cName === '') {
                     $('#c-alert').show();
@@ -79,6 +81,10 @@
                 }
                 if (username === '') {
                     $('#u-alert').show();
+                    isValid = false;
+                }
+                if(graduation === '') {
+                    $('#g-alert').show();
                     isValid = false;
                 }
                 if (!isValid) {

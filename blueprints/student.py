@@ -1,7 +1,7 @@
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, flash
 from functools import wraps
 
-from blueprints.utils import get_graduation_year
+from blueprints.utils import get_current_graduation_year
 from models.report import Report
 from models.result import Result
 from models.semester import Semester
@@ -46,7 +46,7 @@ def index():
     deadlines = Deadline.get_all()
 
     semester = Semester.get_latest()
-    graduation_year = get_graduation_year()
+    graduation_year = get_current_graduation_year()
     if semester is None:
         _semester = None
     elif graduation_year == semester.graduation_year:

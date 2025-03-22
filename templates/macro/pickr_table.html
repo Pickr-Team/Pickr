@@ -118,11 +118,12 @@
                                     </a>
                                     {% if type != 'topic' %}
                                         <a href="{{ url_for('manager.edit', _type=type, id=d.id) }}" class="pickr-btn">Edit</a>
-                                        <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
-                                                onclick="del('{{ type }}',{{ d.id }})"
-                                                {% if d.id == supervisor_id %}disabled{% endif %}>
-                                            Delete
-                                        </button>
+                                        {% if d.id != supervisor_id %}
+                                            <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
+                                                    onclick="del('{{ type }}',{{ d.id }})">
+                                                Delete
+                                            </button>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </td>
