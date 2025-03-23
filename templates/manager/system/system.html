@@ -122,7 +122,7 @@
                 <input id="semester-1-submit" type="submit" value="Save" data-wait="Please wait..."
                        class="submit-button w-button"/>
                 {% if  semester.first_semester_start_date %}
-                    <a href="{{ url_for('manager.review_semester_details', semester_num=1, start_date=semester.first_semester_start_date ) }}" class="submit-button w-button">Detail</a>
+                    <a href="{{ url_for('manager.review_semester_details', semester_num=1, semester_id=semester.id ) }}" class="submit-button w-button">Detail</a>
                 {% endif %}
             </form>
         </div>
@@ -134,7 +134,7 @@
                 <input id="semester-2-submit" type="submit" value="Save" data-wait="Please wait..."
                        class="submit-button w-button"/>
                 {% if  semester.second_semester_start_date %}
-                    <a href="{{ url_for('manager.review_semester_details', semester_num=2, start_date=semester.second_semester_start_date) }}" class="submit-button w-button">Detail</a>
+                    <a href="{{ url_for('manager.review_semester_details', semester_num=2, semester_id=semester.id) }}" class="submit-button w-button">Detail</a>
                 {% endif %}
             </form>
         </div>

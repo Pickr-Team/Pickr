@@ -448,6 +448,7 @@ def delete(_type, _id):
         return jsonify(success=False, message='Invalid Type')
 
 
+# todo 还要删除之前的graduation_year的semester和week数据
 @bp.route('/resetting')
 @require_manager
 def resetting():
@@ -697,7 +698,66 @@ def review_weekly_report():
                            supervisor_name=supervisor_name, graduation_year=graduation_year)
 
 
-@bp.route('/semester/<semester_num>/<start_date>')
+@bp.route('/semester/<semester_num>/<semester_id>')
 @require_manager
-def review_semester_details(semester_num, start_date):
-    return render_template('manager/semester/index.html', semester_num=semester_num, start_date=start_date)
+def review_semester_details(semester_num, semester_id):
+    semester = Semester.get_by_id(semester_id)
+    current_date = datetime.now().date()
+
+    weeks = Week.query.filter_by(
+        semester_id=semester_id,
+        semester_num=semester_num
+    ).order_by(Week.week_num).all()
+
+    processed_weeks = []
+    for week in weeks:
+        try:
+            start_date = datetime.strptime(week.start_date, "%Y-%m-%d").date()
+            end_date = datetime.strptime(week.end_date, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+
+        week_days = [None] * 7
+        current_day = start_date
+        while current_day <= end_date:
+            weekday_index = current_day.weekday()  # 0=周一, 6=周日
+            if 0 <= weekday_index <= 6:
+                week_days[weekday_index] = current_day
+            current_day += timedelta(days=1)
+
+        processed_weeks.append({
+            "id": week.id,
+            "week_num": week.week_num,
+            "days": week_days,
+            "requires_report": week.requires_report
+        })
+
+    return render_template(
+        'manager/semester/index.html',
+        semester_num=semester_num,
+        semester_id=semester_id,
+        weeks=processed_weeks,
+        current_date=current_date
+    )
+
+
+
+@bp.route('/week/<week_id>/toggle-report', methods=['PUT'])
+@require_manager
+def toggle_week_report(week_id):
+    week = Week.query.get_or_404(week_id)
+
+    week.requires_report = not week.requires_report
+
+    try:
+        db.session.commit()
+        return jsonify({
+            'status': 'success',
+            'new_state': week.requires_report
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500

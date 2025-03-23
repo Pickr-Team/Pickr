@@ -9,41 +9,88 @@
     <div class="table-responsive">
         <table class="table table-bordered text-center">
             <thead class="thead-light">
-                <tr>
-                    <th>Week</th>
-                    <th>Mon</th>
-                    <th>Tue</th>
-                    <th>Wed</th>
-                    <th>Thu</th>
-                    <th>Fri</th>
-                    <th>Sat</th>
-                    <th>Sun</th>
-                    <th>Report</th>
-                </tr>
+            <tr>
+                <th>Week</th>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+                <th>Operation</th>
+            </tr>
             </thead>
             <tbody>
-                {% set start_date = start_date | default("2025-03-01") %}
-                {% set start_date = start_date | to_date %}
-                {% set current_date = now().date() %}
-                {% for week in range(1, 14) %}
-                    <tr>
-                        <td {% if start_date + timedelta(days=(week-1)*7 + 6) < current_date %}class="text-muted"{% endif %}>
-                            {{ week }}
+            {% for week in weeks %}
+                <tr>
+                    <td>Week {{ week.week_num }}</td>
+                    {% for day in week.days %}
+                        <td
+                                {% if day == current_date %}class="bg-danger text-white"
+                                {% elif day and day < current_date %}class="text-muted"{% endif %}>
+                            {% if day %}{{ day.strftime("%Y-%m-%d") }}{% endif %}
                         </td>
-                        {% for day in range(7) %}
-                            {% set current_day = start_date + timedelta(days=(week-1)*7 + day) %}
-                            <td {% if current_day < current_date %}class="text-muted"
-                                {% elif current_day == current_date %}class="bg-danger text-white"{% endif %}>
-                                {{ current_day.strftime('%m-%d') }}
-                            </td>
-                        {% endfor %}
-                        <td>
-                            <button class="btn btn-success" style="padding: .3rem;line-height: 1">Yes</button>
-{#                            <button type="button" class="btn btn-danger" style="padding: .3rem;line-height: 1">No</button>#}
-                        </td>
-                    </tr>
-                {% endfor %}
+                    {% endfor %}
+                    <td>
+                        <button
+                                class="btn btn-sm {% if week.requires_report %}btn-success{% else %}btn-secondary{% endif %}"
+                                data-week-id="{{ week.id }}"
+                                onclick="toggleReportStatus(this)">
+                            {% if week.requires_report %}📝 Required{% else %}🚫 Optional{% endif %}
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
+
+    <script>
+        function toggleReportStatus(button) {
+            const weekId = button.dataset.weekId;
+            const originalText = button.innerText;
+            const originalClass = button.className;
+
+            button.innerHTML = '⏳ Updating...';
+            button.className = 'btn btn-sm btn-warning';
+            button.disabled = true;
+
+            fetch(`/manager/week/${weekId}/toggle-report`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        button.className = data.new_state ?
+                            'btn btn-sm btn-success' : 'btn btn-sm btn-secondary';
+                        button.innerHTML = data.new_state ?
+                            '📝 Required' : '🚫 Optional';
+                    } else {
+                        showErrorAlert(data.message);
+                        resetButton();
+                    }
+                })
+                .catch(error => {
+                    showErrorAlert('Network error: ' + error.message);
+                    resetButton();
+                })
+                .finally(() => {
+                    button.disabled = false;
+                });
+
+            function resetButton() {
+                button.innerHTML = originalText;
+                button.className = originalClass;
+            }
+
+            function showErrorAlert(message) {
+                pickrAlert(message, 'danger');
+            }
+        }
+    </script>
 {% endblock %}
+
