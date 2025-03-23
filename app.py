@@ -12,6 +12,7 @@ from models.deadline import Deadline
 from models.note import Note
 from models.semester import Semester
 from models.report import Report
+from models.week import Week
 # import data migration tool
 from flask_migrate import Migrate
 # import blueprints
@@ -57,6 +58,17 @@ app.register_blueprint(supervisor_bp)
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
+
+def now():
+    return datetime.now()
+
+
+def to_date(value, format="%Y-%m-%d"):
+    return datetime.strptime(value, format).date()
+
+
+app.jinja_env.filters['to_date'] = to_date
+app.jinja_env.globals['now'] = now
 app.jinja_env.globals['timedelta'] = timedelta
 app.jinja_env.globals['datetime'] = datetime
 

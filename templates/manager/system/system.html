@@ -102,6 +102,7 @@
     </div>
     <div class="_20px_height"></div>
 
+    {#Semester Setting#}
     <h2 class="third_title-2 accent semester-setting"></h2>
     <div class="text-block info-box">
         ⚠️Time setting is unavailable on mobile devices. Please configure via desktop browser
@@ -120,6 +121,9 @@
                        id="semester-1" required="required"/>
                 <input id="semester-1-submit" type="submit" value="Save" data-wait="Please wait..."
                        class="submit-button w-button"/>
+                {% if  semester.first_semester_start_date %}
+                    <a href="{{ url_for('manager.review_semester_details', semester_num=1, start_date=semester.first_semester_start_date ) }}" class="submit-button w-button">Detail</a>
+                {% endif %}
             </form>
         </div>
         <div class="w-form">
@@ -129,6 +133,9 @@
                        id="semester-2" required="required"/>
                 <input id="semester-2-submit" type="submit" value="Save" data-wait="Please wait..."
                        class="submit-button w-button"/>
+                {% if  semester.second_semester_start_date %}
+                    <a href="{{ url_for('manager.review_semester_details', semester_num=2, start_date=semester.second_semester_start_date) }}" class="submit-button w-button">Detail</a>
+                {% endif %}
             </form>
         </div>
     </div>

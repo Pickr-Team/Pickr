@@ -1,0 +1,49 @@
+{% extends 'base-temp.html' %}
+
+{% block title %}Pickr | Manager{% endblock %}
+
+{% block content %}
+    <div style="height: 70px"></div>
+    <button type="button" class="pickr-btn" onclick="history.back()" style="margin-top: 15px">⮌ Go Back</button>
+    <h1 style="margin-bottom: 30px">Semester {{ semester_num }}</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="thead-light">
+                <tr>
+                    <th>Week</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                    <th>Sun</th>
+                    <th>Report</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set start_date = start_date | default("2025-03-01") %}
+                {% set start_date = start_date | to_date %}
+                {% set current_date = now().date() %}
+                {% for week in range(1, 14) %}
+                    <tr>
+                        <td {% if start_date + timedelta(days=(week-1)*7 + 6) < current_date %}class="text-muted"{% endif %}>
+                            {{ week }}
+                        </td>
+                        {% for day in range(7) %}
+                            {% set current_day = start_date + timedelta(days=(week-1)*7 + day) %}
+                            <td {% if current_day < current_date %}class="text-muted"
+                                {% elif current_day == current_date %}class="bg-danger text-white"{% endif %}>
+                                {{ current_day.strftime('%m-%d') }}
+                            </td>
+                        {% endfor %}
+                        <td>
+                            <button class="btn btn-success" style="padding: .3rem;line-height: 1">Yes</button>
+{#                            <button type="button" class="btn btn-danger" style="padding: .3rem;line-height: 1">No</button>#}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,3 +1,5 @@
+from datetime import timedelta, datetime
+
 from flask import Blueprint, session, redirect, url_for, request, render_template, jsonify, send_from_directory, flash
 from functools import wraps
 
@@ -17,6 +19,7 @@ import json
 import pandas as pd
 import os
 from blueprints.utils import get_current_graduation_year
+from models.week import Week
 
 bp = Blueprint("manager", __name__, url_prefix="/manager")
 
@@ -283,7 +286,7 @@ def import_file(_type):
                     email=cleaned_row['email'],
                     password='8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
                     user_name=cleaned_row['user_name'],
-                    graduation_year = cleaned_row['graduation_year'],
+                    graduation_year=cleaned_row['graduation_year'],
                 )
                 db.session.add(_new_student)
             db.session.commit()
@@ -307,7 +310,8 @@ def import_file(_type):
                 supervisor_name = cleaned_row['Staff member']
                 supervisor = Supervisor.get_by_name(supervisor_name)
                 if supervisor is None:
-                    return redirect(url_for('base.error', message=f'Supervisor:"{supervisor_name}" not found, please make sure the supervisor has been registered'))
+                    return redirect(url_for('base.error',
+                                            message=f'Supervisor:"{supervisor_name}" not found, please make sure the supervisor has been registered'))
                 expertise = cleaned_row['Staff Expertise (Projects/Research Interests)']
                 supervisor.update(expertise=expertise)
                 _new_topic = Topic(
@@ -457,10 +461,13 @@ def resetting():
     tables = ['selections', 'reports', 'students']
     for table in tables:
         if table == 'students':
-            result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year = :year;'), {'year': previous_graduation_year})
+            result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year = :year;'),
+                                        {'year': previous_graduation_year})
             deleted_counts[table] = result.rowcount
         else:
-            result = db.session.execute(text(f'DELETE FROM {table} WHERE student_id IN (SELECT id FROM students WHERE graduation_year = :year);'), {'year': previous_graduation_year})
+            result = db.session.execute(text(
+                f'DELETE FROM {table} WHERE student_id IN (SELECT id FROM students WHERE graduation_year = :year);'),
+                                        {'year': previous_graduation_year})
             deleted_counts[table] = result.rowcount
 
     db.session.commit()
@@ -584,37 +591,92 @@ def edit(_type, id):
         pass
 
 
+def calculate_week_boundaries(start_date):
+    if start_date.weekday() == 0:  # first day is monday
+        week_start = start_date
+    else:  # first day is not monday
+        days_to_monday = start_date.weekday()  # weekday(): 0 - 6
+        week_start = start_date - timedelta(days=days_to_monday)
+
+    first_week_end = week_start + timedelta(days=6)
+
+    actual_start = max(start_date, week_start)
+
+    return actual_start, first_week_end
+
+
 @bp.route('/semester/<graduation_year>/<num>/<start_time>')
 @require_manager
 def update_semester_start_date(graduation_year, num, start_time):
     is_reset = request.args.get('isReset', 'false') == 'true'
+    semester_num = int(num)
 
     if is_reset:
-        existing_semester = Semester.query.filter_by(graduation_year=graduation_year).first()
-        if existing_semester:
-            if num == '1':
-                existing_semester.update(first_semester_start_date=None)
-            else:
-                existing_semester.update(second_semester_start_date=None)
-            return Result.success(f"Semester {num} start date reset successfully for year {graduation_year}.")
-        else:
-            return Result.error(f"No semester found for year {graduation_year}.")
+        semester = Semester.query.filter_by(graduation_year=graduation_year).first()
+        if not semester:
+            return Result.error("Semester not found")
 
-    existing_semester = Semester.query.filter_by(graduation_year=graduation_year).first()
-    if existing_semester is None:
-        if num == '1':
-            semester = Semester(graduation_year, start_time, None)
+        Week.query.filter_by(
+            semester_id=semester.id,
+            semester_num=semester_num
+        ).delete()
+
+        if semester_num == 1:
+            semester.first_semester_start_date = None
         else:
-            semester = Semester(graduation_year, None, start_time)
-        semester.add()
+            semester.second_semester_start_date = None
+
+        db.session.commit()
+        return Result.success(f"Semester {semester_num} reset successfully")
+
+    try:
+        start_date = datetime.strptime(start_time, "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return Result.error("Invalid date format, use YYYY-MM-DD")
+
+    semester = Semester.query.filter_by(graduation_year=graduation_year).first()
+    if not semester:
+        semester = Semester(graduation_year=graduation_year)
+        db.session.add(semester)
+        db.session.flush()
+
+    Week.query.filter_by(
+        semester_id=semester.id,
+        semester_num=semester_num
+    ).delete()
+
+    current_start = start_date
+    for week_num in range(1, 14):
+        week_monday = current_start - timedelta(days=current_start.weekday())
+        week_sunday = week_monday + timedelta(days=6)
+
+        if week_num == 1:
+            week_start = current_start
+            week_end = min(week_sunday, week_monday + timedelta(days=6))
+        else:
+            week_start = week_monday
+            week_end = week_sunday
+
+        week = Week(
+            week_num=week_num,
+            start_date=week_start.strftime("%Y-%m-%d"),
+            end_date=week_end.strftime("%Y-%m-%d"),
+            semester_id=semester.id,
+            semester_num=semester_num,
+            requires_report=True
+        )
+        db.session.add(week)
+
+        current_start = week_end + timedelta(days=1)
+
+    if semester_num == 1:
+        semester.first_semester_start_date = start_time
     else:
-        if num == '1':
-            existing_semester.update(first_semester_start_date=start_time)
-        else:
-            existing_semester.update(second_semester_start_date=start_time)
+        semester.second_semester_start_date = start_time
 
-    return Result.success(f"Semester {num} start date updated successfully for year {graduation_year}.")
+    db.session.commit()
 
+    return Result.success(f"Semester {semester_num} updated with 13 weeks")
 
 @bp.route('/to-supervisor')
 @require_manager
@@ -631,4 +693,11 @@ def review_weekly_report():
     graduation_year = get_current_graduation_year()
     supervisor_id = Supervisor.get_id_by_username(user_name=session['user_name'])
 
-    return render_template('report/report_detail.html',supervisor_id=supervisor_id, report=report, supervisor_name=supervisor_name, graduation_year=graduation_year)
+    return render_template('report/report_detail.html', supervisor_id=supervisor_id, report=report,
+                           supervisor_name=supervisor_name, graduation_year=graduation_year)
+
+
+@bp.route('/semester/<semester_num>/<start_date>')
+@require_manager
+def review_semester_details(semester_num, start_date):
+    return render_template('manager/semester/index.html', semester_num=semester_num, start_date=start_date)
