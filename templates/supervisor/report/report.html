@@ -133,8 +133,8 @@
                     {
                         id: {{ report.id }},
                         studentId: {{ report.student.id }},
-                        semester: {{ report.semester }},
-                        week: {{ report.week }},
+                        semester: {{ report.week.semester_num }},
+                        week: {{ report.week.week_num }},
                         englishName: "{{ report.student.english_name }}",
                         chineseName: "{{ report.student.chinese_name }}",
                         submitTime: "{{ report.submit_time }}",

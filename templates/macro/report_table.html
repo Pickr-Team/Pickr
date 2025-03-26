@@ -1,29 +1,28 @@
-{% macro report_table(year, semester, week, week_start, name, supervisor, topic, report=None) %}
+{% macro report_table(week, student_name, supervisor_name, topic_name, report=None) %}
     <form id="reportForm" method="POST" action="{{ url_for('student.handle_report') }}">
-        <input type="hidden" name="semester" value="{{ semester }}">
-        <input type="hidden" name="week" value="{{ week }}">
+        <input type="hidden" name="week_id" value="{{ week.id }}">
         <input type="hidden" name="action" value="{% if report %}update{% else %}create{% endif %}">
 
         <table style="width: 100%">
             <tr>
                 <td>STUDENT NAME:</td>
-                <td>{{ name }}</td>
+                <td>{{ student_name }}</td>
             </tr>
             <tr>
                 <td>SUPERVISOR NAME:</td>
-                <td>{{ supervisor }}</td>
+                <td>{{ supervisor_name }}</td>
             </tr>
             <tr>
                 <td>PROJECT NAME:</td>
-                <td>{{ topic }}</td>
+                <td>{{ topic_name }}</td>
             </tr>
             <tr>
                 <td>WEEK NUMBER:</td>
-                <td>{{ week }}</td>
+                <td>{{ week.week_num }}</td>
             </tr>
             <tr>
-                <td>START DATE:</td>
-                <td>{{ week_start }}</td>
+                <td>WEEK DURATION</td>
+                <td>{{ week.start_date }} —— {{ week.end_date }}</td>
             </tr>
             <tr>
                 <td>SUBMITTED TIME:</td>
@@ -58,7 +57,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    Supervisor Feedback:
+                    Supervisor Meeting Feedback:
                     <textarea class="text-field text-area w-input" name="feedback"
                               required>{{ report.feedback if report else '' }}</textarea>
                 </td>
@@ -101,11 +100,11 @@
         </tr>
         <tr>
             <td>SEMESTER NUMBER:</td>
-            <td>{{ report.semester }}</td>
+            <td>{{ report.week.semester_num }}</td>
         </tr>
         <tr>
             <td>WEEK NUMBER:</td>
-            <td>{{ report.week }}</td>
+            <td>{{ report.week.week_num }}</td>
         </tr>
         <tr>
             <td>SUBMITTED TIME:</td>

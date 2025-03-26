@@ -20,3 +20,7 @@ class Week(BaseModel):
         self.semester_id = semester_id
         self.requires_report = requires_report
         self.semester_num = semester_num
+
+    @classmethod
+    def get_all_weeks_by_semester_id(cls, semester_id):
+        return cls.query.filter_by(semester_id=semester_id).all()

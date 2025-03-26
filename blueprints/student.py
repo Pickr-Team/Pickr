@@ -11,10 +11,13 @@ from models.selection import Selection
 from models.type import Type
 from models.deadline import Deadline
 from models.topic import Topic
+from models.week import Week
 from datetime import datetime
 from exts import db
 import re
 import json
+
+from models.week import Week
 
 bp = Blueprint("student", __name__, url_prefix="/student")
 
@@ -38,7 +41,11 @@ def redirect_to_home():
 @bp.route('/home')
 @require_student
 def index():
-    student_id = Student.get_id_by_english_name(english_name=session['user_name'])
+    student_id = session['user_id']
+    student = Student.get_by_id(student_id)
+    supervisor_name = student.get_supervisor_name()
+    topic_name = student.get_final_topic_name()
+
     selection = Selection.get_by_student_id(student_id=student_id)
     supervisors = Supervisor.get_all()
     types = Type.get_all()
@@ -51,21 +58,17 @@ def index():
         _semester = None
     elif graduation_year == semester.graduation_year:
         _semester = semester
+        if selection is not None and selection.final_topic_name:
+            weeks = Week.get_all_weeks_by_semester_id(_semester.id)
     else:
         _semester = None
     current_date = datetime.now().strftime('%Y-%m-%d')
 
     reports = Report.get_by_student_id(student_id)
-    # group reports by (semester, week)
-    report_dict = {}
-    for report in reports:
-        key = (report.semester, report.week)
-        report_dict[key] = report
 
     return render_template('student/index.html', name=session['user_name'], selection=selection,
-                           supervisors=supervisors,
-                           types=types, deadlines=deadlines, now=datetime.now(), error=error, semester=_semester,
-                           current_date=current_date, reports=report_dict)
+                           supervisors=supervisors, types=types, deadlines=deadlines, now=datetime.now(), error=error, semester=_semester,
+                           current_date=current_date, reports=reports, weeks=weeks, supervisor_name=supervisor_name, topic_name=topic_name)
 
 
 # Student submit their selection
@@ -192,21 +195,35 @@ def update_selection():
 @require_student
 def handle_report():
     data = request.form
-    required_fields = ['action', 'semester', 'week', 'current_plan', 'next_plan', 'issues', 'feedback']
+    print('data>>>', data)  # data>>> ImmutableMultiDict([('week_id', '18'), ('action', 'create'), ('current_plan', '11'), ('issues', '1'), ('next_plan', '1'), ('feedback', '1')])
 
-    for field in required_fields:
-        if field not in data or not data[field]:
-            return Result.error(f"Missing or empty field: {field}"), 400
+    # required_fields = ['action', 'week_id', 'current_plan', 'next_plan', 'issues', 'feedback']
+    #
+    # for field in required_fields:
+    #     if field not in data or not data[field]:
+    #         return Result.error(f"Missing or empty field: {field}"), 400
 
-    student_id = Student.get_id_by_english_name(english_name=session['user_name'])
-    semester = int(data['semester'])
-    week = int(data['week'])
+    # [2025 - 03 - 26 14: 24:42, 534] ERROR in app: sqlalchemy.exc.ArgumentError: Mapped
+    # instance
+    # expected
+    # for relationship comparison to object.Classes, queries and other SQL elements are not accepted in this context; for comparison with a subquery, use Report.week.has( ** criteria).
+    # ERROR: app:sqlalchemy.exc.ArgumentError: Mapped
+    # instance
+    # expected
+    # for relationship comparison to object.Classes, queries and other SQL elements are not accepted in this context; for comparison with a subquery, use Report.week.has( ** criteria).
+    # INFO: werkzeug:127.0
+    # .0
+    # .1 - - [26 / Mar / 2025 14: 24:42] "POST /student/handle_report HTTP/1.1"
+    # 500 -
+
+    student_id = session['user_id']
+
+    week_id = int(data['week_id'])
     action = data['action']
 
     report = Report.query.filter_by(
         student_id=student_id,
-        semester=semester,
-        week=week
+        week_id=week_id
     ).first()
 
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -218,14 +235,14 @@ def handle_report():
             student_id=student_id,
             submit_time=current_time,
             update_time=current_time,
-            semester=semester,
-            week=week,
+            week_id=week_id,
             current_plan=data['current_plan'],
             next_plan=data['next_plan'],
             issues=data['issues'],
             feedback=data['feedback']
         )
         new_report.add()
+        # todo 这里不要redirect，不要刷新
         return redirect(url_for('student.index'))
 
     elif action == 'update':

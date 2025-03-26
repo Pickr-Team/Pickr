@@ -3,70 +3,70 @@
 
 <div style="margin-top: 20px"></div>
 
-{% if semester and selection and selection.final_topic_name %}
+{% block style %}
+    <style>
+        @media (max-width: 476px) {
+            .accordion-item {
+                margin-right: 15px;
+            }
 
-    {# Build the semesters dynamically, including only those with a start date #}
-    {% set semesters = [] %}
+            .accordion-header {
+                width: 140px;
+            }
+        }
+    </style>
+{% endblock %}
 
-    {% if semester.first_semester_start_date %}
-        {% set _ = semesters.append({
-            "id": "s1",
-            "name": "Semester 1",
-            "start_date": semester.first_semester_start_date
-        }) %}
-    {% endif %}
-
-    {% if semester.second_semester_start_date %}
-        {% set _ = semesters.append({
-            "id": "s2",
-            "name": "Semester 2",
-            "start_date": semester.second_semester_start_date
-        }) %}
-    {% endif %}
-
-    {% set current_date_obj = datetime.strptime(current_date, "%Y-%m-%d").date() %}
-
+{% if weeks %}
+    {% set current_date = current_date|string %}
     <div class="d-flex align-items-start report-container">
-        {# Week Tab #}
         <div class="nav flex-column nav-pills me-3 report-tab" id="v-pills-tab" role="tablist"
-             aria-orientation="vertical">
-            {% for semester_info in semesters %}
-                {% set semester_start = datetime.strptime(semester_info.start_date, "%Y-%m-%d") %}
-                <div class="semester-tab">
+             aria-orientation="vertical" style="width: 200px;">
+            {% for semester_num, weeks_in_semester in weeks|groupby('semester_num') %}
+                {% set ns = namespace(has_active=false) %}
+
+                {% for week in weeks_in_semester %}
+                    {% if current_date >= week.start_date and current_date <= week.end_date %}
+                        {% set ns.has_active = true %}
+                    {% endif %}
+                {% endfor %}
+
+                <div>
                     <div class="accordion-item" style="border: none">
                         <div class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#{{ semester_info.id }}"
-                                    aria-expanded="true"
-                                    aria-controls="{{ semester_info.id }}">
-                                {{ semester_info.name }}
+                            <button
+                                    class="accordion-button {% if not ns.has_active %}collapsed{% endif %}"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#semester-{{ semester_num }}"
+                                    aria-expanded="{{ ns.has_active|lower }}">
+                                Semester {{ semester_num }}
                             </button>
                         </div>
-                        <div id="{{ semester_info.id }}" class="accordion-collapse collapse show">
-                            <div class="accordion-body" style="padding: unset; background-color: black">
-                                {% for week in range(12) %}
-                                    {% set week_start = semester_start + timedelta(weeks=week) %}
-                                    {% set week_start_date = week_start.date() %}
-                                    {% set week_end_date = week_start_date + timedelta(weeks=1) %}
 
-                                    {# active current week #}
-                                    {% set is_active = current_date_obj >= week_start_date and current_date_obj < week_end_date %}
-
-                                    {# disable future week #}
-                                    {% set is_disabled = week_start_date > current_date_obj %}
-
-                                    <button class="nav-link {% if is_active %}active{% endif %} {% if is_disabled %}disabled-button{% endif %}"
-                                            id="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}-tab"
-                                            data-bs-toggle="pill"
-                                            data-bs-target="#v-pills-{{ semester_info.id }}-week-{{ week + 1 }}"
+                        <div id="semester-{{ semester_num }}"
+                             class="accordion-collapse collapse {% if ns.has_active %}show{% endif %}"
+                             data-bs-parent="#v-pills-tab">
+                            <div class="accordion-body p-0" style="background-color: black">
+                                {% for week in weeks_in_semester %}
+                                    {% set is_active = current_date >= week.start_date and current_date <= week.end_date %}
+                                    {% set is_past = current_date > week.end_date %}
+                                    {% set is_future = current_date < week.start_date %}
+                                    <button
+                                            class="nav-link text-start rounded-0
+                                    {% if is_active %}active
+                                    {% elif is_future %}text-secondary disabled{% endif %}"
                                             type="button"
-                                            role="tab"
-                                            aria-controls="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}"
-                                            aria-selected="{% if is_active %}true{% else %}false{% endif %}"
-                                            data-date="{{ week_start.strftime('%Y-%m-%d') }}"
-                                            {% if is_disabled %}disabled
-                                            style="color: gray; cursor: not-allowed;"{% endif %}>
-                                        Week {{ week + 1 }}
+                                            data-bs-toggle="pill"
+                                            data-bs-target="#week-{{ week.id }}"
+                                            {% if is_future %}disabled{% endif %}
+                                            style="border-bottom: 1px solid #4b4b4b"
+                                            id="week-{{ week.id }}-tab"
+                                            aria-controls="week-{{ week.id }}"/>
+                                    Week {{ week.week_num }}
+                                    {% if not week.requires_report %}
+                                        <span class="small" style="color: orange">(Optional)</span>
+                                    {% endif %}
                                     </button>
                                 {% endfor %}
                             </div>
@@ -76,32 +76,28 @@
             {% endfor %}
         </div>
 
-        {# Report Panel #}
         <div class="tab-content" id="v-pills-tabContent" style="width: 100%">
-            {% for semester_info in semesters %}
-                {% for week in range(12) %}
-                    {% set week_start = datetime.strptime(semester_info.start_date, "%Y-%m-%d") + timedelta(weeks=week) %}
-                    {% set week_end = week_start + timedelta(weeks=1) %}
-                    {% set is_active = current_date >= week_start.strftime('%Y-%m-%d') and current_date < week_end.strftime('%Y-%m-%d') %}
-
-                    {# "Semester 1" -> 1 #}
-                    {% set semester_num = semester_info.name.split()[-1] | int %}
-
-                    {# check is report existed #}
-                    {% set report = reports.get((semester_num, week + 1)) %}
-
+            {% for semester_num, weeks_in_semester in weeks|groupby('semester_num') %}
+                {% for week in weeks_in_semester %}
+                    {% set is_active = current_date >= week.start_date and current_date <= week.end_date %}
                     <div class="tab-pane fade {% if is_active %}show active{% endif %}"
-                         id="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}"
+                         id="week-{{ week.id }}"
                          role="tabpanel"
-                         aria-labelledby="v-pills-{{ semester_info.id }}-week-{{ week + 1 }}-tab">
-                        {% if report %}
+                         aria-labelledby="week-{{ week.id }}-tab">
+                        {% set report = reports | selectattr('week_id', '==', week.id) | first %}
+                        {% if not week.requires_report %}
+                            <div style="background-color:#fdf0d1; color: #ff8400; padding: 10px; border-radius: 0.375rem; margin-bottom: 10px;">
+                                🙂You don't have to complete the report this week
+                            </div>
+                        {% elif report %}
                             <div style="background-color:#a3cfbb; color: #0a3622; padding: 10px; border-radius: 0.375rem; margin-bottom: 10px;">
                                 <svg t="1735716713350" class="icon" viewBox="0 0 1024 1024" version="1.1"
                                      xmlns="http://www.w3.org/2000/svg" p-id="5130" width="22" height="22">
                                     <path d="M512 914.285714C734.176265 914.285714 914.285714 734.176265 914.285714 512 914.285714 289.823735 734.176265 109.714286 512 109.714286 289.823735 109.714286 109.714286 289.823735 109.714286 512 109.714286 734.176265 289.823735 914.285714 512 914.285714ZM297.44762 548.538807C314.115747 533.991055 373.957573 521.41293 392.745988 521.41293 399.693875 536.569179 445.283653 573.742576 445.283653 573.742576 445.283653 573.742576 522.616095 380.331774 726.55238 351.085714 626.118672 400.748145 543.136775 513.366307 493.705322 653.508805 409.743239 681.941067 399.693873 674.865518 399.693873 674.865518 399.693873 674.865518 334.075109 573.742579 297.44762 548.538807Z"
                                           fill="#0a3622" p-id="5131"></path>
                                 </svg>
-                                You have completed the report this week! <hr>
+                                You have completed the report this week!
+                                <hr>
                                 Status: {% if report.is_read %} supervisor has read this report {% else %} supervisor
                                 hasn't read this report {% endif %} <br>
                                 Feedback: {% if report.comments %} {{ report.comments }} {% else %} supervisor hasn't
@@ -117,18 +113,7 @@
                                 You did not complete the report this week!
                             </div>
                         {% endif %}
-                        <div style="width: 100%">
-                            {{ report_table(
-                            semester.graduation_year,
-                            semester_num,
-                            week + 1,
-                            week_start.strftime('%Y-%m-%d'),
-                            name,
-                            selection.final_topic_supervisor_name,
-                            selection.final_topic_name,
-                            report=report
-                        ) }}
-                        </div>
+                        {{ report_table(week, name, supervisor_name, topic_name, report) }}
                     </div>
                 {% endfor %}
             {% endfor %}
@@ -137,7 +122,6 @@
 {% else %}
     {{ empty('Waiting for Start...') }}
 {% endif %}
-
 
 {% block script %}
     <script>

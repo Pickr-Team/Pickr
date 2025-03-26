@@ -14,24 +14,27 @@ class Report(BaseModel):
     next_plan = db.Column(db.Text, nullable=True)
     issues = db.Column(db.Text, nullable=True)
     feedback = db.Column(db.Text, nullable=True)
-    semester = db.Column(db.Integer, nullable=False)  # 1, 2
-    week = db.Column(db.Integer, nullable=False)  # 1 - 12
+    week_id = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)  # 1 - 13
+    week = db.relationship('Week', backref=db.backref('week', lazy=True))
     is_read = db.Column(db.Integer, nullable=False)  # 0-not read, 1-read
     comments = db.Column(db.Text, nullable=True)
 
-    def __init__(self, student_id, submit_time, update_time, semester, week,
+    def __init__(self, student_id, submit_time, update_time, week_id,
                  current_plan=None, next_plan=None, issues=None, feedback=None, is_read=0, comments=None):
         self.student_id = student_id
         self.submit_time = submit_time
         self.update_time = update_time
-        self.semester = semester
-        self.week = week
+        self.week_id = week_id
         self.current_plan = current_plan
         self.next_plan = next_plan
         self.issues = issues
         self.feedback = feedback
         self.is_read = is_read
         self.comments = comments
+
+    @property
+    def semester(self):
+        return self.week.semester
 
     @classmethod
     def get_by_student_id(cls, student_id):

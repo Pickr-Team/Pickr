@@ -243,7 +243,7 @@ def generate_report_pdf(report, graduation_year):
         ["STUDENT NAME:", report.student.english_name],
         ["SUPERVISOR:", supervisor_name],
         ["PROJECT:", report.student.get_final_topic_name()],
-        [f"SEMESTER {report.semester} | WEEK {report.week}", report.submit_time]
+        [f"SEMESTER {report.week.semester_num} | WEEK {report.week.week_num}", report.submit_time]
     ]
 
     for label, value in info_content:
