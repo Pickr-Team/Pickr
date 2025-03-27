@@ -617,6 +617,15 @@ def update_semester_start_date(graduation_year, num, start_time):
         if not semester:
             return Result.error("Semester not found")
 
+        weeks = Week.query.filter_by(
+            semester_id=semester.id,
+            semester_num=semester_num
+        ).all()
+        for week in weeks:
+            report = Report.get_by_week_id(week.id)
+            if report is not None:
+                return Result.error("Reset Failed. There's report submit in this semester.")
+
         Week.query.filter_by(
             semester_id=semester.id,
             semester_num=semester_num
@@ -678,6 +687,7 @@ def update_semester_start_date(graduation_year, num, start_time):
     db.session.commit()
 
     return Result.success(f"Semester {semester_num} updated with 13 weeks")
+
 
 @bp.route('/to-supervisor')
 @require_manager

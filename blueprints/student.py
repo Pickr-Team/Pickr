@@ -64,7 +64,7 @@ def index():
         _semester = None
     current_date = datetime.now().strftime('%Y-%m-%d')
 
-    reports = Report.get_by_student_id(student_id)
+    reports = Report.get_all_by_student_id(student_id)
 
     return render_template('student/index.html', name=session['user_name'], selection=selection,
                            supervisors=supervisors, types=types, deadlines=deadlines, now=datetime.now(), error=error, semester=_semester,

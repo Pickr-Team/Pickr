@@ -57,7 +57,7 @@ def index():
     for topic in topics:
         total_quta += topic.quota
 
-    reports = Report.get_all_reports_by_supervisor_id(supervisor_id)
+    reports = Report.get_all_by_supervisor_id(supervisor_id)
     students = supervisor.get_all_students()
     is_manager = session['user_type'] == 'manager'
 

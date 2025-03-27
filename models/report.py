@@ -37,11 +37,15 @@ class Report(BaseModel):
         return self.week.semester
 
     @classmethod
-    def get_by_student_id(cls, student_id):
+    def get_all_by_student_id(cls, student_id):
         return cls.query.filter_by(student_id=student_id).all()
 
     @classmethod
-    def get_all_reports_by_supervisor_id(cls, supervisor_id):
+    def get_by_week_id(cls, week_id):
+        return cls.query.filter_by(week_id=week_id).first()
+
+    @classmethod
+    def get_all_by_supervisor_id(cls, supervisor_id):
         """Get all reports from students supervised by the specified supervisor"""
         supervisor = Supervisor.get_by_id(supervisor_id)
         selections = supervisor.get_total_selected_selections()
