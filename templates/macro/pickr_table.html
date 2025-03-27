@@ -200,71 +200,97 @@
                 </tr>
                 </thead>
                 <tbody id="tbody-{{ type }}">
-                {% for d in data %}
-                    <tr>
-                        <td id="td-1-{{ type }}">
-                            {% if type == "supTopic" %}
-                                PK{{ "%04d"|format(d.id) }}
-                            {% elif type == 'supCustom' %}
-                                {{ d.final_topic_name }}
-                            {% endif %}
-                        </td>
-                        <td id="td-2-{{ type }}">
-                            {% if type == "supTopic" %}
-                                {{ d.name }}
-                            {% elif type == 'supCustom' %}
-                                {{ d.submit_time }}
-                            {% endif %}
-                        </td>
-                        <td id="td-3-{{ type }}">
-                            {% if type == "supTopic" %}
-                                {{ d.quota }}
-                            {% elif type == 'supCustom' %}
-                                {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
-                            {% endif %}
-                        </td>
-                        <td id="td-3-{{ type }}">
-                            {% if type == "supTopic" %}
-                                <button style="width: 100px; margin: 0 auto" class="accordion-button" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#topic-{{ d.id }}-details"
-                                        aria-expanded="true" aria-controls="topic-{{ d.id }}-details">
-                                    {{ d.get_selected_num_final() }}
-                                </button>
-                            {% elif type == 'supCustom' %}
-                                {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div style="display: flex;justify-content:center">
-                                {% if type == 'supTopic' %}
-                                    <a href="{{ url_for('supervisor.detail_topic', topic_id =d.id) }}"
-                                       class="pickr-btn">Detail</a>
-                                    <a href="{{ url_for('supervisor.edit_topic', topic_id = d.id) }}"
-                                       class="pickr-btn">Edit</a>
-                                    <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
-                                            onclick="del('{{ type }}',{{ d.id }})">Delete
+                {% if type == 'supTopic' %}
+                    {% for d in data %}
+                        <tr>
+                            <td id="td-1-{{ type }}">
+                                {% if type == "supTopic" %}
+                                    PK{{ "%04d"|format(d.id) }}
+                                {% elif type == 'supCustom' %}
+                                    {{ d.final_topic_name }}
+                                {% endif %}
+                            </td>
+                            <td id="td-2-{{ type }}">
+                                {% if type == "supTopic" %}
+                                    {{ d.name }}
+                                {% elif type == 'supCustom' %}
+                                    {{ d.submit_time }}
+                                {% endif %}
+                            </td>
+                            <td id="td-3-{{ type }}">
+                                {% if type == "supTopic" %}
+                                    {{ d.quota }}
+                                {% elif type == 'supCustom' %}
+                                    {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
+                                {% endif %}
+                            </td>
+                            <td id="td-3-{{ type }}">
+                                {% if type == "supTopic" %}
+                                    <button style="width: 100px; margin: 0 auto" class="accordion-button" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#topic-{{ d.id }}-details"
+                                            aria-expanded="true" aria-controls="topic-{{ d.id }}-details">
+                                        {{ d.get_selected_num_final() }}
                                     </button>
                                 {% elif type == 'supCustom' %}
-                                    <a href="{{ url_for('base.topic_detail_custom', topic_id =d.final_topic_id) }}"
-                                       class="pickr-btn">Topic Detail</a>
+                                    {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
                                 {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    <tr id="topic-{{ d.id }}-details" class="accordion-collapse collapse show">
-                        <td colspan="5" class="accordion-body">
-                            {% if d.get_selected_num_final() > 0 %}
-                                {% for selection in d.get_selected_final_selection() %}
-                                    {{ selection.student.english_name }} ({{ selection.student.chinese_name }}) - Class:
-                                    {{ selection.student.class_number }} - Submit Time: {{ selection.submit_time }}
-                                    <div style="margin: 10px 0"/>
-                                {% endfor %}
-                            {% else %}
-                                No students have yet got this topic. 😊
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
+                            </td>
+                            <td>
+                                <div style="display: flex;justify-content:center">
+                                    {% if type == 'supTopic' %}
+                                        <a href="{{ url_for('supervisor.detail_topic', topic_id =d.id) }}"
+                                           class="pickr-btn">Detail</a>
+                                        <a href="{{ url_for('supervisor.edit_topic', topic_id = d.id) }}"
+                                           class="pickr-btn">Edit</a>
+                                        <button class="pickr-btn del-btn" data-{{ type }}-id="{{ d.id }}"
+                                                onclick="del('{{ type }}',{{ d.id }})">Delete
+                                        </button>
+                                    {% elif type == 'supCustom' %}
+                                        <a href="{{ url_for('base.topic_detail_custom', topic_id =d.id) }}"
+                                           class="pickr-btn">Topic Detail</a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="topic-{{ d.id }}-details" class="accordion-collapse collapse show">
+                            <td colspan="5" class="accordion-body">
+                                {% if d.get_selected_num_final() > 0 %}
+                                    {% for selection in d.get_selected_final_selection() %}
+                                        {{ selection.student.english_name }} ({{ selection.student.chinese_name }}) -
+                                        Class:
+                                        {{ selection.student.class_number }} - Submit Time: {{ selection.submit_time }}
+                                        <div style="margin: 10px 0"/>
+                                    {% endfor %}
+                                {% else %}
+                                    No students have yet got this topic. 😊
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for d in data %}
+                        <tr>
+                            <td id="td-1-{{ type }}">
+                                {{ d.final_topic_name }}
+                            </td>
+                            <td id="td-2-{{ type }}">
+                                {{ d.submit_time }}
+                            </td>
+                            <td id="td-3-{{ type }}">
+                                {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
+                            </td>
+                            <td id="td-3-{{ type }}">
+                                {{ d.final_topic_student_english_name }}({{ d.final_topic_student_chinese_name }})
+                            </td>
+                            <td>
+                                <div style="display: flex;justify-content:center">
+                                    <a href="{{ url_for('base.topic_detail_custom', topic_id =d.final_topic.id) }}"
+                                       class="pickr-btn">Topic Detail</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
         </div>

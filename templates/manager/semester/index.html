@@ -37,7 +37,7 @@
                                 class="btn btn-sm {% if week.requires_report %}btn-success{% else %}btn-secondary{% endif %}"
                                 data-week-id="{{ week.id }}"
                                 onclick="toggleReportStatus(this)">
-                            {% if week.requires_report %}📝 Required{% else %}🚫 Optional{% endif %}
+                            {% if week.requires_report %}✅ Required{% else %}🔘 Optional{% endif %}
                         </button>
                     </td>
                 </tr>
@@ -68,7 +68,7 @@
                         button.className = data.new_state ?
                             'btn btn-sm btn-success' : 'btn btn-sm btn-secondary';
                         button.innerHTML = data.new_state ?
-                            '📝 Required' : '🚫 Optional';
+                            '✅ Required' : '🔘 Optional';
                     } else {
                         showErrorAlert(data.message);
                         resetButton();

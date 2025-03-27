@@ -57,10 +57,18 @@ class Student(BaseModel):
 
     def get_final_topic_name(self):
         selection = Selection.get_by_student_id(self.id)
+        if selection is None:
+            return None
+        elif selection.final_topic is None:
+            return None
         return selection.final_topic_name
 
     def get_supervisor_name(self):
         selection = Selection.get_by_student_id(self.id)
+        if selection is None:
+            return None
+        elif selection.final_topic is None:
+            return None
         return selection.final_topic_supervisor_name
 
     @property

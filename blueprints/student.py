@@ -54,12 +54,14 @@ def index():
 
     semester = Semester.get_latest()
     graduation_year = get_current_graduation_year()
+    weeks = []
     if semester is None:
         _semester = None
     elif graduation_year == semester.graduation_year:
         _semester = semester
-        if selection is not None and selection.final_topic_name:
-            weeks = Week.get_all_weeks_by_semester_id(_semester.id)
+        if selection is not None:
+            if selection.final_topic is not None:
+                weeks = Week.get_all_weeks_by_semester_id(_semester.id)
     else:
         _semester = None
     current_date = datetime.now().strftime('%Y-%m-%d')

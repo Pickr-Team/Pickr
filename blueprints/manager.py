@@ -58,6 +58,7 @@ def index():
     topic_num = Topic.get_num_not_custom()
     custom_topic_num = Topic.get_num_custom()
     topics = Topic.get_all()
+    supervisor_topics = Topic.get_not_custom()
     num_success = Selection.get_num_of_status_3or4()
     num_waiting = Selection.get_num_of_status_0()
     num_process = Selection.get_num_of_status_1()
@@ -74,8 +75,8 @@ def index():
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
                            custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
                            num_process=num_process, num_verify=num_verify, num_fail=num_fail,
-                           static_topic_num=static_topic_num, pre=pre, total_quta=total_quta, topics=topics,
-                           supervisor_id=supervisor_id, semester=semester, all_reports=all_reports)
+                           static_topic_num=static_topic_num, pre=pre, total_quta=total_quta, supervisor_topics=supervisor_topics,
+                           supervisor_id=supervisor_id, semester=semester, all_reports=all_reports, topics=topics)
 
 
 # Manager process all the selections
