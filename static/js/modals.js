@@ -67,7 +67,7 @@ function setLoadingState(isLoading = true) {
 function showResultModal(message, isSuccess = true) {
     $confirmModal.modal('hide')
     $secondConfirmModalBody
-        .text(message)
+        .html(message)
         .css('color', isSuccess ? 'white' : 'var(--accent)')
     $secondConfirmModal.modal('show')
 }

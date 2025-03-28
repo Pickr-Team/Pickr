@@ -449,7 +449,6 @@ def delete(_type, _id):
         return jsonify(success=False, message='Invalid Type')
 
 
-# todo 还要删除之前的graduation_year的semester和week数据
 @bp.route('/resetting')
 @require_manager
 def resetting():
@@ -476,11 +475,11 @@ def resetting():
 
     db.session.execute(text('SET FOREIGN_KEY_CHECKS = 1;'))
 
-    message = f"Deleted data from last academical year: "
-    for table, count in deleted_counts.items():
-        message += f"{table}: {count}, "
-    message = message.rstrip(", ")
-    message += ". Click 'Ok' to refresh!"
+    tables_in_order = ['students', 'selections', 'reports']
+    message = "Deleted data from last academical year: <br>"
+    for table in tables_in_order:
+        message += f"- {table}: {deleted_counts[table]} <br>"
+    message += "<br>Click 'Ok' to refresh!"
 
     return Result.success(message)
 
