@@ -10,6 +10,9 @@ from models.topic import Topic
 from models.type import Type
 from models.deadline import Deadline
 from models.note import Note
+from models.semester import Semester
+from models.report import Report
+from models.week import Week
 from exts import db
 from blueprints.base import bp as base_bp
 from blueprints.manager import bp as manager_bp
@@ -25,19 +28,19 @@ def insert_test_data(app):
 
         # student doesn't have a selection
         student = Student('杨玉婷', 'Crystal', 'crystal@qq.com',
-                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'crystal', 'SES1')
+                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'crystal', 'SES1', 2025)
         # student have a selection
         student_2 = Student('张三', 'Zhangsan', 'zhangsan@qq.com',
-                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'zhangsan', 'SES1')
+                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'zhangsan', 'SES1', 2025)
         # student have a selection(fail)
         student_3 = Student('王五', 'wangwu', 'wangwu@qq.com',
-                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'wangwu', 'SES1')
+                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'wangwu', 'SES1', 2025)
         # student have a custom selection
         student_4 = Student('李四', 'Lisi', 'lisi@qq.com',
-                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'lisi', 'SES1')
+                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'lisi', 'SES1', 2025)
         #
         student_5 = Student('老刘', 'laoliu', 'laoliu@qq.com',
-                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'laoliu', 'SES1')
+                          '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'laoliu', 'SES1', 2025)
 
         supervisor = Supervisor('Clivia', 'Li', False, 15, 'clivia',
                                 '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'clivia@qq.com',

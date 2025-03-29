@@ -419,7 +419,7 @@ def delete(_type, _id):
     elif _type == 'supTopic':
         topic = Topic.get_by_id(id=_id)
         if topic:
-            if topic.get_selected_num_final() > 0 or topic.get_selected_num() > 0:
+            if topic.get_selected_num_total() > 0 or topic.get_selected_num_final() > 0:
                 return jsonify(success=False, message='Can not delete this topic, students have selected this topic.')
             else:
                 topic.delete()
@@ -453,30 +453,42 @@ def delete(_type, _id):
 @require_manager
 def resetting():
     current_graduation_year = get_current_graduation_year()
-    previous_graduation_year = current_graduation_year - 1
 
     db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
 
     deleted_counts = {}  # Number of rows deleted
 
-    tables = ['selections', 'reports', 'students']
+    # First delete the dependent tables (in reverse order of dependency)
+    tables = ['selections', 'reports', 'week', 'students', 'semester']
     for table in tables:
         if table == 'students':
-            result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year = :year;'),
-                                        {'year': previous_graduation_year})
+            result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year < :year;'),
+                                      {'year': current_graduation_year})
+            deleted_counts[table] = result.rowcount
+        elif table == 'semester':
+            # Delete semesters after weeks (since weeks depend on semesters)
+            result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year < :year;'),
+                                      {'year': current_graduation_year})
+            deleted_counts[table] = result.rowcount
+        elif table == 'week':
+            # Delete weeks first (since they reference semesters)
+            result = db.session.execute(text(
+                f'DELETE FROM {table} WHERE semester_id IN (SELECT id FROM semester WHERE graduation_year < :year);'),
+                                      {'year': current_graduation_year})
             deleted_counts[table] = result.rowcount
         else:
+            # For selections and reports (which depend on students)
             result = db.session.execute(text(
-                f'DELETE FROM {table} WHERE student_id IN (SELECT id FROM students WHERE graduation_year = :year);'),
-                                        {'year': previous_graduation_year})
+                f'DELETE FROM {table} WHERE student_id IN (SELECT id FROM students WHERE graduation_year < :year);'),
+                                      {'year': current_graduation_year})
             deleted_counts[table] = result.rowcount
 
     db.session.commit()
 
     db.session.execute(text('SET FOREIGN_KEY_CHECKS = 1;'))
 
-    tables_in_order = ['students', 'selections', 'reports']
-    message = "Deleted data from last academical year: <br>"
+    tables_in_order = ['students', 'selections', 'reports', 'semester']
+    message = "Deleted data from all previous academical years: <br>"
     for table in tables_in_order:
         message += f"- {table}: {deleted_counts[table]} <br>"
     message += "<br>Click 'Ok' to refresh!"

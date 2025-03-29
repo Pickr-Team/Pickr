@@ -15,7 +15,7 @@ class Student(BaseModel):
     email = db.Column(db.String(100))
     password = db.Column(db.String(100))
     user_name = db.Column(db.String(20))
-    graduation_year = db.Column(db.Integer) # should excel add this field ?
+    graduation_year = db.Column(db.Integer)
 
     def __init__(self, chinese_name, english_name, email, password, user_name, class_number, graduation_year):
         self.chinese_name = chinese_name
