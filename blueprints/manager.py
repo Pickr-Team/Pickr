@@ -75,7 +75,8 @@ def index():
                            custom_selections=custom_selections, topic_num=topic_num, types=types,
                            custom_topic_num=custom_topic_num, num_success=num_success, num_waiting=num_waiting,
                            num_process=num_process, num_verify=num_verify, num_fail=num_fail,
-                           static_topic_num=static_topic_num, pre=pre, total_quta=total_quta, supervisor_topics=supervisor_topics,
+                           static_topic_num=static_topic_num, pre=pre, total_quta=total_quta,
+                           supervisor_topics=supervisor_topics,
                            supervisor_id=supervisor_id, semester=semester, all_reports=all_reports, topics=topics)
 
 
@@ -261,15 +262,6 @@ def get_temp(_type):
     return send_from_directory(directory_path, filename, as_attachment=True)
 
 
-def get_type_id_by_required_skills(required_skills):
-    required_skills_lower = required_skills.lower()
-
-    if 'machine' in required_skills_lower or 'deep' in required_skills_lower or 'ai' in required_skills_lower or 'python' in required_skills_lower:
-        return Type.get_by_title('Machine Learning').id
-    else:
-        return Type.get_by_title('Software Development').id
-
-
 @bp.route('/import/<string:_type>', methods=['POST'])
 @require_manager
 def import_file(_type):
@@ -312,15 +304,29 @@ def import_file(_type):
                 supervisor = Supervisor.get_by_name(supervisor_name)
                 if supervisor is None:
                     return redirect(url_for('base.error',
-                                            message=f'Supervisor:"{supervisor_name}" not found, please make sure the supervisor has been registered'))
+                                            message=f'Supervisor:"{supervisor_name}" not found, please make sure the '
+                                                    f'supervisor has been registered. (Row {int(_index) + 2})'))
                 expertise = cleaned_row['Staff Expertise (Projects/Research Interests)']
                 supervisor.update(expertise=expertise)
+
+                # Determine expected type based on skills
+                expected_type_title = 'Research Oriented Projects' if any(
+                    skill in cleaned_row['Required skills'].lower()
+                    for skill in ['machine', 'deep', 'ai', 'python']
+                ) else 'Software Development Projects'
+
+                _type = Type.get_by_title(expected_type_title)
+
+                if _type is None:
+                    return redirect(url_for('base.error',
+                                            message=f'Topic type "{expected_type_title}" not found in database. '
+                                                    f'Please create this type first. (Row {int(_index) + 2})'))
                 _new_topic = Topic(
                     name=cleaned_row['Proposed Titles'],
                     supervisor_id=supervisor.id,
                     quota=cleaned_row['Number of Students to Supervise'],
                     is_custom=False,
-                    type_id=get_type_id_by_required_skills(cleaned_row['Required skills']),
+                    type_id=_type.id,
                     description=cleaned_row['Topic details'],
                     required_skills=cleaned_row['Required skills'],
                     reference=cleaned_row['References']
@@ -463,24 +469,24 @@ def resetting():
     for table in tables:
         if table == 'students':
             result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year < :year;'),
-                                      {'year': current_graduation_year})
+                                        {'year': current_graduation_year})
             deleted_counts[table] = result.rowcount
         elif table == 'semester':
             # Delete semesters after weeks (since weeks depend on semesters)
             result = db.session.execute(text(f'DELETE FROM {table} WHERE graduation_year < :year;'),
-                                      {'year': current_graduation_year})
+                                        {'year': current_graduation_year})
             deleted_counts[table] = result.rowcount
         elif table == 'week':
             # Delete weeks first (since they reference semesters)
             result = db.session.execute(text(
                 f'DELETE FROM {table} WHERE semester_id IN (SELECT id FROM semester WHERE graduation_year < :year);'),
-                                      {'year': current_graduation_year})
+                {'year': current_graduation_year})
             deleted_counts[table] = result.rowcount
         else:
             # For selections and reports (which depend on students)
             result = db.session.execute(text(
                 f'DELETE FROM {table} WHERE student_id IN (SELECT id FROM students WHERE graduation_year < :year);'),
-                                      {'year': current_graduation_year})
+                {'year': current_graduation_year})
             deleted_counts[table] = result.rowcount
 
     db.session.commit()
@@ -761,7 +767,6 @@ def review_semester_details(semester_num, semester_id):
         weeks=processed_weeks,
         current_date=current_date
     )
-
 
 
 @bp.route('/week/<week_id>/toggle-report', methods=['PUT'])
