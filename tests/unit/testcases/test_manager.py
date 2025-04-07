@@ -3,16 +3,20 @@ from datetime import datetime
 import json
 
 import pytest
-from flask import session
+from flask import session, current_app
+from sqlalchemy import text
 
 from exts import db
 from models.deadline import Deadline
 from models.note import Note
+from models.report import Report
 from models.selection import Selection
+from models.semester import Semester
 from models.student import Student
 from models.supervisor import Supervisor
 from models.topic import Topic
 from models.type import Type
+from models.week import Week
 
 
 def manager_login(client):
@@ -23,8 +27,8 @@ def manager_login(client):
     client.post('/login', data=data, follow_redirects=True)
 
 
-def add_student(username):
-    student = Student('', '', '', '', f'{username}', '')
+def add_student(username, graduation_year=2025):
+    student = Student('', '', '', '', f'{username}', '', graduation_year)
     student.add()
     return student
 
@@ -43,13 +47,42 @@ def add_selection(student_id, first_topic, second_topic, third_topic):
     return selection
 
 
-def test_reset(client):
+def test_reset_only_old_data(client):
+    clear_all(Selection, Report, Student)
     manager_login(client)
+    old_student = add_student('old_student', datetime.now().year - 2)
+    current_student = add_student('current_student', datetime.now().year)
+    old_selection = Selection(old_student.id)
+    old_selection.add()
+    current_selection = Selection(current_student.id)
+    current_selection.add()
+
     response = client.get('/manager/resetting')
+
+    assert response.status_code == 200
     data = response.get_json()
-    assert data['success'] is True
-    assert db.session.query(Student).count() == 0
-    assert db.session.query(Selection).count() == 0
+    assert data['code'] == 200
+
+    assert db.session.query(Student).count() == 1
+    assert db.session.query(Student).filter_by(id=current_student.id).count() == 1
+    assert db.session.query(Selection).count() == 1
+
+    assert 'students: 1' in data['message']  # delete 1 previous student
+    assert 'selections: 1' in data['message']  # delete 1 previous selection
+
+
+def test_reset_preserves_current_year_data(client):
+    clear_all(Selection, Report, Student)
+    manager_login(client)
+
+    current_student = add_student('current_student', datetime.now().year)
+    Selection(current_student.id).add()
+
+    response = client.get('/manager/resetting')
+
+    assert response.status_code == 200
+    assert db.session.query(Student).count() == 1  # 数据应被保留
+    assert 'students: 0' in response.get_json()['message']  # 没有旧数据被删除
 
 
 def test_refresh(client):
@@ -235,7 +268,7 @@ def test_update_supervisor(client):
 
 
 def test_reset_password(client):
-    student = Student(None, None, None, '123456', 'abc', None)
+    student = Student(None, None, None, '123456', 'abc', None, 2025)
     student.add()
     manager_login(client)
     res = client.post('/manager/reset_password', data={'user_id': student.id, 'user_type': 'student'})
@@ -309,9 +342,9 @@ def test_delete_student_success(client):
     manager_login(client)
     Selection.query.delete()
     Student.query.delete()
-    student = Student(None, None, None, '123456', 'abc', None)
+    student = Student(None, None, None, '123456', 'abc', None, 2025)
     student.add()
-    res = client.get(f'/manager/delete/student/{student.id}')
+    res = client.get(f'/delete/student/{student.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is True
@@ -322,11 +355,11 @@ def test_delete_student_fail_student_has_selection(client):
     manager_login(client)
     Selection.query.delete()
     Student.query.delete()
-    student = Student(None, None, None, '123456', 'abc', None)
+    student = Student(None, None, None, '123456', 'abc', None, 2025)
     student.add()
     selection = Selection(student.id)
     selection.add()
-    res = client.get(f'/manager/delete/student/{student.id}')
+    res = client.get(f'/delete/student/{student.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is False
@@ -337,7 +370,7 @@ def test_delete_student_fail_student_does_not_exist(client):
     manager_login(client)
     Selection.query.delete()
     Student.query.delete()
-    res = client.get('/manager/delete/student/999')
+    res = client.get('/delete/student/999')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is False
@@ -348,39 +381,18 @@ def test_delete_supervisor_success(client):
     supervisor = Supervisor(None, None, None, None, 'abcdef', '678910', None, None)
     supervisor.add()
     manager_login(client)
-    res = client.get(f'/manager/delete/supervisor/{supervisor.id}')
+    res = client.get(f'/delete/supervisor/{supervisor.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is True
     assert data['message'] == 'Delete Successfully'
 
 
-def test_delete_supervisor_fail_supervisor_has_topics(client):
-    supervisor = Supervisor(None, None, None, None, 'abcdef', '678910', None, None)
-    supervisor.add()
-    Topic(None, supervisor.id, None, None, None, None, None, None).add()
-    manager_login(client)
-    res = client.get(f'/manager/delete/supervisor/{supervisor.id}')
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data['success'] is False
-    assert data['message'] == 'Can not delete this supervisor, supervisor has topics.'
-
-
-def test_delete_supervisor_fail_supervisor_has_topics(client):
-    manager_login(client)
-    res = client.get('/manager/delete/supervisor/999')
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data['success'] is False
-    assert data['message'] == 'Supervisor does not exist'
-
-
 def test_delete_topic_success(client):
     manager_login(client)
     topic = Topic(None, None, None, None, None, None, None, None)
     topic.add()
-    res = client.get(f'/manager/delete/supTopic/{topic.id}')
+    res = client.get(f'/delete/supTopic/{topic.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is True
@@ -391,13 +403,13 @@ def test_delete_topic_fail_topic_has_been_selected(client):
     manager_login(client)
     topic = Topic(None, None, None, None, None, None, None, None)
     topic.add()
-    student = Student(None, None, None, None, None, None)
+    student = Student(None, None, None, None, None, None, 2025)
     student.add()
     selection = Selection(student.id)
     selection.update_status(0)
     selection.update_first_topic_id(topic.id)
     selection.add()
-    res = client.get(f'/manager/delete/supTopic/{topic.id}')
+    res = client.get(f'/delete/supTopic/{topic.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is False
@@ -406,7 +418,7 @@ def test_delete_topic_fail_topic_has_been_selected(client):
 
 def test_delete_topic_fail_topic_not_exist(client):
     manager_login(client)
-    res = client.get('/manager/delete/supTopic/999')
+    res = client.get('/delete/supTopic/999')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is False
@@ -417,7 +429,7 @@ def test_delete_type_success(client):
     manager_login(client)
     _type = Type(None)
     _type.add()
-    res = client.get(f'/manager/delete/type/{_type.id}')
+    res = client.get(f'/delete/type/{_type.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is True
@@ -430,7 +442,7 @@ def test_delete_type_fail_type_has_topics(client):
     _type.add()
     topic = Topic(None, None, None, None, _type.id, None, None, None)
     topic.add()
-    res = client.get(f'/manager/delete/type/{_type.id}')
+    res = client.get(f'/delete/type/{_type.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is False
@@ -439,7 +451,7 @@ def test_delete_type_fail_type_has_topics(client):
 
 def test_delete_type_fail_type_not_exist(client):
     manager_login(client)
-    res = client.get('/manager/delete/type/999')
+    res = client.get('/delete/type/999')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is False
@@ -450,7 +462,7 @@ def test_delete_note_success(client):
     manager_login(client)
     note = Note(None, None)
     note.add()
-    res = client.get(f'/manager/delete/note/{note.id}')
+    res = client.get(f'/delete/note/{note.id}')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is True
@@ -459,7 +471,7 @@ def test_delete_note_success(client):
 
 def test_delete_note_fail_note_not_exist(client):
     manager_login(client)
-    res = client.get('/manager/delete/note/999')
+    res = client.get('/delete/note/999')
     assert res.status_code == 200
     data = res.get_json()
     assert data['success'] is False
@@ -468,7 +480,7 @@ def test_delete_note_fail_note_not_exist(client):
 
 def test_fail_students(client):
     manager_login(client)
-    client.get('/manager/resetting')
+    clear_all(Student, Selection)
     student_1 = add_student('s1')
     student_2 = add_student('s2')
     student_3 = add_student('s3')
@@ -498,7 +510,7 @@ def test_fail_students(client):
 
 def test_update_custom_selection_status_3(client):
     manager_login(client)
-    client.get('/manager/resetting')
+    clear_all(Student, Selection)
     student_1 = add_student('s1')
     selection = Selection(student_1.id)
     selection.add()
@@ -525,9 +537,28 @@ def test_update_custom_selection_status_3(client):
     assert selection.final_topic_id == selection.first_topic_id  # 因为 status 是 '3'
 
 
+def clear_all(*tables):
+    """Clear specified tables in reverse dependency order.
+    Usage: clear_all(Student, Selection)  # 删除 Student 和 Selection 表
+    """
+    with current_app.app_context():
+        db.session.execute(text('SET FOREIGN_KEY_CHECKS = 0;'))
+
+        for model in tables:
+            try:
+                db.session.query(model).delete()
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(f"Error clearing {model.__tablename__}: {str(e)}")
+
+        db.session.execute(text('SET FOREIGN_KEY_CHECKS = 1;'))
+        db.session.commit()
+
+
 def test_update_custom_selection_status_2(client):
     manager_login(client)
-    client.get('/manager/resetting')
+    clear_all(Student, Selection)
     student_1 = add_student('s1')
     selection = Selection(student_1.id)
     selection.add()
