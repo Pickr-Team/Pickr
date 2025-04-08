@@ -85,21 +85,18 @@ def app():
     app.secret_key = secrets.token_hex(16)
     db.init_app(app)
 
-    insert_test_data(app)
+    # Create tables and insert test data
+    with app.app_context():
+        db.create_all()
+        insert_test_data(app)
 
-    # before yield: setUp a variable, after yield: teardown the variable
     yield app
 
+    # Clean up after tests
     with app.app_context():
+        clear_all_data(app)  # Clear all data
         db.session.remove()
-        # db.session.query(Selection).delete()
-        # db.session.query(Student).delete()
-        # db.session.query(Topic).delete()
-        # db.session.query(Type).delete()
-        # db.session.query(Supervisor).delete()
-        # db.session.query(Note).delete()
-        # db.session.query(Deadline).delete()
-        db.drop_all()
+        db.drop_all()  # Drop tables
 
 
 @pytest.fixture
@@ -117,3 +114,30 @@ def _setup_app_context_for_test(request, app):
     ctx.push()
     yield  # tests will run here
     ctx.pop()
+
+
+def clear_all_data(app):
+    """Clear all data from all tables while keeping the tables themselves"""
+    with app.app_context():
+        # Get all tables in the database
+        meta = db.metadata
+        for table in reversed(meta.sorted_tables):
+            db.session.execute(table.delete())
+        db.session.commit()
+
+
+@pytest.fixture
+def clean_db(app):
+    """Fixture that provides a clean database for each test"""
+    clear_all_data(app)
+    insert_test_data(app)  # Optional: reinsert test data if needed
+    yield
+    clear_all_data(app)
+
+
+"""
+def test_something(client, clean_db):
+    # This test will run with a clean database
+    response = client.get('/some-endpoint')
+    assert response.status_code == 200
+"""

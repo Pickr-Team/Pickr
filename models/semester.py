@@ -10,7 +10,7 @@ class Semester(BaseModel):
     second_semester_start_date = db.Column(db.String(20))
     # default duration: 13 weeks
 
-    def __init__(self, graduation_year: int, first_semester_start_date: str, second_semester_start_date: str):
+    def __init__(self, graduation_year: int, first_semester_start_date='', second_semester_start_date=''):
         self.graduation_year = graduation_year
         self.first_semester_start_date = first_semester_start_date
         self.second_semester_start_date = second_semester_start_date
