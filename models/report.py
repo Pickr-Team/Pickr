@@ -13,11 +13,11 @@ class Report(BaseModel):
     current_plan = db.Column(db.Text, nullable=True)
     next_plan = db.Column(db.Text, nullable=True)
     issues = db.Column(db.Text, nullable=True)
-    feedback = db.Column(db.Text, nullable=True)
+    feedback = db.Column(db.Text, nullable=True)  # student writes meeting feedback
     week_id = db.Column(db.Integer, db.ForeignKey('week.id'), nullable=False)  # 1 - 13
     week = db.relationship('Week', backref=db.backref('week', lazy=True))
     is_read = db.Column(db.Integer, nullable=False)  # 0-not read, 1-read
-    comments = db.Column(db.Text, nullable=True)
+    comments = db.Column(db.Text, nullable=True)  # supervisor writes comments about this report
 
     def __init__(self, student_id, submit_time, update_time, week_id,
                  current_plan=None, next_plan=None, issues=None, feedback=None, is_read=0, comments=None):

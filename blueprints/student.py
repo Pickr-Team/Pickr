@@ -197,26 +197,6 @@ def update_selection():
 @require_student
 def handle_report():
     data = request.form
-    print('data>>>', data)  # data>>> ImmutableMultiDict([('week_id', '18'), ('action', 'create'), ('current_plan', '11'), ('issues', '1'), ('next_plan', '1'), ('feedback', '1')])
-
-    # required_fields = ['action', 'week_id', 'current_plan', 'next_plan', 'issues', 'feedback']
-    #
-    # for field in required_fields:
-    #     if field not in data or not data[field]:
-    #         return Result.error(f"Missing or empty field: {field}"), 400
-
-    # [2025 - 03 - 26 14: 24:42, 534] ERROR in app: sqlalchemy.exc.ArgumentError: Mapped
-    # instance
-    # expected
-    # for relationship comparison to object.Classes, queries and other SQL elements are not accepted in this context; for comparison with a subquery, use Report.week.has( ** criteria).
-    # ERROR: app:sqlalchemy.exc.ArgumentError: Mapped
-    # instance
-    # expected
-    # for relationship comparison to object.Classes, queries and other SQL elements are not accepted in this context; for comparison with a subquery, use Report.week.has( ** criteria).
-    # INFO: werkzeug:127.0
-    # .0
-    # .1 - - [26 / Mar / 2025 14: 24:42] "POST /student/handle_report HTTP/1.1"
-    # 500 -
 
     student_id = session['user_id']
 
@@ -244,7 +224,7 @@ def handle_report():
             feedback=data['feedback']
         )
         new_report.add()
-        # todo 这里不要redirect，不要刷新
+        # todo try do not redirect
         return redirect(url_for('student.index'))
 
     elif action == 'update':

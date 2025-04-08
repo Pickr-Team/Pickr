@@ -7,6 +7,7 @@ from test_student import TestStudent
 from test_supervisor import TestSupervisor
 from test_selection import TestSelection
 from test_topic import TestTopic
+from test_report import TestReport
 
 suite_type = unittest.TestLoader().loadTestsFromTestCase(TestType)
 suite_note = unittest.TestLoader().loadTestsFromTestCase(TestNote)
@@ -15,8 +16,9 @@ suite_student = unittest.TestLoader().loadTestsFromTestCase(TestStudent)
 suite_supervisor = unittest.TestLoader().loadTestsFromTestCase(TestSupervisor)
 suite_selection = unittest.TestLoader().loadTestsFromTestCase(TestSelection)
 suite_topic = unittest.TestLoader().loadTestsFromTestCase(TestTopic)
+suite_report = unittest.TestLoader().loadTestsFromTestCase(TestReport)
 
-top_suite = unittest.TestSuite([suite_type, suite_note, suite_deadline, suite_student, suite_supervisor, suite_selection, suite_topic])
+top_suite = unittest.TestSuite([suite_type, suite_note, suite_deadline, suite_student, suite_supervisor, suite_selection, suite_topic, suite_report])
 
 
 if __name__ == '__main__':
