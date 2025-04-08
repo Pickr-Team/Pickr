@@ -201,7 +201,8 @@ class TestSupervisor(TestCase):
                 email='zhangsan@example.com',
                 password='password123',
                 user_name='zhangsan',
-                class_number='CS101'
+                class_number='CS101',
+                graduation_year=2025
             )
             student.add()
             selection = Selection(1)

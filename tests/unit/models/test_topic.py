@@ -9,7 +9,6 @@ from models.supervisor import Supervisor
 from config import *
 from exts import db
 
-
 class TestTopic(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -29,7 +28,8 @@ class TestTopic(TestCase):
                 email='zhangsan@example.com',
                 password='password123',
                 user_name='zhangsan',
-                class_number='CS101'
+                class_number='CS101',
+                graduation_year=2025
             )
             student_1.add()
             student_2 = Student(
@@ -38,7 +38,8 @@ class TestTopic(TestCase):
                 email='lisi@example.com',
                 password='password123',
                 user_name='lisi',
-                class_number='CS101'
+                class_number='CS101',
+                graduation_year=2025
             )
             student_2.add()
             _type = Type('Game')

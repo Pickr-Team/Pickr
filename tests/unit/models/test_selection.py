@@ -26,7 +26,8 @@ class TestSelection(TestCase):
                 email='zhangsan@example.com',
                 password='password123',
                 user_name='zhangsan',
-                class_number='CS101'
+                class_number='CS101',
+                graduation_year=2025
             )
 
             cls.student_2 = Student(
@@ -35,7 +36,8 @@ class TestSelection(TestCase):
                 email='lisi@example.com',
                 password='password123',
                 user_name='lisi',
-                class_number='CS101'
+                class_number='CS101',
+                graduation_year=2025
             )
 
             # custom topic
@@ -45,7 +47,8 @@ class TestSelection(TestCase):
                 email='wangwu@example.com',
                 password='password123',
                 user_name='wangwu',
-                class_number='CS101'
+                class_number='CS101',
+                graduation_year=2025
             )
 
             cls.student_4 = Student(
@@ -54,7 +57,8 @@ class TestSelection(TestCase):
                 email='laoliu@example.com',
                 password='password123',
                 user_name='laoliu',
-                class_number='CS101'
+                class_number='CS101',
+                graduation_year=2025
             )
 
             supervisor = Supervisor(first_name='test', last_name='test', is_admin=False, position=100,
