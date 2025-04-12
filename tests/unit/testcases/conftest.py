@@ -29,7 +29,7 @@ def insert_test_data(app):
 
         pwd = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
         # student doesn't have a selection
-        student = Student('杨玉婷', 'Crystal', 'crystal@qq.com', pwd, 'crystal', 'SES1', 2025)
+        student = Student('哈哈', 'Crystal', 'crystal@qq.com', pwd, 'crystal', 'SES1', 2025)
         # student have a selection
         student_2 = Student('张三', 'Zhangsan', 'zhangsan@qq.com', pwd, 'zhangsan', 'SES1', 2025)
         # student have a selection(fail)
@@ -130,7 +130,6 @@ def clear_all_data(app):
 def clean_db(app):
     """Fixture that provides a clean database for each test"""
     clear_all_data(app)
-    insert_test_data(app)  # Optional: reinsert test data if needed
     yield
     clear_all_data(app)
 
