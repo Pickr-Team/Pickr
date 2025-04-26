@@ -1,0 +1,4 @@
+2025-04-26 08:02:04,073 - INFO - system - - - - Application logging configured successfully. Log file: logs\2025-04-26_08-02-04.log
+2025-04-26 08:02:04,073 - INFO - system - - - - Starting application...
+2025-04-26 08:02:19,476 - INFO - anonymous - GET / - Request started
+2025-04-26 08:02:19,509 - INFO - anonymous - GET / - Request completed - Status: 200

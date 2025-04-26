@@ -1,0 +1,10 @@
+2025-04-26 08:05:09,956 - INFO - system - - - - Application logging configured successfully. Log file: logs\2025-04-26_08-05-09.log
+2025-04-26 08:05:09,957 - INFO - system - - - - Starting application...
+2025-04-26 08:05:28,245 - INFO - anonymous - GET / - Request started
+2025-04-26 08:05:28,295 - INFO - anonymous - GET / - Request completed - Status: 200
+2025-04-26 08:05:29,976 - INFO - anonymous - GET /my_pickr - Request started
+2025-04-26 08:05:29,978 - INFO - anonymous - GET /my_pickr - Request completed - Status: 200
+2025-04-26 08:05:31,293 - INFO - login_attempt:unknown - POST /login - Request started
+2025-04-26 08:05:31,298 - INFO - supervisor:2:supervisor1 - POST /login - Login successful - supervisor:2:supervisor1
+2025-04-26 08:05:31,323 - INFO - supervisor:2:supervisor1 - GET /supervisor/home - Request started
+2025-04-26 08:05:31,369 - INFO - supervisor:2:supervisor1 - GET /supervisor/home - Request completed - Status: 200
