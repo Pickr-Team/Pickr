@@ -1,0 +1,16 @@
+2025-04-28 19:38:31,861 - INFO - system - - - - Application logging configured successfully. Log file: logs\2025-04-28_19-38-31.log
+2025-04-28 19:38:31,861 - INFO - system - - - - Starting application...
+2025-04-28 19:38:36,136 - INFO - anonymous - GET / - Request started
+2025-04-28 19:38:36,180 - INFO - anonymous - GET / - Request completed - Status: 200
+2025-04-28 19:38:36,184 - INFO - anonymous - GET / - Request started
+2025-04-28 19:38:36,187 - INFO - anonymous - GET / - Request completed - Status: 200
+2025-04-28 19:38:37,594 - INFO - anonymous - GET /my_pickr - Request started
+2025-04-28 19:38:37,597 - INFO - anonymous - GET /my_pickr - Request completed - Status: 200
+2025-04-28 19:38:38,670 - INFO - login_attempt:unknown - POST /login - Request started
+2025-04-28 19:38:38,681 - INFO - admin:1:admin - POST /login - Login successful - admin:1:admin
+2025-04-28 19:38:38,722 - INFO - admin:1:admin - GET /manager/home - Request started
+2025-04-28 19:38:38,862 - INFO - admin:1:admin - GET /manager/home - Request completed - Status: 200
+2025-04-28 19:38:46,759 - INFO - admin:1:admin - POST /manager/import/supTopic - Request started
+2025-04-28 19:38:46,763 - INFO - admin:1:admin - POST /manager/import/supTopic - Request completed - Status: 302
+2025-04-28 19:38:46,782 - INFO - admin:1:admin - GET /error - Request started
+2025-04-28 19:38:46,787 - INFO - admin:1:admin - GET /error - Request completed - Status: 200

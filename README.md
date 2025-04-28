@@ -5,7 +5,7 @@
 <h3 align="center">
   CDUT Sino-British Project Management System
   <br>
-  Designed by Chengxin Zhao 2023 - OBU Graduate Project
+  Designed by Chengxin Zhao, Yuting Yang 2023 - OBU Graduate Project
 </h3>
 
 <div align="center">
