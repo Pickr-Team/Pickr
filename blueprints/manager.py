@@ -267,6 +267,11 @@ def get_temp(_type):
 def import_file(_type):
     file = request.files['file']
     if file:
+        # Check if the file is an Excel file
+        if not (file.filename.endswith('.xlsx') or file.filename.endswith('.xls')):
+            return redirect(
+                url_for('base.error', message='Invalid file format. Please upload an Excel file (.xlsx or .xls)'))
+
         df = pd.read_excel(file)
         df.columns = df.columns.str.strip()
         if _type == 'student':

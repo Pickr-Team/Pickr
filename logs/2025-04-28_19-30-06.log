@@ -1,0 +1,13 @@
+2025-04-28 19:30:06,303 - INFO - system - - - - Application logging configured successfully. Log file: logs\2025-04-28_19-30-06.log
+2025-04-28 19:30:06,303 - INFO - system - - - - Starting application...
+2025-04-28 19:30:08,701 - INFO - anonymous - GET / - Request started
+2025-04-28 19:30:08,761 - INFO - anonymous - GET / - Request completed - Status: 200
+2025-04-28 19:30:15,552 - INFO - anonymous - GET /my_pickr - Request started
+2025-04-28 19:30:15,581 - INFO - anonymous - GET /my_pickr - Request completed - Status: 200
+2025-04-28 19:30:17,873 - INFO - login_attempt:unknown - POST /login - Request started
+2025-04-28 19:30:17,886 - INFO - admin:1:admin - POST /login - Login successful - admin:1:admin
+2025-04-28 19:30:17,942 - INFO - admin:1:admin - GET /manager/home - Request started
+2025-04-28 19:30:18,140 - INFO - admin:1:admin - GET /manager/home - Request completed - Status: 200
+2025-04-28 19:30:28,060 - INFO - admin:1:admin - POST /manager/import/supTopic - Request started
+2025-04-28 19:30:28,085 - ERROR - admin:1:admin - POST /manager/import/supTopic - Error: ValueError - Excel file format cannot be determined, you must specify an engine manually.
+2025-04-28 19:30:28,109 - INFO - admin:1:admin - POST /manager/import/supTopic - Request completed - Status: 500
